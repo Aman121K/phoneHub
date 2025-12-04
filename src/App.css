@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', sans-serif;
+}
+
+.main-content {
+  flex: 1;
+  padding-bottom: 70px; /* Space for bottom nav on mobile */
+}
+
+/* Desktop styles */
+@media (min-width: 768px) {
+  .main-content {
+    padding-bottom: 0;
+    padding-top: 80px; /* Space for header */
+  }
+}
+
+/* Ensure footer doesn't overlap bottom nav on mobile */
+@media (max-width: 767px) {
+  .footer {
+    padding-bottom: 80px; /* Space for bottom nav */
+  }
+}
+
