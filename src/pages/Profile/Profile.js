@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import ListingCard from '../../components/ListingCard/ListingCard';
+import { IconButton, Box } from '@mui/material';
+import { Edit, Delete } from '@mui/icons-material';
 import './Profile.css';
 
 const Profile = () => {
@@ -50,6 +52,25 @@ const Profile = () => {
     } catch (error) {
       console.error('Error fetching my bids:', error);
     }
+  };
+
+  const handleDeleteListing = async (listingId) => {
+    if (!window.confirm('Are you sure you want to delete this listing? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      await axios.delete(`/api/listings/${listingId}`);
+      alert('Listing deleted successfully');
+      fetchMyListings(); // Refresh the list
+    } catch (error) {
+      console.error('Error deleting listing:', error);
+      alert(error.response?.data?.error || 'Error deleting listing');
+    }
+  };
+
+  const handleEditListing = (listingId) => {
+    navigate(`/edit-listing/${listingId}`);
   };
 
   const handleLogout = () => {
@@ -106,7 +127,58 @@ const Profile = () => {
           ) : (
             <div className="listings-grid">
               {myListings.map((listing) => (
-                <ListingCard key={listing._id || listing.id} listing={listing} />
+                <Box key={listing._id || listing.id} sx={{ position: 'relative' }}>
+                  <ListingCard listing={listing} />
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '8px',
+                      right: '8px',
+                      display: 'flex',
+                      gap: '0.5rem',
+                      zIndex: 10,
+                    }}
+                  >
+                    <IconButton
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleEditListing(listing._id || listing.id);
+                      }}
+                      sx={{
+                        backgroundColor: '#2563eb',
+                        color: 'white',
+                        width: '32px',
+                        height: '32px',
+                        '&:hover': {
+                          backgroundColor: '#1d4ed8',
+                        },
+                      }}
+                      aria-label="Edit listing"
+                    >
+                      <Edit sx={{ fontSize: '1rem' }} />
+                    </IconButton>
+                    <IconButton
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDeleteListing(listing._id || listing.id);
+                      }}
+                      sx={{
+                        backgroundColor: '#ef4444',
+                        color: 'white',
+                        width: '32px',
+                        height: '32px',
+                        '&:hover': {
+                          backgroundColor: '#dc2626',
+                        },
+                      }}
+                      aria-label="Delete listing"
+                    >
+                      <Delete sx={{ fontSize: '1rem' }} />
+                    </IconButton>
+                  </Box>
+                </Box>
               ))}
             </div>
           )}

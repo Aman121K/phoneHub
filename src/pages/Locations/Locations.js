@@ -56,12 +56,9 @@ const Locations = () => {
             to={`/?city=${location.city}`}
             className="location-card"
           >
-            <div className="location-icon">
-              <i className="fas fa-map-marker-alt"></i>
-            </div>
             <h3>{location.city}</h3>
             <div className="location-stats">
-              <i className="fas fa-list"></i>
+              <i className="fas fa-map-marker-alt"></i>
               <span className="listing-count">{location.listing_count} Listings</span>
             </div>
           </Link>

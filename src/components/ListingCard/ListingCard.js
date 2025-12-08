@@ -358,7 +358,7 @@ const ListingCard = ({ listing, className }) => {
             sx={{
               fontSize: '0.8rem',
               fontWeight: 600,
-              color: '#f97316',
+              color: '#008556',
               fontFamily: "'Inter', sans-serif",
             }}
           >

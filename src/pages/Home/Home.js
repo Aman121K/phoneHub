@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { ArrowForward } from '@mui/icons-material';
 import ListingCard from '../../components/ListingCard/ListingCard';
+// import AuctionCard from '../../components/AuctionCard/AuctionCard';
 import './Home.css';
 
 // Small helper to guarantee array operations don't explode in production (e.g. Vercel)
@@ -611,9 +612,9 @@ const Home = () => {
                 mb: '0.5rem',
               }}
             >
-              Browse Categories
+              Browse iphone series
             </Typography>
-            <p className="section-subtitle">Find what you're looking for</p>
+            {/* <p className="section-subtitle">Find what you're looking for</p> */}
           </div>
           <Link to="/categories" className="view-all-link">
             View All
@@ -739,9 +740,9 @@ const Home = () => {
                 mb: '0.5rem',
               }}
             >
-              Single Sell
+              Single iphone
             </Typography>
-            <p className="section-subtitle">Sell Your iPhone Individually</p>
+            {/* <p className="section-subtitle">Sell Your iPhone Individually</p> */}
           </div>
           <Link to="/single-sell" className="view-all-link">
             View All
@@ -783,9 +784,9 @@ const Home = () => {
                 mb: '0.5rem',
               }}
             >
-              Bulk Sell
+              Bulk iphone
             </Typography>
-            <p className="section-subtitle">Sell Multiple iPhones at Once</p>
+            {/* <p className="section-subtitle">Sell Multiple iPhones at Once</p> */}
           </div>
           <Link to="/bulk-sell" className="view-all-link">
             View All
@@ -807,7 +808,7 @@ const Home = () => {
             </>
           ) : (
             <div className="no-listings">
-              <p>No bulk sell listings available</p>
+              <p>No bulk iphone listings available</p>
             </div>
           )}
         </div>
@@ -834,14 +835,14 @@ const Home = () => {
           </Link>
         </div>
         <div className="listings-grid home-listings-grid">
-          {safeAuctions.length > 0 ? (
+          {/* {safeAuctions.length > 0 ? (
             <>
               {safeAuctions.slice(0, 4).map((auction) => (
-                <ListingCard key={auction._id || auction.id} listing={auction} />
+                <AuctionCard key={auction._id || auction.id} auction={auction} />
               ))}
               {safeAuctions.length > 5 && (
-                <ListingCard
-                  listing={safeAuctions[5]}
+                <AuctionCard
+                  auction={safeAuctions[5]}
                   className="blur-card"
                 />
               )}
@@ -850,7 +851,7 @@ const Home = () => {
             <div className="no-auctions">
               <p>No live auctions available</p>
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Advertise With Us Section */}
@@ -879,7 +880,7 @@ const Home = () => {
             >
               Popular Locations
             </Typography>
-            <p className="section-subtitle">Explore Your Desire Places</p>
+            {/* <p className="section-subtitle">Explore Your Desire Places</p> */}
           </div>
           <Link to="/locations" className="view-all-link">
             View All
@@ -893,12 +894,9 @@ const Home = () => {
               to={`/?city=${location.city}`}
               className="location-card"
             >
-              <div className="location-icon">
-                <i className="fas fa-map-marker-alt"></i>
-              </div>
               <h3>{location.city}</h3>
               <div className="location-stats">
-                <i className="fas fa-list"></i>
+                <i className="fas fa-map-marker-alt"></i>
                 <span>{location.listing_count} Listings</span>
               </div>
             </Link>
@@ -908,12 +906,9 @@ const Home = () => {
               to={`/?city=${safeLocations[5].city}`}
               className="location-card blur-card"
             >
-              <div className="location-icon">
-                <i className="fas fa-map-marker-alt"></i>
-              </div>
               <h3>{safeLocations[5].city}</h3>
               <div className="location-stats">
-                <i className="fas fa-list"></i>
+                <i className="fas fa-map-marker-alt"></i>
                 <span>{safeLocations[5].listing_count} Listings</span>
               </div>
             </Link>
@@ -937,7 +932,7 @@ const Home = () => {
             >
               Latest Ads
             </Typography>
-            <p className="section-subtitle">Buy & Sell Any Iphone</p>
+            {/* <p className="section-subtitle">Buy & Sell Any Iphone</p> */}
           </div>
           <Link to="/single-sell" className="view-all-link">
             View All

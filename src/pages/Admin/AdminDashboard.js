@@ -141,7 +141,7 @@ const AdminDashboard = () => {
               </div>
               <div className="stat-info">
                 <h3>{stats.singleSell}</h3>
-                <p>Single Sell</p>
+                <p>Single iphone</p>
               </div>
             </div>
 
@@ -151,7 +151,7 @@ const AdminDashboard = () => {
               </div>
               <div className="stat-info">
                 <h3>{stats.bulkSell}</h3>
-                <p>Bulk Sell</p>
+                <p>Bulk iphone</p>
               </div>
             </div>
 

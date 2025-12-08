@@ -40,12 +40,12 @@ const Header = () => {
           <ul className="nav-links">
             <li>
               <Link to="/single-sell" className={`nav-link ${isActive('/single-sell') ? 'active' : ''}`}>
-                Single Sell
+                Single iphone
               </Link>
             </li>
             <li>
               <Link to="/bulk-sell" className={`nav-link ${isActive('/bulk-sell') ? 'active' : ''}`}>
-                Bulk Sell
+                Bulk iphone
               </Link>
             </li>
             <li>

@@ -3,7 +3,7 @@
 :root {
   --primary: #2563eb;
   --primary-dark: #1d4ed8;
-  --secondary: #f59e0b;
+  --secondary: #f97316;
   --dark: #1e293b;
   --gray-50: #f8fafc;
   --gray-100: #f1f5f9;
@@ -32,11 +32,6 @@
   box-sizing: border-box;
 }
 
-.listing-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
-  border-color: #2563eb;
-}
 
 .listing-image-container {
   width: 100%;
@@ -59,9 +54,6 @@
   transition: transform 0.3s ease;
 }
 
-.listing-image:hover {
-  transform: scale(1.05);
-}
 
 .listing-image img {
   width: 100%;
@@ -275,7 +267,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 1.125rem;
   font-weight: 700;
-  color: var(--success);
+  color: #008556;
   line-height: 1.2;
   letter-spacing: -0.01em;
 }

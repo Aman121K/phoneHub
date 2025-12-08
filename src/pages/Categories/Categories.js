@@ -64,8 +64,7 @@ const Categories = () => {
   return (
     <div className="categories-page">
       <div className="page-header">
-        <h1>Browse Categories</h1>
-        <p className="section-subtitle">Find what you're looking for</p>
+        <h1>Browse iphone series</h1>
       </div>
 
       <div className="categories-grid">

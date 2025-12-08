@@ -133,55 +133,7 @@
   z-index: 1;
 }
 
-.location-card:hover::before {
-  opacity: 1;
-}
 
-.location-card:hover::after {
-  left: 100%;
-}
-
-.location-card:hover {
-  transform: translateY(-12px) scale(1.05);
-  box-shadow: 0 20px 50px rgba(37, 99, 235, 0.5), 0 8px 20px rgba(37, 99, 235, 0.4);
-  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
-.location-icon {
-  width: 72px;
-  height: 72px;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1.5rem;
-  position: relative;
-  z-index: 2;
-  transition: all 0.4s ease;
-  backdrop-filter: blur(12px);
-  border: 3px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.location-icon i {
-  font-size: 2rem;
-  color: #fff;
-  transition: all 0.4s ease;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.location-card:hover .location-icon {
-  background: rgba(255, 255, 255, 0.35);
-  transform: scale(1.15) rotate(8deg);
-  border-color: rgba(255, 255, 255, 0.6);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-}
-
-.location-card:hover .location-icon i {
-  transform: scale(1.15);
-}
 
 .location-card h3 {
   font-size: 1.75rem;
@@ -215,6 +167,7 @@
 .location-stats i {
   font-size: 1rem;
   color: rgba(255, 255, 255, 1);
+  transition: all 0.4s ease;
 }
 
 .listing-count {
@@ -225,12 +178,6 @@
   letter-spacing: -0.01em;
 }
 
-.location-card:hover .location-stats {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-3px);
-  border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
 
 .loading {
   text-align: center;
@@ -275,16 +222,6 @@
     border-radius: 16px;
   }
 
-  .location-icon {
-    width: 60px;
-    height: 60px;
-    margin-bottom: 1.25rem;
-    border: 2px solid rgba(255, 255, 255, 0.35);
-  }
-
-  .location-icon i {
-    font-size: 1.75rem;
-  }
 
   .location-card h3 {
     font-size: 1.5rem;
@@ -334,15 +271,6 @@
     border-radius: 16px;
   }
 
-  .location-icon {
-    width: 56px;
-    height: 56px;
-    margin-bottom: 1rem;
-  }
-
-  .location-icon i {
-    font-size: 1.5rem;
-  }
 
   .location-card h3 {
     font-size: 1.4rem;

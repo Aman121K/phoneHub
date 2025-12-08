@@ -458,9 +458,6 @@ const ListingDetail = () => {
             </div>
           </div>
 
-          {/* Separator */}
-          <div className="detail-separator"></div>
-
           {/* Seller Information */}
           <div className="seller-info-section">
             <div className="seller-avatar">
@@ -551,13 +548,10 @@ const ListingDetail = () => {
 
           {/* Description Section */}
           {listing.description && (
-            <>
-              <div className="detail-separator"></div>
               <div className="description-section">
                 <h3 className="description-title">Description</h3>
                 <p className="description-text">{listing.description}</p>
               </div>
-            </>
           )}
         </div>
 
