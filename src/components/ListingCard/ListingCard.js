@@ -69,7 +69,7 @@ const ListingCard = ({ listing, className }) => {
   };
 
   const getSellerColor = (name) => {
-    const colors = ['#14b8a6', '#22c55e', '#f59e0b', '#2563eb', '#ef4444'];
+    const colors = ['#2563eb', '#f97316']; // Blue and Orange only
     const hash = name ? name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) : 0;
     return colors[hash % colors.length];
   };
@@ -96,10 +96,15 @@ const ListingCard = ({ listing, className }) => {
     }
   };
 
+  // Determine the correct route based on listing type
+  const listingRoute = listing.listingType === 'auction' 
+    ? `/auction/${listing._id || listing.id}` 
+    : `/listing/${listing._id || listing.id}`;
+
   return (
     <Card
       component={Link}
-      to={`/listing/${listing._id || listing.id}`}
+      to={listingRoute}
       className={`listing-card ${className || ''}`}
       sx={{
         textDecoration: 'none',
@@ -286,10 +291,10 @@ const ListingCard = ({ listing, className }) => {
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
             <Typography variant="body2" sx={{ fontSize: '0.65rem', color: '#6b7280', fontWeight: 400 }}>
-              Color
+              Storage
             </Typography>
             <Typography variant="body2" sx={{ fontSize: '0.65rem', fontWeight: 600, color: '#000000' }}>
-              {listing.color || 'Other'}
+              {listing.storage || 'N/A'}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
@@ -335,7 +340,7 @@ const ListingCard = ({ listing, className }) => {
         {/* Location and Price */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 'auto', pt: '0.35rem' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-            <LocationOn sx={{ fontSize: '0.75rem', color: '#22c55e' }} />
+            <LocationOn sx={{ fontSize: '0.75rem', color: '#f97316' }} />
             <Typography 
               variant="body2" 
               sx={{ 
@@ -353,7 +358,7 @@ const ListingCard = ({ listing, className }) => {
             sx={{
               fontSize: '0.8rem',
               fontWeight: 600,
-              color: '#22c55e',
+              color: '#f97316',
               fontFamily: "'Inter', sans-serif",
             }}
           >

@@ -234,7 +234,8 @@ const Register = () => {
                         required
                       />
                     </div>
-                    <div className="form-group">
+                    {/* Trade License field commented out as per client requirement */}
+                    {/* <div className="form-group">
                       <label>Trade License</label>
                       <div className="file-upload">
                         <input
@@ -255,7 +256,7 @@ const Register = () => {
                           <span className="file-name">{formData.tradeLicense.name}</span>
                         )}
                       </div>
-                    </div>
+                    </div> */}
                   </>
                 )}
               </>

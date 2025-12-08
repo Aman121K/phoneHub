@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Auctions.css';
+import ListingCard from '../../components/ListingCard/ListingCard';
 
 const Auctions = () => {
   const [auctions, setAuctions] = useState([]);
@@ -112,41 +113,9 @@ const Auctions = () => {
           <p>No live auctions at the moment.</p>
         </div>
       ) : (
-        <div className="auctions-grid">
+        <div className="listings-grid home-listings-grid">
           {auctions.map((auction) => (
-            <Link
-              key={auction.id}
-              to={`/auction/${auction.id}`}
-              className="auction-card"
-            >
-              <div className="listing-header">
-                <span className="listing-category">Buy & Sell Iphone</span>
-              </div>
-              <div className="auction-badge">LIVE</div>
-              {auction.image_url ? (
-                <div className="auction-image">
-                  <img src={auction.image_url} alt={auction.title} />
-                </div>
-              ) : (
-                <div className="auction-image placeholder">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
-                  </svg>
-                </div>
-              )}
-              <div className="auction-info">
-                <h3>{auction.title}</h3>
-                <p className="auction-price">AED {auction.current_price}</p>
-                <p className="auction-bids">{auction.bid_count || 0} bids</p>
-                <p className="auction-location">{auction.city}</p>
-                <div className="auction-status">
-                  <span className={new Date(auction.end_date) < new Date() ? 'ended' : 'live'}>
-                    {new Date(auction.end_date) < new Date() ? 'Ended' : 'LIVE'}
-                  </span>
-                </div>
-                <button className="bid-btn">Bid</button>
-              </div>
-            </Link>
+              <ListingCard key={auction._id || auction.id} listing={auction} />
           ))}
         </div>
       )}

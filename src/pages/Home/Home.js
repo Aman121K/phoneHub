@@ -920,7 +920,7 @@ const Home = () => {
             </Typography>
             <p className="section-subtitle">Buy & Sell Any Iphone</p>
           </div>
-          <Link to="/fixed-price" className="view-all-link">
+          <Link to="/single-sell" className="view-all-link">
             View All
             <i className="fas fa-arrow-right"></i>
           </Link>

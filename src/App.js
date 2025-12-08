@@ -24,7 +24,6 @@ import AuctionDetail from './pages/AuctionDetail/AuctionDetail';
 import About from './pages/About/About';
 import Blog from './pages/Blog/Blog';
 import Contact from './pages/Contact/Contact';
-import FixedPrice from './pages/FixedPrice/FixedPrice';
 import SingleSell from './pages/SingleSell/SingleSell';
 import BulkSell from './pages/BulkSell/BulkSell';
 import Locations from './pages/Locations/Locations';
@@ -52,7 +51,6 @@ function App() {
                 <Route path="/listing/:id" element={<ListingDetail />} />
                 <Route path="/auctions" element={<Auctions />} />
                 <Route path="/auction/:id" element={<AuctionDetail />} />
-                <Route path="/fixed-price" element={<FixedPrice />} />
                 <Route path="/single-sell" element={<SingleSell />} />
                 <Route path="/bulk-sell" element={<BulkSell />} />
                 <Route path="/locations" element={<Locations />} />

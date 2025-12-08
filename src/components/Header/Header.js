@@ -49,11 +49,6 @@ const Header = () => {
               </Link>
             </li>
             <li>
-              <Link to="/fixed-price" className={`nav-link ${isActive('/fixed-price') ? 'active' : ''}`}>
-                Fixed Price
-              </Link>
-            </li>
-            <li>
               <Link to="/auctions" className={`nav-link ${isActive('/auctions') ? 'active' : ''}`}>
                 Auctions
               </Link>
@@ -71,10 +66,12 @@ const Header = () => {
             <>
               <Link to="/profile" className="nav-btn btn-login">Profile</Link>
               <button onClick={handleLogout} className="nav-btn btn-login">Logout</button>
-              <Link to="/post-ad" className="btn-sell">
-                <i className="fas fa-plus"></i>
-                <span className="btn-sell-text">Sell iPhone</span>
-              </Link>
+              {user.userType !== 'buyer' && (
+                <Link to="/post-ad" className="btn-sell">
+                  <i className="fas fa-plus"></i>
+                  <span className="btn-sell-text">Sell iPhone</span>
+                </Link>
+              )}
             </>
           ) : (
             <>

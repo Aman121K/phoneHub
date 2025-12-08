@@ -17,14 +17,34 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
 
   useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      // Optionally fetch user profile
-    } else {
-      delete axios.defaults.headers.common['Authorization'];
-    }
-    setLoading(false);
-  }, [token]);
+    const initializeAuth = async () => {
+      const storedToken = localStorage.getItem('token');
+      
+      if (storedToken) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+        // Fetch user profile to restore session
+        try {
+          const response = await axios.get('/api/users/profile');
+          setUser(response.data);
+          setToken(storedToken);
+        } catch (error) {
+          // Token is invalid or expired
+          console.error('Error fetching user profile:', error);
+          localStorage.removeItem('token');
+          setToken(null);
+          setUser(null);
+          delete axios.defaults.headers.common['Authorization'];
+        }
+      } else {
+        delete axios.defaults.headers.common['Authorization'];
+        setUser(null);
+        setToken(null);
+      }
+      setLoading(false);
+    };
+
+    initializeAuth();
+  }, []); // Only run once on mount
 
   const login = async (email, password) => {
     try {
@@ -34,7 +54,7 @@ export const AuthProvider = ({ children }) => {
       setToken(newToken);
       setUser(userData);
       axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-      return { success: true };
+      return { success: true, user: userData };
     } catch (error) {
       return { success: false, error: error.response?.data?.error || 'Login failed' };
     }
@@ -48,7 +68,7 @@ export const AuthProvider = ({ children }) => {
       setToken(newToken);
       setUser(newUser);
       axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-      return { success: true };
+      return { success: true, user: newUser };
     } catch (error) {
       return { success: false, error: error.response?.data?.error || 'Registration failed' };
     }

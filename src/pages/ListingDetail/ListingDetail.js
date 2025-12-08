@@ -16,6 +16,10 @@ const ListingDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const [similarListings, setSimilarListings] = useState([]);
+  const [showReportForm, setShowReportForm] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [reportDescription, setReportDescription] = useState('');
+  const [reporting, setReporting] = useState(false);
 
   useEffect(() => {
     fetchListing();
@@ -445,8 +449,8 @@ const ListingDetail = () => {
               <span className="attribute-value">{listing.condition || 'Brand New'}</span>
             </div>
             <div className="attribute-item">
-              <span className="attribute-label">Color</span>
-              <span className="attribute-value">{listing.color || 'Other'}</span>
+              <span className="attribute-label">Storage</span>
+              <span className="attribute-value">{listing.storage || 'N/A'}</span>
             </div>
             <div className="attribute-item">
               <span className="attribute-label">Warranty</span>
@@ -524,6 +528,27 @@ const ListingDetail = () => {
             </div>
           ) : null}
 
+          {/* Report Button */}
+          {user && user.id !== (listing.user?._id || listing.user_id) && (
+            <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+              <button
+                onClick={() => setShowReportForm(true)}
+                style={{
+                  background: 'transparent',
+                  border: '1px solid #dc2626',
+                  color: '#dc2626',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem',
+                  fontWeight: 500
+                }}
+              >
+                <i className="fas fa-flag"></i> Report This Listing
+              </button>
+            </div>
+          )}
+
           {/* Description Section */}
           {listing.description && (
             <>
@@ -557,6 +582,83 @@ const ListingDetail = () => {
                   <button
                     type="button"
                     onClick={() => setShowMessageForm(false)}
+                    className="cancel-btn"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Report Form Modal */}
+        {showReportForm && user && (
+          <div className="message-overlay" onClick={() => setShowReportForm(false)}>
+            <div className="message-form-modal" onClick={(e) => e.stopPropagation()}>
+              <h3>Report This Listing</h3>
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                if (!reportReason) {
+                  alert('Please select a reason');
+                  return;
+                }
+                setReporting(true);
+                try {
+                  await axios.post('/api/reports', {
+                    listing_id: listing._id || listing.id,
+                    reason: reportReason,
+                    description: reportDescription
+                  });
+                  alert('Report submitted successfully. Thank you for helping us maintain a safe marketplace.');
+                  setShowReportForm(false);
+                  setReportReason('');
+                  setReportDescription('');
+                } catch (error) {
+                  alert(error.response?.data?.error || 'Error submitting report');
+                } finally {
+                  setReporting(false);
+                }
+              }} className="message-form">
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Reason *</label>
+                  <select
+                    value={reportReason}
+                    onChange={(e) => setReportReason(e.target.value)}
+                    required
+                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '2px solid #e5e7eb' }}
+                  >
+                    <option value="">Select a reason</option>
+                    <option value="Spam or Scam">Spam or Scam</option>
+                    <option value="Inappropriate Content">Inappropriate Content</option>
+                    <option value="Misleading Information">Misleading Information</option>
+                    <option value="Duplicate Listing">Duplicate Listing</option>
+                    <option value="Wrong Category">Wrong Category</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>Description (Optional)</label>
+                  <textarea
+                    value={reportDescription}
+                    onChange={(e) => setReportDescription(e.target.value)}
+                    placeholder="Provide additional details..."
+                    rows="4"
+                    style={{ width: '100%', padding: '0.75rem', borderRadius: '8px', border: '2px solid #e5e7eb' }}
+                  />
+                </div>
+                <div className="message-actions">
+                  <button type="submit" className="send-btn" disabled={reporting}>
+                    <i className="fas fa-flag"></i>
+                    {reporting ? 'Submitting...' : 'Submit Report'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowReportForm(false);
+                      setReportReason('');
+                      setReportDescription('');
+                    }}
                     className="cancel-btn"
                   >
                     Cancel

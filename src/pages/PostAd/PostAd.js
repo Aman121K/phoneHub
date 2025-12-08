@@ -13,20 +13,35 @@ const PostAd = () => {
     title: '',
     description: '',
     price: '',
+    per_price: '',
     storage: '',
     condition: '',
     city: '',
     listing_type: 'fixed_price',
-    image_url: '',
+    sellType: 'single',
     start_price: '',
-    end_date: ''
+    end_date: '',
+    quantity: 1
   });
+  const [images, setImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [imageError, setImageError] = useState('');
 
   useEffect(() => {
     if (!user) {
       navigate('/login');
       return;
+    }
+    // Check if user is a buyer - buyers can only bid, not post
+    if (user.userType === 'buyer') {
+      alert('Buyers can only bid on listings. Please register as a seller to post listings.');
+      navigate('/');
+      return;
+    }
+    // Set city from user profile and lock it
+    if (user.city) {
+      setFormData(prev => ({ ...prev, city: user.city }));
     }
     fetchCategories();
   }, [user, navigate]);
@@ -34,9 +49,14 @@ const PostAd = () => {
   const fetchCategories = async () => {
     try {
       const response = await axios.get('/api/categories');
-      setCategories(response.data);
+      if (response.data && Array.isArray(response.data)) {
+        setCategories(response.data);
+      } else {
+        console.error('Invalid categories response:', response.data);
+      }
     } catch (error) {
       console.error('Error fetching categories:', error);
+      alert('Failed to load categories. Please refresh the page.');
     }
   };
 
@@ -47,25 +67,124 @@ const PostAd = () => {
     });
   };
 
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setImageError('');
+
+    // Validate number of images
+    if (files.length === 0) {
+      setImages([]);
+      setImagePreviews([]);
+      return;
+    }
+
+    if (files.length > 5) {
+      setImageError('Maximum 5 images allowed');
+      return;
+    }
+
+    // Validate file types
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    const invalidFiles = files.filter(file => !validTypes.includes(file.type));
+    
+    if (invalidFiles.length > 0) {
+      setImageError('Only image files are allowed (jpeg, jpg, png, gif, webp)');
+      return;
+    }
+
+    // Validate file sizes (5MB max)
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    const oversizedFiles = files.filter(file => file.size > maxSize);
+    
+    if (oversizedFiles.length > 0) {
+      setImageError('Each image must be less than 5MB');
+      return;
+    }
+
+    setImages(files);
+
+    // Create previews
+    const previews = files.map(file => URL.createObjectURL(file));
+    setImagePreviews(previews);
+  };
+
+  const removeImage = (index) => {
+    const newImages = images.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    
+    // Revoke object URLs to free memory
+    URL.revokeObjectURL(imagePreviews[index]);
+    
+    setImages(newImages);
+    setImagePreviews(newPreviews);
+    setImageError('');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setImageError('');
+
+    // Validate images
+    if (images.length === 0) {
+      setImageError('At least one image is required');
+      return;
+    }
+
+    if (images.length > 5) {
+      setImageError('Maximum 5 images allowed');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const payload = {
-        ...formData,
-        category_id: formData.category_id,
-        price: formData.listing_type === 'auction' 
-          ? parseFloat(formData.start_price) 
-          : parseFloat(formData.price),
-        start_price: formData.listing_type === 'auction' ? parseFloat(formData.start_price) : undefined,
-        end_date: formData.listing_type === 'auction' ? formData.end_date : undefined
-      };
+      // Create FormData for file upload
+      const formDataToSend = new FormData();
+      
+      // Append images
+      images.forEach((image) => {
+        formDataToSend.append('images', image);
+      });
 
-      await axios.post('/api/listings', payload);
+      // Append other form fields
+      formDataToSend.append('category_id', formData.category_id);
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('description', formData.description || '');
+      formDataToSend.append('storage', formData.storage || '');
+      formDataToSend.append('condition', formData.condition || '');
+      formDataToSend.append('city', formData.city);
+      formDataToSend.append('listing_type', formData.listing_type);
+      formDataToSend.append('sellType', formData.sellType || 'single');
+      formDataToSend.append('quantity', formData.quantity || 1);
+      if (formData.per_price) {
+        formDataToSend.append('per_price', formData.per_price);
+      }
+      
+      if (formData.listing_type === 'auction') {
+        formDataToSend.append('price', formData.start_price);
+        formDataToSend.append('start_price', formData.start_price);
+        formDataToSend.append('end_date', formData.end_date);
+      } else {
+        formDataToSend.append('price', formData.price);
+      }
+
+      // Get auth token
+      const token = localStorage.getItem('token');
+      
+      await axios.post('/api/listings', formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      // Clean up preview URLs
+      imagePreviews.forEach(preview => URL.revokeObjectURL(preview));
+      
       alert('Listing created successfully!');
       navigate('/');
     } catch (error) {
+      console.error('Error creating listing:', error);
       alert('Error creating listing: ' + (error.response?.data?.error || 'Unknown error'));
     } finally {
       setLoading(false);
@@ -88,14 +207,26 @@ const PostAd = () => {
               value={formData.category_id}
               onChange={handleChange}
               required
+              disabled={categories.length === 0}
             >
-              <option value="">Select Category</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
+              <option value="">
+                {categories.length === 0 ? 'Loading categories...' : 'Select Category'}
+              </option>
+              {categories.map((cat) => {
+                const categoryId = cat._id || cat.id;
+                const categoryName = cat.name || 'Unnamed Category';
+                return (
+                  <option key={categoryId} value={categoryId}>
+                    {categoryName}
+                  </option>
+                );
+              })}
             </select>
+            {categories.length === 0 && (
+              <small style={{ color: '#666', display: 'block', marginTop: '0.5rem' }}>
+                If categories don't load, please refresh the page or contact support.
+              </small>
+            )}
           </div>
 
           <div className="form-group">
@@ -156,20 +287,30 @@ const PostAd = () => {
 
           <div className="form-group">
             <label>City *</label>
-            <select
+            <input
+              type="text"
               name="city"
               value={formData.city}
+              readOnly
+              disabled
+              required
+              style={{ background: '#f3f4f6', cursor: 'not-allowed' }}
+            />
+            <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
+              City is locked based on your profile
+            </small>
+          </div>
+
+          <div className="form-group">
+            <label>Sell Type *</label>
+            <select
+              name="sellType"
+              value={formData.sellType}
               onChange={handleChange}
               required
             >
-              <option value="">Select City</option>
-              <option value="Dubai">Dubai</option>
-              <option value="Abu Dhabi">Abu Dhabi</option>
-              <option value="Sharjah">Sharjah</option>
-              <option value="Ajman">Ajman</option>
-              <option value="Ras al Khaimah">Ras al Khaimah</option>
-              <option value="Fujairah">Fujairah</option>
-              <option value="Al Ain">Al Ain</option>
+              <option value="single">Single Sell</option>
+              <option value="bulk">Bulk Sell</option>
             </select>
           </div>
 
@@ -180,26 +321,66 @@ const PostAd = () => {
               value={formData.listing_type}
               onChange={handleChange}
               required
+              disabled={user?.sellerType !== 'business'}
             >
               <option value="fixed_price">Fixed Price</option>
-              <option value="auction">Auction</option>
+              {user?.sellerType === 'business' && (
+                <option value="auction">Auction</option>
+              )}
             </select>
+            {user?.sellerType !== 'business' && (
+              <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
+                Auction is only available for business sellers
+              </small>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label>Quantity *</label>
+            <input
+              type="number"
+              name="quantity"
+              value={formData.quantity}
+              onChange={handleChange}
+              placeholder="1"
+              min="1"
+              required
+            />
           </div>
 
           {formData.listing_type === 'fixed_price' ? (
-            <div className="form-group">
-              <label>Price (AED) *</label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                placeholder="0.00"
-                min="0"
-                step="0.01"
-                required
-              />
-            </div>
+            <>
+              <div className="form-group">
+                <label>Total Price (AED) *</label>
+                <input
+                  type="number"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleChange}
+                  placeholder="0.00"
+                  min="0"
+                  step="0.01"
+                  required
+                />
+              </div>
+              {formData.sellType === 'bulk' && (
+                <div className="form-group">
+                  <label>Per Unit Price (AED)</label>
+                  <input
+                    type="number"
+                    name="per_price"
+                    value={formData.per_price}
+                    onChange={handleChange}
+                    placeholder="0.00"
+                    min="0"
+                    step="0.01"
+                  />
+                  <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
+                    Optional: Price per unit for bulk listings
+                  </small>
+                </div>
+              )}
+            </>
           ) : (
             <>
               <div className="form-group">
@@ -229,14 +410,37 @@ const PostAd = () => {
           )}
 
           <div className="form-group">
-            <label>Image URL</label>
+            <label>Images * (1-5 images)</label>
             <input
-              type="url"
-              name="image_url"
-              value={formData.image_url}
-              onChange={handleChange}
-              placeholder="https://example.com/image.jpg"
+              type="file"
+              name="images"
+              accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+              multiple
+              onChange={handleImageChange}
+              className="file-input"
             />
+            <small className="file-hint">
+              Select 1-5 images. Each image should be less than 5MB. Supported formats: JPEG, PNG, GIF, WebP
+            </small>
+            {imageError && <div className="error-message">{imageError}</div>}
+            
+            {imagePreviews.length > 0 && (
+              <div className="image-preview-container">
+                {imagePreviews.map((preview, index) => (
+                  <div key={index} className="image-preview-wrapper">
+                    <img src={preview} alt={`Preview ${index + 1}`} className="image-preview" />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="remove-image-btn"
+                      aria-label="Remove image"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <button type="submit" className="submit-btn" disabled={loading}>
