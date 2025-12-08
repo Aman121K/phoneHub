@@ -21,11 +21,11 @@ const BottomNav = () => {
         <span className="nav-label">Home</span>
       </Link>
 
-      <Link to="/categories" className={`nav-item ${isActive('/categories') ? 'active' : ''}`}>
+      <Link to="/single-sell" className={`nav-item ${isActive('/single-sell') ? 'active' : ''}`}>
         <svg className="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h10M7 12h10M7 17h6" />
         </svg>
-        <span className="nav-label">Videos</span>
+        <span className="nav-label">Single Sell</span>
       </Link>
 
       <Link to="/post-ad" className="nav-item nav-item-post">
@@ -37,11 +37,11 @@ const BottomNav = () => {
         <span className="nav-label">Post ad</span>
       </Link>
 
-      <Link to="/messages" className={`nav-item ${isActive('/messages') ? 'active' : ''}`}>
+      <Link to="/bulk-sell" className={`nav-item ${isActive('/bulk-sell') ? 'active' : ''}`}>
         <svg className="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7h18M3 12h18M3 17h11" />
         </svg>
-        <span className="nav-label">Messages</span>
+        <span className="nav-label">Bulk iPhone</span>
       </Link>
 
       <Link to="/profile" className={`nav-item ${isActive('/profile') ? 'active' : ''}`}>
