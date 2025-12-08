@@ -399,10 +399,10 @@ const Home = () => {
       setAuctions(auctionsRes.data && auctionsRes.data.length > 0 ? auctionsRes.data : mockAuctions);
       setCategories(categoriesRes.data && categoriesRes.data.length > 0 ? categoriesRes.data : mockCategories);
       setPopularLocations(locationsRes.data && locationsRes.data.length > 0 ? locationsRes.data : mockLocations);
-      
+
       // Single Sell and Bulk Sell listings
-      const mockSingleSell = mockFeaturedListings.slice(0, 8).map(item => ({ ...item, sellType: 'single' }));
-      const mockBulkSell = mockFeaturedListings.slice(2, 10).map(item => ({ ...item, sellType: 'bulk' }));
+      const mockSingleSell = mockFeaturedListings?.slice(0, 8).map(item => ({ ...item, sellType: 'single' }));
+      const mockBulkSell = mockFeaturedListings?.slice(2, 10).map(item => ({ ...item, sellType: 'bulk' }));
       setSingleSellListings(singleSellRes.data && singleSellRes.data.length > 0 ? singleSellRes.data : mockSingleSell);
       setBulkSellListings(bulkSellRes.data && bulkSellRes.data.length > 0 ? bulkSellRes.data : mockBulkSell);
     } catch (error) {
@@ -414,8 +414,8 @@ const Home = () => {
       setAuctions(mockAuctions);
       setCategories(mockCategories);
       setPopularLocations(mockLocations);
-      const mockSingleSell = mockFeaturedListings.slice(0, 8).map(item => ({ ...item, sellType: 'single' }));
-      const mockBulkSell = mockFeaturedListings.slice(2, 10).map(item => ({ ...item, sellType: 'bulk' }));
+      const mockSingleSell = mockFeaturedListings?.slice(0, 8).map(item => ({ ...item, sellType: 'single' }));
+      const mockBulkSell = mockFeaturedListings?.slice(2, 10).map(item => ({ ...item, sellType: 'bulk' }));
       setSingleSellListings(mockSingleSell);
       setBulkSellListings(mockBulkSell);
     } finally {
@@ -500,7 +500,7 @@ const Home = () => {
                   onChange={(e) => setSelectedModel(e.target.value)}
                 >
                   <option value="">All Models</option>
-                  {(Array.isArray(categories) ? categories : []).slice(0, 10).map((cat) => (
+                  {(Array.isArray(categories) ? categories : [])?.slice(0, 10).map((cat) => (
                     <option key={cat.id || cat._id} value={cat.name}>{cat.name}</option>
                   ))}
                 </select>
@@ -602,7 +602,7 @@ const Home = () => {
           </Link>
         </div>
         <div className="listings-grid home-listings-grid">
-          {categories.slice(0, 4).map((category) => (
+          {categories?.slice(0, 4).map((category) => (
             <Card
               key={category.id || category._id}
               component={Link}
@@ -710,7 +710,7 @@ const Home = () => {
       <section className="single-sell-section">
         <div className="section-header">
           <div>
-          <Typography
+            <Typography
               variant="h2"
               sx={{
                 fontSize: '1.5rem',
@@ -732,12 +732,12 @@ const Home = () => {
         <div className="listings-grid home-listings-grid">
           {singleSellListings.length > 0 ? (
             <>
-              {singleSellListings.slice(0, 4).map((listing) => (
+              {singleSellListings?.slice(0, 4).map((listing) => (
                 <ListingCard key={listing._id || listing.id} listing={listing} />
               ))}
               {singleSellListings.length > 5 && (
-                <ListingCard 
-                  listing={singleSellListings[5]} 
+                <ListingCard
+                  listing={singleSellListings[5]}
                   className="blur-card"
                 />
               )}
@@ -754,7 +754,7 @@ const Home = () => {
       <section className="bulk-sell-section">
         <div className="section-header">
           <div>
-          <Typography
+            <Typography
               variant="h2"
               sx={{
                 fontSize: '1.5rem',
@@ -776,12 +776,12 @@ const Home = () => {
         <div className="listings-grid home-listings-grid">
           {bulkSellListings.length > 0 ? (
             <>
-              {bulkSellListings.slice(0, 4).map((listing) => (
+              {bulkSellListings?.slice(0, 4).map((listing) => (
                 <ListingCard key={listing._id || listing.id} listing={listing} />
               ))}
-              {bulkSellListings.length > 5 && (
-                <ListingCard 
-                  listing={bulkSellListings[5]} 
+              {bulkSellListings?.length > 5 && (
+                <ListingCard
+                  listing={bulkSellListings[5]}
                   className="blur-card"
                 />
               )}
@@ -797,16 +797,16 @@ const Home = () => {
       {/* Auction Section */}
       <section className="auction-section">
         <div className="section-header">
-        <Typography
-              variant="h2"
-              sx={{
-                fontSize: '1.5rem',
-                fontWeight: 700,
-                color: '#1e293b',
-                fontFamily: "'Inter', sans-serif",
-                mb: '0.5rem',
-              }}
-            >
+          <Typography
+            variant="h2"
+            sx={{
+              fontSize: '1.5rem',
+              fontWeight: 700,
+              color: '#1e293b',
+              fontFamily: "'Inter', sans-serif",
+              mb: '0.5rem',
+            }}
+          >
             Auction
           </Typography>
           <Link to="/auctions" className="view-all-link">
@@ -817,12 +817,12 @@ const Home = () => {
         <div className="listings-grid home-listings-grid">
           {auctions.length > 0 ? (
             <>
-              {auctions.slice(0, 4).map((auction) => (
+              {auctions?.slice(0, 4).map((auction) => (
                 <ListingCard key={auction._id || auction.id} listing={auction} />
               ))}
-              {auctions.length > 5 && (
-                <ListingCard 
-                  listing={auctions[5]} 
+              {auctions?.length > 5 && (
+                <ListingCard
+                  listing={auctions[5]}
                   className="blur-card"
                 />
               )}
@@ -848,7 +848,7 @@ const Home = () => {
       <section className="locations-section">
         <div className="section-header">
           <div>
-          <Typography
+            <Typography
               variant="h2"
               sx={{
                 fontSize: '1.5rem',
@@ -868,7 +868,7 @@ const Home = () => {
           </Link>
         </div>
         <div className="listings-grid home-listings-grid">
-          {popularLocations.slice(0, 4).map((location, index) => (
+          {popularLocations?.slice(0, 4).map((location, index) => (
             <Link
               key={index}
               to={`/?city=${location.city}`}
@@ -906,7 +906,7 @@ const Home = () => {
       <section className="latest-section">
         <div className="section-header">
           <div>
-          <Typography
+            <Typography
               variant="h2"
               sx={{
                 fontSize: '1.5rem',
@@ -932,8 +932,8 @@ const Home = () => {
                 <ListingCard key={listing._id || listing.id} listing={listing} />
               ))}
               {latestListings.length > 5 && (
-                <ListingCard 
-                  listing={latestListings[5]} 
+                <ListingCard
+                  listing={latestListings[5]}
                   className="blur-card"
                 />
               )}
