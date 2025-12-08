@@ -12,6 +12,9 @@ import { ArrowForward } from '@mui/icons-material';
 import ListingCard from '../../components/ListingCard/ListingCard';
 import './Home.css';
 
+// Small helper to guarantee array operations don't explode in production (e.g. Vercel)
+const toArray = (value) => (Array.isArray(value) ? value : []);
+
 const Home = () => {
   const [featuredListings, setFeaturedListings] = useState([]);
   const [latestListings, setLatestListings] = useState([]);
@@ -392,19 +395,28 @@ const Home = () => {
         axios.get('/api/listings?type=bulk_sell').catch(() => ({ data: [] }))
       ]);
 
+      // Normalize API responses so UI doesn't crash on undefined/null responses
+      const featuredData = toArray(featuredRes.data);
+      const latestData = toArray(latestRes.data);
+      const auctionsData = toArray(auctionsRes.data);
+      const categoriesData = toArray(categoriesRes.data);
+      const locationsData = toArray(locationsRes.data);
+      const singleSellData = toArray(singleSellRes.data);
+      const bulkSellData = toArray(bulkSellRes.data);
+
       // Use API data if available and has items, otherwise use mock data
-      setFeaturedListings(featuredRes.data && featuredRes.data.length > 0 ? featuredRes.data : mockFeaturedListings);
-      setLatestListings(latestRes.data && latestRes.data.length > 0 ? latestRes.data : mockFeaturedListings);
+      setFeaturedListings(featuredData.length > 0 ? featuredData : mockFeaturedListings);
+      setLatestListings(latestData.length > 0 ? latestData : mockFeaturedListings);
       setSimilarProducts(mockSimilarProducts);
-      setAuctions(auctionsRes.data && auctionsRes.data.length > 0 ? auctionsRes.data : mockAuctions);
-      setCategories(categoriesRes.data && categoriesRes.data.length > 0 ? categoriesRes.data : mockCategories);
-      setPopularLocations(locationsRes.data && locationsRes.data.length > 0 ? locationsRes.data : mockLocations);
+      setAuctions(auctionsData.length > 0 ? auctionsData : mockAuctions);
+      setCategories(categoriesData.length > 0 ? categoriesData : mockCategories);
+      setPopularLocations(locationsData.length > 0 ? locationsData : mockLocations);
 
       // Single Sell and Bulk Sell listings
       const mockSingleSell = mockFeaturedListings?.slice(0, 8).map(item => ({ ...item, sellType: 'single' }));
       const mockBulkSell = mockFeaturedListings?.slice(2, 10).map(item => ({ ...item, sellType: 'bulk' }));
-      setSingleSellListings(singleSellRes.data && singleSellRes.data.length > 0 ? singleSellRes.data : mockSingleSell);
-      setBulkSellListings(bulkSellRes.data && bulkSellRes.data.length > 0 ? bulkSellRes.data : mockBulkSell);
+      setSingleSellListings(singleSellData.length > 0 ? singleSellData : mockSingleSell);
+      setBulkSellListings(bulkSellData.length > 0 ? bulkSellData : mockBulkSell);
     } catch (error) {
       console.error('Error fetching data:', error);
       // Use mock data on error
@@ -436,6 +448,13 @@ const Home = () => {
   const handleQuickFilter = (filter) => {
     setSearchQuery(filter);
   };
+
+  const safeCategories = toArray(categories);
+  const safeAuctions = toArray(auctions);
+  const safeLocations = toArray(popularLocations);
+  const safeLatest = toArray(latestListings);
+  const safeSingleSell = toArray(singleSellListings);
+  const safeBulkSell = toArray(bulkSellListings);
 
   if (loading) {
     return <div className="loading">Loading...</div>;
@@ -500,7 +519,7 @@ const Home = () => {
                   onChange={(e) => setSelectedModel(e.target.value)}
                 >
                   <option value="">All Models</option>
-                  {(Array.isArray(categories) ? categories : [])?.slice(0, 10).map((cat) => (
+                  {safeCategories.slice(0, 10).map((cat) => (
                     <option key={cat.id || cat._id} value={cat.name}>{cat.name}</option>
                   ))}
                 </select>
@@ -602,7 +621,7 @@ const Home = () => {
           </Link>
         </div>
         <div className="listings-grid home-listings-grid">
-          {categories?.slice(0, 4).map((category) => (
+          {safeCategories.slice(0, 4).map((category) => (
             <Card
               key={category.id || category._id}
               component={Link}
@@ -652,10 +671,10 @@ const Home = () => {
               </Typography>
             </Card>
           ))}
-          {categories.length > 5 && (
+          {safeCategories.length > 5 && (
             <Card
               component={Link}
-              to={`/category/${categories[5].slug}`}
+              to={`/category/${safeCategories[5].slug}`}
               className="category-card blur-card"
               sx={{
                 textDecoration: 'none',
@@ -689,7 +708,7 @@ const Home = () => {
                   mb: '0.5rem',
                 }}
               >
-                {categories[5].name}
+                {safeCategories[5].name}
               </Typography>
               <Typography
                 variant="body2"
@@ -699,7 +718,7 @@ const Home = () => {
                   fontWeight: 500,
                 }}
               >
-                {categories[5].ad_count || 0} Ads
+                {safeCategories[5].ad_count || 0} Ads
               </Typography>
             </Card>
           )}
@@ -730,14 +749,14 @@ const Home = () => {
           </Link>
         </div>
         <div className="listings-grid home-listings-grid">
-          {singleSellListings.length > 0 ? (
+          {safeSingleSell.length > 0 ? (
             <>
-              {singleSellListings?.slice(0, 4).map((listing) => (
+              {safeSingleSell.slice(0, 4).map((listing) => (
                 <ListingCard key={listing._id || listing.id} listing={listing} />
               ))}
-              {singleSellListings.length > 5 && (
+              {safeSingleSell.length > 5 && (
                 <ListingCard
-                  listing={singleSellListings[5]}
+                  listing={safeSingleSell[5]}
                   className="blur-card"
                 />
               )}
@@ -774,14 +793,14 @@ const Home = () => {
           </Link>
         </div>
         <div className="listings-grid home-listings-grid">
-          {bulkSellListings.length > 0 ? (
+          {safeBulkSell.length > 0 ? (
             <>
-              {bulkSellListings?.slice(0, 4).map((listing) => (
+              {safeBulkSell.slice(0, 4).map((listing) => (
                 <ListingCard key={listing._id || listing.id} listing={listing} />
               ))}
-              {bulkSellListings?.length > 5 && (
+              {safeBulkSell.length > 5 && (
                 <ListingCard
-                  listing={bulkSellListings[5]}
+                  listing={safeBulkSell[5]}
                   className="blur-card"
                 />
               )}
@@ -815,14 +834,14 @@ const Home = () => {
           </Link>
         </div>
         <div className="listings-grid home-listings-grid">
-          {auctions.length > 0 ? (
+          {safeAuctions.length > 0 ? (
             <>
-              {auctions?.slice(0, 4).map((auction) => (
+              {safeAuctions.slice(0, 4).map((auction) => (
                 <ListingCard key={auction._id || auction.id} listing={auction} />
               ))}
-              {auctions?.length > 5 && (
+              {safeAuctions.length > 5 && (
                 <ListingCard
-                  listing={auctions[5]}
+                  listing={safeAuctions[5]}
                   className="blur-card"
                 />
               )}
@@ -868,7 +887,7 @@ const Home = () => {
           </Link>
         </div>
         <div className="listings-grid home-listings-grid">
-          {popularLocations?.slice(0, 4).map((location, index) => (
+          {safeLocations.slice(0, 4).map((location, index) => (
             <Link
               key={index}
               to={`/?city=${location.city}`}
@@ -884,18 +903,18 @@ const Home = () => {
               </div>
             </Link>
           ))}
-          {popularLocations.length > 5 && (
+          {safeLocations.length > 5 && (
             <Link
-              to={`/?city=${popularLocations[5].city}`}
+              to={`/?city=${safeLocations[5].city}`}
               className="location-card blur-card"
             >
               <div className="location-icon">
                 <i className="fas fa-map-marker-alt"></i>
               </div>
-              <h3>{popularLocations[5].city}</h3>
+              <h3>{safeLocations[5].city}</h3>
               <div className="location-stats">
                 <i className="fas fa-list"></i>
-                <span>{popularLocations[5].listing_count} Listings</span>
+                <span>{safeLocations[5].listing_count} Listings</span>
               </div>
             </Link>
           )}
@@ -926,14 +945,14 @@ const Home = () => {
           </Link>
         </div>
         <div className="listings-grid home-listings-grid">
-          {latestListings.length > 0 ? (
+          {safeLatest.length > 0 ? (
             <>
-              {latestListings.slice(0, 4).map((listing) => (
+              {safeLatest.slice(0, 4).map((listing) => (
                 <ListingCard key={listing._id || listing.id} listing={listing} />
               ))}
-              {latestListings.length > 5 && (
+              {safeLatest.length > 5 && (
                 <ListingCard
-                  listing={latestListings[5]}
+                  listing={safeLatest[5]}
                   className="blur-card"
                 />
               )}
