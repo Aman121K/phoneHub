@@ -500,7 +500,7 @@ const Home = () => {
                   onChange={(e) => setSelectedModel(e.target.value)}
                 >
                   <option value="">All Models</option>
-                  {categories.slice(0, 10).map((cat) => (
+                  {(Array.isArray(categories) ? categories : []).slice(0, 10).map((cat) => (
                     <option key={cat.id || cat._id} value={cat.name}>{cat.name}</option>
                   ))}
                 </select>
