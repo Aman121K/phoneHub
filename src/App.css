@@ -12,6 +12,7 @@
 .main-content {
   flex: 1;
   padding-bottom: 70px; /* Space for bottom nav on mobile */
+  padding-top: 70px; /* Space for header on mobile */
 }
 
 /* Desktop styles */
@@ -25,7 +26,7 @@
 /* Ensure footer doesn't overlap bottom nav on mobile */
 @media (max-width: 767px) {
   .footer {
-    padding-bottom: 80px; /* Space for bottom nav */
+    padding-bottom: 100px; /* Space for bottom nav */
   }
 }
 

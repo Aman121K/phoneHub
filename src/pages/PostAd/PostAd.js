@@ -33,11 +33,10 @@ const PostAd = () => {
       navigate('/login');
       return;
     }
-    // Check if user is a buyer - buyers can only bid, not post
-    if (user.userType === 'buyer') {
-      alert('Buyers can only bid on listings. Please register as a seller to post listings.');
-      navigate('/');
-      return;
+    // Allow buyers to create auctions, but not fixed price listings
+    if (user.userType === 'buyer' && formData.listing_type !== 'auction') {
+      // Set default to auction for buyers
+      setFormData(prev => ({ ...prev, listing_type: 'auction' }));
     }
     // Set city from user profile and lock it
     if (user.city) {
@@ -135,57 +134,122 @@ const PostAd = () => {
       return;
     }
 
+    // Validate buyer can only create auctions
+    if (user.userType === 'buyer' && formData.listing_type !== 'auction') {
+      alert('Buyers can only create auctions. Please select auction as listing type.');
+      return;
+    }
+
+    // Validate auction fields for buyers
+    if (user.userType === 'buyer' && formData.listing_type === 'auction') {
+      if (!formData.start_price || !formData.end_date) {
+        alert('Start price and end date are required for auctions');
+        return;
+      }
+      const endDate = new Date(formData.end_date);
+      if (endDate <= new Date()) {
+        alert('End date must be in the future');
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
-      // Create FormData for file upload
-      const formDataToSend = new FormData();
-      
-      // Append images
-      images.forEach((image) => {
-        formDataToSend.append('images', image);
-      });
-
-      // Append other form fields
-      formDataToSend.append('category_id', formData.category_id);
-      formDataToSend.append('title', formData.title);
-      formDataToSend.append('description', formData.description || '');
-      formDataToSend.append('storage', formData.storage || '');
-      formDataToSend.append('condition', formData.condition || '');
-      formDataToSend.append('city', formData.city);
-      formDataToSend.append('listing_type', formData.listing_type);
-      formDataToSend.append('sellType', formData.sellType || 'single');
-      formDataToSend.append('quantity', formData.quantity || 1);
-      if (formData.per_price) {
-        formDataToSend.append('per_price', formData.per_price);
-      }
-      
-      if (formData.listing_type === 'auction') {
-        formDataToSend.append('price', formData.start_price);
-        formDataToSend.append('start_price', formData.start_price);
-        formDataToSend.append('end_date', formData.end_date);
-      } else {
-        formDataToSend.append('price', formData.price);
-      }
-
       // Get auth token
       const token = localStorage.getItem('token');
       
-      await axios.post('/api/listings', formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`
+      // If buyer creating auction, use the new auction creation endpoint
+      if (user.userType === 'buyer' && formData.listing_type === 'auction') {
+        // Create FormData for file upload
+        const formDataToSend = new FormData();
+        
+        // Append images
+        images.forEach((image) => {
+          formDataToSend.append('images', image);
+        });
+
+        // Append other form fields
+        formDataToSend.append('category_id', formData.category_id);
+        formDataToSend.append('title', formData.title);
+        formDataToSend.append('description', formData.description || '');
+        formDataToSend.append('storage', formData.storage || '');
+        formDataToSend.append('condition', formData.condition || '');
+        formDataToSend.append('city', formData.city);
+        formDataToSend.append('start_price', formData.start_price);
+        formDataToSend.append('end_date', formData.end_date);
+        formDataToSend.append('sellType', formData.sellType || 'single');
+        formDataToSend.append('quantity', formData.quantity || 1);
+        if (formData.per_price) {
+          formDataToSend.append('per_price', formData.per_price);
         }
-      });
-      
-      // Clean up preview URLs
-      imagePreviews.forEach(preview => URL.revokeObjectURL(preview));
-      
-      alert('Listing created successfully!');
-      navigate('/');
+        if (formData.color) {
+          formDataToSend.append('color', formData.color);
+        }
+        if (formData.warranty) {
+          formDataToSend.append('warranty', formData.warranty);
+        }
+
+        const response = await axios.post('/api/auctions/create', formDataToSend, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        // Clean up preview URLs
+        imagePreviews.forEach(preview => URL.revokeObjectURL(preview));
+        
+        alert('Auction created successfully!');
+        navigate('/auctions');
+      } else {
+        // Sellers use the regular listings endpoint
+        // Create FormData for file upload
+        const formDataToSend = new FormData();
+        
+        // Append images
+        images.forEach((image) => {
+          formDataToSend.append('images', image);
+        });
+
+        // Append other form fields
+        formDataToSend.append('category_id', formData.category_id);
+        formDataToSend.append('title', formData.title);
+        formDataToSend.append('description', formData.description || '');
+        formDataToSend.append('storage', formData.storage || '');
+        formDataToSend.append('condition', formData.condition || '');
+        formDataToSend.append('city', formData.city);
+        formDataToSend.append('listing_type', formData.listing_type);
+        formDataToSend.append('sellType', formData.sellType || 'single');
+        formDataToSend.append('quantity', formData.quantity || 1);
+        if (formData.per_price) {
+          formDataToSend.append('per_price', formData.per_price);
+        }
+        
+        if (formData.listing_type === 'auction') {
+          formDataToSend.append('price', formData.start_price);
+          formDataToSend.append('start_price', formData.start_price);
+          formDataToSend.append('end_date', formData.end_date);
+        } else {
+          formDataToSend.append('price', formData.price);
+        }
+
+        await axios.post('/api/listings', formDataToSend, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        // Clean up preview URLs
+        imagePreviews.forEach(preview => URL.revokeObjectURL(preview));
+        
+        alert('Listing created successfully!');
+        navigate('/');
+      }
     } catch (error) {
-      console.error('Error creating listing:', error);
-      alert('Error creating listing: ' + (error.response?.data?.error || 'Unknown error'));
+      console.error('Error creating listing/auction:', error);
+      alert('Error: ' + (error.response?.data?.error || 'Unknown error'));
     } finally {
       setLoading(false);
     }
@@ -198,7 +262,7 @@ const PostAd = () => {
   return (
     <div className="post-ad-page">
       <div className="post-ad-container">
-        <h1>Post an Ad</h1>
+        <h1>{user?.userType === 'buyer' ? 'Create an Auction' : 'Post an Ad'}</h1>
         <form onSubmit={handleSubmit} className="post-ad-form">
           <div className="form-group">
             <label>Category *</label>
@@ -321,14 +385,25 @@ const PostAd = () => {
               value={formData.listing_type}
               onChange={handleChange}
               required
-              disabled={user?.sellerType !== 'business'}
+              disabled={user?.userType === 'buyer' || (user?.userType === 'seller' && user?.sellerType !== 'business')}
             >
-              <option value="fixed_price">Fixed Price</option>
-              {user?.sellerType === 'business' && (
+              {user?.userType === 'buyer' ? (
                 <option value="auction">Auction</option>
+              ) : (
+                <>
+                  <option value="fixed_price">Fixed Price</option>
+                  {user?.sellerType === 'business' && (
+                    <option value="auction">Auction</option>
+                  )}
+                </>
               )}
             </select>
-            {user?.sellerType !== 'business' && (
+            {user?.userType === 'buyer' && (
+              <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
+                Buyers can create auctions to sell items
+              </small>
+            )}
+            {user?.userType === 'seller' && user?.sellerType !== 'business' && (
               <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
                 Auction is only available for business sellers
               </small>

@@ -35,9 +35,15 @@
 .hero-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem 0 100px;
+  padding: 0 2rem;
   position: relative;
   z-index: 2;
+}
+
+@media (min-width: 1025px) {
+  .hero-container {
+    padding: 0 2rem 0 100px;
+  }
 }
 
 .hero-content {
@@ -286,12 +292,18 @@
 /* ===== CATEGORIES SECTION ===== */
 .categories-section {
   margin-bottom: 4rem;
-  padding: 0 1.5rem 0 100px;
+  padding: 0 1.5rem;
   max-width: 1600px;
   margin-left: auto;
   margin-right: auto;
   width: 100%;
   box-sizing: border-box;
+}
+
+@media (min-width: 1025px) {
+  .categories-section {
+    padding: 0 1.5rem 0 100px;
+  }
 }
 
 .categories-section .section-header {
@@ -455,12 +467,24 @@
 .single-sell-section,
 .bulk-sell-section {
   margin-bottom: 4rem;
-  padding: 0 1.5rem 0 100px;
+  padding: 0 1.5rem;
   max-width: 1600px;
   margin-left: auto;
   margin-right: auto;
   width: 100%;
   box-sizing: border-box;
+}
+
+@media (min-width: 1025px) {
+  .featured-section,
+  .auction-section,
+  .locations-section,
+  .latest-section,
+  .similar-products-section,
+  .single-sell-section,
+  .bulk-sell-section {
+    padding: 0 1.5rem 0 100px;
+  }
 }
 
 @media (max-width: 767px) {
@@ -1433,11 +1457,11 @@
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 1024px) {
   .hero-container {
-    padding: 0 2rem 0 50px;
+    padding: 0 2rem;
   }
   
   .categories-section {
-    padding: 0 1.5rem 0 50px;
+    padding: 0 1.5rem;
   }
   
   .featured-section,
@@ -1447,7 +1471,7 @@
   .similar-products-section,
   .single-sell-section,
   .bulk-sell-section {
-    padding: 0 1.5rem 0 50px;
+    padding: 0 1.5rem;
   }
   
   .hero-title {

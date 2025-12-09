@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
 import './Auctions.css';
 import AuctionCard from '../../components/AuctionCard/AuctionCard';
 
 const Auctions = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
@@ -15,10 +18,18 @@ const Auctions = () => {
     city: '',
     sortBy: 'newest'
   });
+  const [appliedFilters, setAppliedFilters] = useState({
+    minPrice: '',
+    maxPrice: '',
+    condition: '',
+    storage: '',
+    city: '',
+    sortBy: 'newest'
+  });
 
   useEffect(() => {
     fetchAuctions();
-  }, [filters]);
+  }, [appliedFilters]);
 
   const mockAuctions = [
     {
@@ -98,23 +109,23 @@ const Auctions = () => {
       setLoading(true);
       const params = new URLSearchParams();
       
-      if (filters.minPrice) params.append('minPrice', filters.minPrice);
-      if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
-      if (filters.condition) params.append('condition', filters.condition);
-      if (filters.storage) params.append('storage', filters.storage);
-      if (filters.city) params.append('city', filters.city);
+      if (appliedFilters.minPrice) params.append('minPrice', appliedFilters.minPrice);
+      if (appliedFilters.maxPrice) params.append('maxPrice', appliedFilters.maxPrice);
+      if (appliedFilters.condition) params.append('condition', appliedFilters.condition);
+      if (appliedFilters.storage) params.append('storage', appliedFilters.storage);
+      if (appliedFilters.city) params.append('city', appliedFilters.city);
 
       const response = await axios.get(`/api/auctions${params.toString() ? '?' + params.toString() : ''}`);
       let fetchedAuctions = response.data.length > 0 ? response.data : mockAuctions;
 
       // Apply sorting
-      if (filters.sortBy === 'newest') {
+      if (appliedFilters.sortBy === 'newest') {
         fetchedAuctions.sort((a, b) => new Date(b.createdAt || b.created_at || b.end_date) - new Date(a.createdAt || a.created_at || a.end_date));
-      } else if (filters.sortBy === 'oldest') {
+      } else if (appliedFilters.sortBy === 'oldest') {
         fetchedAuctions.sort((a, b) => new Date(a.createdAt || a.created_at || a.end_date) - new Date(b.createdAt || b.created_at || b.end_date));
-      } else if (filters.sortBy === 'price-high') {
+      } else if (appliedFilters.sortBy === 'price-high') {
         fetchedAuctions.sort((a, b) => (b.current_price || b.price || 0) - (a.current_price || a.price || 0));
-      } else if (filters.sortBy === 'price-low') {
+      } else if (appliedFilters.sortBy === 'price-low') {
         fetchedAuctions.sort((a, b) => (a.current_price || a.price || 0) - (b.current_price || b.price || 0));
       }
 
@@ -151,15 +162,21 @@ const Auctions = () => {
     }));
   };
 
+  const applyFilters = () => {
+    setAppliedFilters({ ...filters });
+  };
+
   const clearFilters = () => {
-    setFilters({
+    const clearedFilters = {
       minPrice: '',
       maxPrice: '',
       condition: '',
       storage: '',
       city: '',
       sortBy: 'newest'
-    });
+    };
+    setFilters(clearedFilters);
+    setAppliedFilters(clearedFilters);
   };
 
   if (loading) {
@@ -169,8 +186,15 @@ const Auctions = () => {
   return (
     <div className="auctions-page">
       <div className="page-header">
-        <h1>Live Auctions</h1>
-        <p>Bid on your favorite iPhones</p>
+        <div>
+          <h1>Live Auctions</h1>
+          <p>Bid on your favorite iPhones</p>
+        </div>
+        {user && user.userType === 'buyer' && (
+          <Link to="/post-ad" className="create-auction-btn">
+            + Create Auction
+          </Link>
+        )}
       </div>
 
       <div className="category-content-wrapper">
@@ -261,6 +285,11 @@ const Auctions = () => {
               <option value="Al Ain">Al Ain</option>
             </select>
           </div>
+
+          {/* Apply Filter Button */}
+          <button onClick={applyFilters} className="apply-filters-btn">
+            Apply Filters
+          </button>
         </aside>
 
         {/* Main Content */}
@@ -273,7 +302,11 @@ const Auctions = () => {
                 id="sortBy"
                 name="sortBy"
                 value={filters.sortBy}
-                onChange={handleFilterChange}
+                onChange={(e) => {
+                  handleFilterChange(e);
+                  // Sort applies immediately
+                  setAppliedFilters(prev => ({ ...prev, sortBy: e.target.value }));
+                }}
                 className="sort-select"
               >
                 <option value="newest">Newest to Oldest</option>

@@ -25,6 +25,16 @@ const SearchResults = () => {
     city: searchParams.get('city') || '',
     sortBy: searchParams.get('sortBy') || 'newest'
   });
+  const [appliedFilters, setAppliedFilters] = useState({
+    search: initialSearch,
+    model: initialModel,
+    storage: initialStorage,
+    minPrice: searchParams.get('minPrice') || '',
+    maxPrice: searchParams.get('maxPrice') || '',
+    condition: searchParams.get('condition') || '',
+    city: searchParams.get('city') || '',
+    sortBy: searchParams.get('sortBy') || 'newest'
+  });
 
   useEffect(() => {
     fetchCategories();
@@ -32,7 +42,7 @@ const SearchResults = () => {
 
   useEffect(() => {
     fetchListings();
-  }, [filters]);
+  }, [appliedFilters]);
 
   const mockListings = [
     {
@@ -91,20 +101,20 @@ const SearchResults = () => {
       setLoading(true);
       const params = new URLSearchParams();
       
-      if (filters.search) params.append('search', filters.search);
-      if (filters.model) params.append('model', filters.model);
-      if (filters.storage) params.append('storage', filters.storage);
-      if (filters.minPrice) params.append('minPrice', filters.minPrice);
-      if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
-      if (filters.condition) params.append('condition', filters.condition);
-      if (filters.city) params.append('city', filters.city);
-      if (filters.sortBy) params.append('sortBy', filters.sortBy);
+      if (appliedFilters.search) params.append('search', appliedFilters.search);
+      if (appliedFilters.model) params.append('model', appliedFilters.model);
+      if (appliedFilters.storage) params.append('storage', appliedFilters.storage);
+      if (appliedFilters.minPrice) params.append('minPrice', appliedFilters.minPrice);
+      if (appliedFilters.maxPrice) params.append('maxPrice', appliedFilters.maxPrice);
+      if (appliedFilters.condition) params.append('condition', appliedFilters.condition);
+      if (appliedFilters.city) params.append('city', appliedFilters.city);
+      if (appliedFilters.sortBy) params.append('sortBy', appliedFilters.sortBy);
 
       // Update URL params
       const newParams = new URLSearchParams();
-      Object.keys(filters).forEach(key => {
-        if (filters[key]) {
-          newParams.append(key, filters[key]);
+      Object.keys(appliedFilters).forEach(key => {
+        if (appliedFilters[key]) {
+          newParams.append(key, appliedFilters[key]);
         }
       });
       setSearchParams(newParams);
@@ -113,31 +123,31 @@ const SearchResults = () => {
       let fetchedListings = listingsRes.data.length > 0 ? listingsRes.data : mockListings;
 
       // Apply client-side filtering if needed
-      if (filters.search) {
+      if (appliedFilters.search) {
         fetchedListings = fetchedListings.filter(listing => 
-          listing.title?.toLowerCase().includes(filters.search.toLowerCase()) ||
-          listing.category?.name?.toLowerCase().includes(filters.search.toLowerCase())
+          listing.title?.toLowerCase().includes(appliedFilters.search.toLowerCase()) ||
+          listing.category?.name?.toLowerCase().includes(appliedFilters.search.toLowerCase())
         );
       }
-      if (filters.model) {
+      if (appliedFilters.model) {
         fetchedListings = fetchedListings.filter(listing => 
-          listing.category?.name === filters.model
+          listing.category?.name === appliedFilters.model
         );
       }
-      if (filters.storage) {
+      if (appliedFilters.storage) {
         fetchedListings = fetchedListings.filter(listing => 
-          listing.storage === filters.storage
+          listing.storage === appliedFilters.storage
         );
       }
 
       // Apply sorting
-      if (filters.sortBy === 'newest') {
+      if (appliedFilters.sortBy === 'newest') {
         fetchedListings.sort((a, b) => new Date(b.createdAt || b.created_at) - new Date(a.createdAt || a.created_at));
-      } else if (filters.sortBy === 'oldest') {
+      } else if (appliedFilters.sortBy === 'oldest') {
         fetchedListings.sort((a, b) => new Date(a.createdAt || a.created_at) - new Date(b.createdAt || b.created_at));
-      } else if (filters.sortBy === 'price-high') {
+      } else if (appliedFilters.sortBy === 'price-high') {
         fetchedListings.sort((a, b) => (b.price || 0) - (a.price || 0));
-      } else if (filters.sortBy === 'price-low') {
+      } else if (appliedFilters.sortBy === 'price-low') {
         fetchedListings.sort((a, b) => (a.price || 0) - (b.price || 0));
       }
 
@@ -158,8 +168,12 @@ const SearchResults = () => {
     }));
   };
 
+  const applyFilters = () => {
+    setAppliedFilters({ ...filters });
+  };
+
   const clearFilters = () => {
-    setFilters({
+    const clearedFilters = {
       search: '',
       model: '',
       storage: '',
@@ -168,7 +182,9 @@ const SearchResults = () => {
       condition: '',
       city: '',
       sortBy: 'newest'
-    });
+    };
+    setFilters(clearedFilters);
+    setAppliedFilters(clearedFilters);
   };
 
   if (loading) {
@@ -304,6 +320,11 @@ const SearchResults = () => {
               <option value="Al Ain">Al Ain</option>
             </select>
           </div>
+
+          {/* Apply Filter Button */}
+          <button onClick={applyFilters} className="apply-filters-btn">
+            Apply Filters
+          </button>
         </aside>
 
         {/* Main Content */}

@@ -566,7 +566,7 @@ const Home = () => {
           </div>
 
           {/* Hero Stats */}
-          <div className="hero-stats">
+          {/* <div className="hero-stats">
             <div className="stat-item">
               <span className="stat-number">50K+</span>
               <span className="stat-label">Happy Customers</span>
@@ -583,10 +583,10 @@ const Home = () => {
               <span className="stat-number">24h</span>
               <span className="stat-label">Fast Delivery</span>
             </div>
-          </div>
+          </div> */}
 
           {/* Trust Badges */}
-          <div className="trust-bar">
+          {/* <div className="trust-bar">
             <div className="trust-item">
               <div className="trust-icon">
                 <i className="fas fa-shield-check"></i>
@@ -611,7 +611,7 @@ const Home = () => {
               </div>
               7-Day Return
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
 

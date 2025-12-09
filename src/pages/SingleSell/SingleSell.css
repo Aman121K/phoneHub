@@ -12,6 +12,7 @@
 
 .page-header {
   margin-bottom: 2rem;
+  text-align: left;
 }
 
 .page-header h1 {
@@ -20,6 +21,20 @@
   margin-bottom: 0;
   font-weight: 700;
   font-family: 'Inter', sans-serif;
+  text-align: left;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: #1e293b !important;
+  background-clip: unset !important;
+}
+
+/* Remove any lines below the title */
+.page-header::after,
+.page-header::before,
+.page-header h1::after,
+.page-header h1::before {
+  display: none !important;
+  content: none !important;
 }
 
 .category-content-wrapper {
@@ -73,6 +88,28 @@
 
 .clear-filters-btn:hover {
   text-decoration: underline;
+}
+
+.apply-filters-btn {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.apply-filters-btn:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
 }
 
 .filter-section {

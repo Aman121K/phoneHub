@@ -18,6 +18,14 @@ const CategoryListings = () => {
     city: '',
     sortBy: 'newest'
   });
+  const [appliedFilters, setAppliedFilters] = useState({
+    minPrice: '',
+    maxPrice: '',
+    condition: '',
+    storage: '',
+    city: '',
+    sortBy: 'newest'
+  });
 
   useEffect(() => {
     fetchCategories();
@@ -25,7 +33,7 @@ const CategoryListings = () => {
 
   useEffect(() => {
     fetchListings();
-  }, [slug, filters]);
+  }, [slug, appliedFilters]);
 
   const mockListings = [
     {
@@ -93,24 +101,24 @@ const CategoryListings = () => {
       const params = new URLSearchParams();
       params.append('category', slug);
       
-      if (filters.minPrice) params.append('minPrice', filters.minPrice);
-      if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
-      if (filters.condition) params.append('condition', filters.condition);
-      if (filters.storage) params.append('storage', filters.storage);
-      if (filters.city) params.append('city', filters.city);
-      if (filters.sortBy) params.append('sortBy', filters.sortBy);
+      if (appliedFilters.minPrice) params.append('minPrice', appliedFilters.minPrice);
+      if (appliedFilters.maxPrice) params.append('maxPrice', appliedFilters.maxPrice);
+      if (appliedFilters.condition) params.append('condition', appliedFilters.condition);
+      if (appliedFilters.storage) params.append('storage', appliedFilters.storage);
+      if (appliedFilters.city) params.append('city', appliedFilters.city);
+      if (appliedFilters.sortBy) params.append('sortBy', appliedFilters.sortBy);
 
       const listingsRes = await axios.get(`/api/listings?${params.toString()}`).catch(() => ({ data: [] }));
       let fetchedListings = listingsRes.data.length > 0 ? listingsRes.data : mockListings;
 
       // Apply sorting
-      if (filters.sortBy === 'newest') {
+      if (appliedFilters.sortBy === 'newest') {
         fetchedListings.sort((a, b) => new Date(b.createdAt || b.created_at) - new Date(a.createdAt || a.created_at));
-      } else if (filters.sortBy === 'oldest') {
+      } else if (appliedFilters.sortBy === 'oldest') {
         fetchedListings.sort((a, b) => new Date(a.createdAt || a.created_at) - new Date(b.createdAt || b.created_at));
-      } else if (filters.sortBy === 'price-high') {
+      } else if (appliedFilters.sortBy === 'price-high') {
         fetchedListings.sort((a, b) => (b.price || 0) - (a.price || 0));
-      } else if (filters.sortBy === 'price-low') {
+      } else if (appliedFilters.sortBy === 'price-low') {
         fetchedListings.sort((a, b) => (a.price || 0) - (b.price || 0));
       }
 
@@ -135,15 +143,21 @@ const CategoryListings = () => {
     }));
   };
 
+  const applyFilters = () => {
+    setAppliedFilters({ ...filters });
+  };
+
   const clearFilters = () => {
-    setFilters({
+    const clearedFilters = {
       minPrice: '',
       maxPrice: '',
       condition: '',
       storage: '',
       city: '',
       sortBy: 'newest'
-    });
+    };
+    setFilters(clearedFilters);
+    setAppliedFilters(clearedFilters);
   };
 
   if (loading) {
@@ -244,6 +258,11 @@ const CategoryListings = () => {
               <option value="Al Ain">Al Ain</option>
             </select>
           </div>
+
+          {/* Apply Filter Button */}
+          <button onClick={applyFilters} className="apply-filters-btn">
+            Apply Filters
+          </button>
         </aside>
 
         {/* Main Content */}
@@ -256,7 +275,11 @@ const CategoryListings = () => {
                 id="sortBy"
                 name="sortBy"
                 value={filters.sortBy}
-                onChange={handleFilterChange}
+                onChange={(e) => {
+                  handleFilterChange(e);
+                  // Sort applies immediately
+                  setAppliedFilters(prev => ({ ...prev, sortBy: e.target.value }));
+                }}
                 className="sort-select"
               >
                 <option value="newest">Newest to Oldest</option>
