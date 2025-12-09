@@ -5,6 +5,8 @@
   display: flex;
   flex-direction: column;
   font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 .main-content {

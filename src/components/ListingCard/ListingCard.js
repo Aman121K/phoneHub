@@ -250,13 +250,14 @@ const ListingCard = ({ listing, className }) => {
       <CardContent 
         sx={{ 
           flexGrow: 1, 
-          p: '0.75rem', 
-          '&:last-child': { pb: '0.75rem' },
+          p: '0.65rem', 
+          '&:last-child': { pb: '0.65rem' },
           display: 'flex',
           flexDirection: 'column',
           gap: '0',
           overflow: 'visible',
           minHeight: '196px',
+          justifyContent: 'space-between',
         }}
       >
         <Typography
@@ -266,7 +267,7 @@ const ListingCard = ({ listing, className }) => {
             fontSize: '0.75rem',
             fontWeight: 600,
             color: '#000000',
-            mb: '0.4rem',
+            mb: '0.3rem',
             lineHeight: 1.3,
             display: '-webkit-box',
             WebkitLineClamp: 2,
@@ -280,7 +281,7 @@ const ListingCard = ({ listing, className }) => {
         </Typography>
         
         {/* Product Attributes */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', mb: '0.35rem' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', mb: '0.15rem' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
             <Typography variant="body2" sx={{ fontSize: '0.65rem', color: '#6b7280', fontWeight: 400 }}>
               Age
@@ -307,10 +308,10 @@ const ListingCard = ({ listing, className }) => {
           </Box>
         </Box>
 
-        <Divider sx={{ my: '0.35rem' }} />
+        <Divider sx={{ my: '0.1rem', borderColor: '#e5e7eb' }} />
 
         {/* Seller Information */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem', mb: '0.35rem' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem', mb: '0.1rem' }}>
           <Avatar
             sx={{
               width: 24,
@@ -335,10 +336,10 @@ const ListingCard = ({ listing, className }) => {
           </Typography>
         </Box>
 
-        <Divider sx={{ my: '0.35rem' }} />
+        <Divider sx={{ my: '0.1rem', borderColor: '#e5e7eb' }} />
 
         {/* Location and Price */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 'auto', pt: '0.35rem' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 'auto', pt: '0.05rem' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
             <LocationOn sx={{ fontSize: '0.75rem', color: '#f97316' }} />
             <Typography 

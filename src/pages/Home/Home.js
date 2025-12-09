@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
   Box,
@@ -10,13 +10,14 @@ import {
 } from '@mui/material';
 import { ArrowForward } from '@mui/icons-material';
 import ListingCard from '../../components/ListingCard/ListingCard';
-// import AuctionCard from '../../components/AuctionCard/AuctionCard';
+import AuctionCard from '../../components/AuctionCard/AuctionCard';
 import './Home.css';
 
 // Small helper to guarantee array operations don't explode in production (e.g. Vercel)
 const toArray = (value) => (Array.isArray(value) ? value : []);
 
 const Home = () => {
+  const navigate = useNavigate();
   const [featuredListings, setFeaturedListings] = useState([]);
   const [latestListings, setLatestListings] = useState([]);
   const [similarProducts, setSimilarProducts] = useState([]);
@@ -438,12 +439,12 @@ const Home = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // Navigate to search results
+    // Navigate to search results page
     const params = new URLSearchParams();
     if (searchQuery) params.append('search', searchQuery);
     if (selectedModel) params.append('model', selectedModel);
     if (selectedStorage) params.append('storage', selectedStorage);
-    window.location.href = `/?${params.toString()}`;
+    navigate(`/search?${params.toString()}`);
   };
 
   const handleQuickFilter = (filter) => {
@@ -456,6 +457,22 @@ const Home = () => {
   const safeLatest = toArray(latestListings);
   const safeSingleSell = toArray(singleSellListings);
   const safeBulkSell = toArray(bulkSellListings);
+
+  const handleBidSuccess = (auctionId, bidAmount) => {
+    // Update the auction in the list with new bid
+    setAuctions(prevAuctions => 
+      prevAuctions.map(auction => {
+        if ((auction._id || auction.id) === auctionId) {
+          return {
+            ...auction,
+            current_price: bidAmount,
+            bid_count: (auction.bid_count || 0) + 1
+          };
+        }
+        return auction;
+      })
+    );
+  };
 
   if (loading) {
     return <div className="loading">Loading...</div>;
@@ -835,15 +852,20 @@ const Home = () => {
           </Link>
         </div>
         <div className="listings-grid home-listings-grid">
-          {/* {safeAuctions.length > 0 ? (
+          {safeAuctions.length > 0 ? (
             <>
               {safeAuctions.slice(0, 4).map((auction) => (
-                <AuctionCard key={auction._id || auction.id} auction={auction} />
+                <AuctionCard 
+                  key={auction._id || auction.id} 
+                  auction={auction}
+                  onBidSuccess={handleBidSuccess}
+                />
               ))}
               {safeAuctions.length > 5 && (
                 <AuctionCard
                   auction={safeAuctions[5]}
                   className="blur-card"
+                  onBidSuccess={handleBidSuccess}
                 />
               )}
             </>
@@ -851,7 +873,7 @@ const Home = () => {
             <div className="no-auctions">
               <p>No live auctions available</p>
             </div>
-          )} */}
+          )}
         </div>
 
         {/* Advertise With Us Section */}

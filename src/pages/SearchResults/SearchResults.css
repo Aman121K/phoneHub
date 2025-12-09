@@ -1,13 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-.bulk-sell-page {
+.search-results-page {
   max-width: 1600px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 2rem 1.5rem 2rem 100px;
   font-family: 'Inter', sans-serif;
   box-sizing: border-box;
-  width: 100%;
-  overflow-x: hidden;
 }
 
 .page-header {
@@ -26,9 +24,6 @@
   display: flex;
   gap: 2rem;
   align-items: flex-start;
-  width: 100%;
-  box-sizing: border-box;
-  overflow-x: hidden;
 }
 
 /* Filters Sidebar */
@@ -175,12 +170,6 @@
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-.page-header p {
-  color: #64748b;
-  font-size: 1.1rem;
-  font-family: 'Inter', sans-serif;
-}
-
 .listings-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -238,6 +227,31 @@
   font-family: 'Inter', sans-serif;
 }
 
+.no-listings p {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.post-ad-btn {
+  display: inline-block;
+  padding: 0.875rem 2rem;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.post-ad-btn:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+}
+
 .loading {
   text-align: center;
   padding: 3rem;
@@ -248,6 +262,10 @@
 
 /* Mobile responsive */
 @media (max-width: 1024px) {
+  .search-results-page {
+    padding: 2rem 1.5rem 2rem 50px;
+  }
+  
   .category-content-wrapper {
     flex-direction: column;
   }
@@ -259,7 +277,7 @@
 }
 
 @media (max-width: 767px) {
-  .bulk-sell-page {
+  .search-results-page {
     padding: 1.5rem 1rem;
   }
 

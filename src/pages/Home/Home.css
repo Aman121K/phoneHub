@@ -35,7 +35,7 @@
 .hero-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 2rem 0 100px;
   position: relative;
   z-index: 2;
 }
@@ -286,7 +286,7 @@
 /* ===== CATEGORIES SECTION ===== */
 .categories-section {
   margin-bottom: 4rem;
-  padding: 0 1.5rem;
+  padding: 0 1.5rem 0 100px;
   max-width: 1600px;
   margin-left: auto;
   margin-right: auto;
@@ -455,7 +455,7 @@
 .single-sell-section,
 .bulk-sell-section {
   margin-bottom: 4rem;
-  padding: 0 1.5rem;
+  padding: 0 1.5rem 0 100px;
   max-width: 1600px;
   margin-left: auto;
   margin-right: auto;
@@ -464,6 +464,14 @@
 }
 
 @media (max-width: 767px) {
+  .hero-container {
+    padding: 0 1rem;
+  }
+  
+  .categories-section {
+    padding: 0 1rem;
+  }
+  
   .featured-section,
   .auction-section,
   .locations-section,
@@ -600,16 +608,20 @@
   background: #94a3b8;
 }
 
-.home-listings-grid .listing-card {
+.home-listings-grid .listing-card,
+.home-listings-grid .auction-card-component {
   flex-shrink: 0;
-  width: 240px !important;
-  min-width: 240px;
-  max-width: 240px;
-  height: 376px;
+  width: 280px !important;
+  min-width: 280px;
+  max-width: 280px;
+  height: auto;
+  min-height: 500px;
 }
 
 .home-listings-grid .listing-card.blur-card,
-.home-listings-grid .listing-card:nth-child(6) {
+.home-listings-grid .listing-card:nth-child(6),
+.home-listings-grid .auction-card-component.blur-card,
+.home-listings-grid .auction-card-component:nth-child(6) {
   opacity: 0.5;
   filter: blur(2px);
   pointer-events: none;
@@ -1420,6 +1432,24 @@
 
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 1024px) {
+  .hero-container {
+    padding: 0 2rem 0 50px;
+  }
+  
+  .categories-section {
+    padding: 0 1.5rem 0 50px;
+  }
+  
+  .featured-section,
+  .auction-section,
+  .locations-section,
+  .latest-section,
+  .similar-products-section,
+  .single-sell-section,
+  .bulk-sell-section {
+    padding: 0 1.5rem 0 50px;
+  }
+  
   .hero-title {
     font-size: 3rem;
   }

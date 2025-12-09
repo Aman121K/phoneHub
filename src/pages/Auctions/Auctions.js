@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Auctions.css';
-import ListingCard from '../../components/ListingCard/ListingCard';
+import AuctionCard from '../../components/AuctionCard/AuctionCard';
 
 const Auctions = () => {
   const [auctions, setAuctions] = useState([]);
@@ -125,6 +125,22 @@ const Auctions = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleBidSuccess = (auctionId, bidAmount) => {
+    // Update the auction in the list with new bid
+    setAuctions(prevAuctions => 
+      prevAuctions.map(auction => {
+        if ((auction._id || auction.id) === auctionId) {
+          return {
+            ...auction,
+            current_price: bidAmount,
+            bid_count: (auction.bid_count || 0) + 1
+          };
+        }
+        return auction;
+      })
+    );
   };
 
   const handleFilterChange = (e) => {
@@ -273,9 +289,13 @@ const Auctions = () => {
               <p>No live auctions at the moment.</p>
             </div>
           ) : (
-            <div className="listings-grid home-listings-grid">
+            <div className="listings-grid">
               {auctions.map((auction) => (
-                <ListingCard key={auction._id || auction.id} listing={auction} />
+                <AuctionCard 
+                  key={auction._id || auction.id} 
+                  auction={auction}
+                  onBidSuccess={handleBidSuccess}
+                />
               ))}
             </div>
           )}
