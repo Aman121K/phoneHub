@@ -517,6 +517,14 @@
   gap: 1rem;
 }
 
+@media (max-width: 768px) {
+  .section-header-row {
+    flex-direction: row !important;
+    align-items: center !important;
+  }
+}
+
+
 .section-header h2,
 .section-header .MuiTypography-h2 {
   font-size: 1.5rem !important;
@@ -639,7 +647,7 @@
   min-width: 280px;
   max-width: 280px;
   height: auto;
-  min-height: 500px;
+  min-height: 320px;
 }
 
 .home-listings-grid .listing-card.blur-card,
@@ -692,38 +700,7 @@
   z-index: 1;
 }
 
-/* Location cards in home-listings-grid */
-.home-listings-grid .location-card {
-  flex-shrink: 0;
-  width: 240px !important;
-  min-width: 240px;
-  max-width: 240px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
-  padding: 2rem 1.5rem;
-}
 
-.home-listings-grid .location-card.blur-card {
-  opacity: 0.5;
-  filter: blur(2px);
-  pointer-events: none;
-  position: relative;
-}
-
-.home-listings-grid .location-card.blur-card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.8) 100%);
-  pointer-events: none;
-  z-index: 1;
-}
 
 /* Desktop: Ensure proper spacing for 5 visible + 6th blurred */
 @media (min-width: 1400px) {
@@ -1177,49 +1154,9 @@
 
 /* ===== LOCATIONS ===== */
 .locations-grid {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 1rem;
-  overflow-x: hidden;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  padding-bottom: 1rem;
-  padding-right: 0;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  scrollbar-color: #cbd5e1 #f1f5f9;
-  position: relative;
-  width: 100%;
-}
-
-.locations-grid::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 100px;
-  height: 100%;
-  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.95));
-  pointer-events: none;
-  z-index: 10;
-}
-
-.locations-grid::-webkit-scrollbar {
-  height: 8px;
-}
-
-.locations-grid::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 4px;
-}
-
-.locations-grid::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
-}
-
-.locations-grid::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 }
 
 .location-card {
@@ -1231,11 +1168,6 @@
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   color: #fff;
-  width: calc((100% - 5rem) / 5.5);
-  min-width: calc((100% - 5rem) / 5.5);
-  max-width: calc((100% - 5rem) / 5.5);
-  flex: 0 0 calc((100% - 5rem) / 5.5);
-  flex-shrink: 0;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -1312,18 +1244,7 @@
 }
 
 
-.location-card:nth-child(6) {
-  width: calc(((100% - 5rem) / 5.5) / 2);
-  min-width: calc(((100% - 5rem) / 5.5) / 2);
-  max-width: calc(((100% - 5rem) / 5.5) / 2);
-  flex: 0 0 calc(((100% - 5rem) / 5.5) / 2);
-  opacity: 0.5;
-  filter: blur(2px);
-}
 
-.location-card:nth-child(n+7) {
-  display: none;
-}
 
 .view-all-btn {
   display: inline-block;
@@ -1596,34 +1517,7 @@
     gap: 1rem;
   }
   
-  .location-card {
-    width: calc((100% - 3rem) / 2.5);
-    min-width: calc((100% - 3rem) / 2.5);
-    max-width: calc((100% - 3rem) / 2.5);
-    flex: 0 0 calc((100% - 3rem) / 2.5);
-    padding: 1.5rem 1rem;
-    min-height: 160px;
-  }
-
-  .location-card h3 {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .location-stats {
-    padding: 0.4rem 0.75rem;
-    font-size: 0.85rem;
-  }
-
-  .location-stats span {
-    font-size: 0.8rem;
-  }
-
-  .location-card:nth-child(n+4) {
-    filter: blur(4px);
-    opacity: 0.6;
-    pointer-events: none;
-  }
+  
   
   .section-header {
     flex-direction: column;

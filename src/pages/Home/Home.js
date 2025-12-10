@@ -617,7 +617,7 @@ const Home = () => {
 
       {/* Browse Categories Section */}
       <section className="categories-section">
-        <div className="section-header">
+        <div className="section-header section-header-row">
           <div>
             <Typography
               variant="h2"
@@ -625,8 +625,7 @@ const Home = () => {
                 fontSize: '1.5rem',
                 fontWeight: 700,
                 color: '#1e293b',
-                fontFamily: "'Inter', sans-serif",
-                mb: '0.5rem',
+                fontFamily: "'Inter', sans-serif"
               }}
             >
               Browse iphone series
@@ -745,7 +744,7 @@ const Home = () => {
 
       {/* Single Sell Section */}
       <section className="single-sell-section">
-        <div className="section-header">
+        <div className="section-header section-header-row">
           <div>
             <Typography
               variant="h2"
@@ -789,7 +788,7 @@ const Home = () => {
 
       {/* Bulk Sell Section */}
       <section className="bulk-sell-section">
-        <div className="section-header">
+        <div className="section-header section-header-row">
           <div>
             <Typography
               variant="h2"
@@ -833,7 +832,7 @@ const Home = () => {
 
       {/* Auction Section */}
       <section className="auction-section">
-        <div className="section-header">
+        <div className="section-header section-header-row">
           <Typography
             variant="h2"
             sx={{
@@ -888,7 +887,7 @@ const Home = () => {
 
       {/* Popular Locations */}
       <section className="locations-section">
-        <div className="section-header">
+        <div className="section-header section-header-row">
           <div>
             <Typography
               variant="h2"
@@ -909,7 +908,7 @@ const Home = () => {
             <i className="fas fa-arrow-right"></i>
           </Link>
         </div>
-        <div className="listings-grid home-listings-grid">
+        <div className="listings-grid locations-grid">
           {safeLocations.slice(0, 4).map((location, index) => (
             <Link
               key={index}
@@ -926,7 +925,7 @@ const Home = () => {
           {safeLocations.length > 5 && (
             <Link
               to={`/?city=${safeLocations[5].city}`}
-              className="location-card blur-card"
+              className="location-card"
             >
               <h3>{safeLocations[5].city}</h3>
               <div className="location-stats">
@@ -940,7 +939,7 @@ const Home = () => {
 
       {/* Latest Ads Section */}
       <section className="latest-section">
-        <div className="section-header">
+        <div className="section-header section-header-row">
           <div>
             <Typography
               variant="h2"

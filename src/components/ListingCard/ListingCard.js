@@ -109,7 +109,6 @@ const ListingCard = ({ listing, className }) => {
       sx={{
         textDecoration: 'none',
         color: 'inherit',
-        height: '376px',
         width: '240px',
         display: 'flex',
         flexDirection: 'column',
@@ -254,10 +253,8 @@ const ListingCard = ({ listing, className }) => {
           '&:last-child': { pb: '0.65rem' },
           display: 'flex',
           flexDirection: 'column',
-          gap: '0',
+          gap: '0.4rem',
           overflow: 'visible',
-          minHeight: '196px',
-          justifyContent: 'space-between',
         }}
       >
         <Typography
@@ -310,36 +307,35 @@ const ListingCard = ({ listing, className }) => {
 
         <Divider sx={{ my: '0.1rem', borderColor: '#e5e7eb' }} />
 
-        {/* Seller Information */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem', mb: '0.1rem' }}>
-          <Avatar
-            sx={{
-              width: 24,
-              height: 24,
-              bgcolor: getSellerColor(listing.user?.name),
-              fontSize: '0.75rem',
-              fontWeight: 600,
-            }}
-          >
-            {getSellerInitial(listing.user?.name)}
-          </Avatar>
-          <Typography 
-            variant="body2" 
-            sx={{ 
-              fontSize: '0.7rem', 
-              fontWeight: 500, 
-              color: '#000000',
-              fontFamily: "'Inter', sans-serif",
-            }}
-          >
-            {listing.user?.name || 'Seller'}
-          </Typography>
-        </Box>
+        {/* Seller and Location */}
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom:2 }}>
+          {/* Seller Information */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <Avatar
+              sx={{
+                width: 24,
+                height: 24,
+                bgcolor: getSellerColor(listing.user?.name),
+                fontSize: '0.75rem',
+                fontWeight: 600,
+              }}
+            >
+              {getSellerInitial(listing.user?.name)}
+            </Avatar>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                fontSize: '0.7rem', 
+                fontWeight: 500, 
+                color: '#000000',
+                fontFamily: "'Inter', sans-serif",
+              }}
+            >
+              {listing.user?.name || 'Seller'}
+            </Typography>
+          </Box>
 
-        <Divider sx={{ my: '0.1rem', borderColor: '#e5e7eb' }} />
-
-        {/* Location and Price */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 'auto', pt: '0.05rem' }}>
+          {/* Location Info */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
             <LocationOn sx={{ fontSize: '0.75rem', color: '#f97316' }} />
             <Typography 
@@ -354,6 +350,10 @@ const ListingCard = ({ listing, className }) => {
               {listing.user?.city || listing.city || 'Ajman'}
             </Typography>
           </Box>
+        </Box>
+        
+        {/* Price */}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
           <Typography
             variant="h6"
             sx={{
