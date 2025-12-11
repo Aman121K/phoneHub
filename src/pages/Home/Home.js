@@ -637,7 +637,7 @@ const Home = () => {
             <i className="fas fa-arrow-right"></i>
           </Link>
         </div>
-        <div className="listings-grid home-listings-grid">
+        <div className="home-listings-grid">
           {safeCategories.slice(0, 4).map((category) => (
             <Card
               key={category.id || category._id}
@@ -765,11 +765,11 @@ const Home = () => {
             <i className="fas fa-arrow-right"></i>
           </Link>
         </div>
-        <div className="listings-grid home-listings-grid">
+        <div className="home-listings-grid">
           {safeSingleSell.length > 0 ? (
             <>
               {safeSingleSell.slice(0, 4).map((listing) => (
-                <ListingCard key={listing._id || listing.id} listing={listing} />
+                <ListingCard isHome={true} key={listing._id || listing.id} listing={listing} />
               ))}
               {safeSingleSell.length > 5 && (
                 <ListingCard
@@ -809,14 +809,14 @@ const Home = () => {
             <i className="fas fa-arrow-right"></i>
           </Link>
         </div>
-        <div className="listings-grid home-listings-grid">
+        <div className="home-listings-grid">
           {safeBulkSell.length > 0 ? (
             <>
               {safeBulkSell.slice(0, 4).map((listing) => (
-                <ListingCard key={listing._id || listing.id} listing={listing} />
+                <ListingCard isHome={true} key={listing._id || listing.id} listing={listing} />
               ))}
               {safeBulkSell.length > 5 && (
-                <ListingCard
+                <ListingCard isHome={true}
                   listing={safeBulkSell[5]}
                   className="blur-card"
                 />
@@ -850,7 +850,7 @@ const Home = () => {
             <i className="fas fa-arrow-right"></i>
           </Link>
         </div>
-        <div className="listings-grid home-listings-grid">
+        <div className="home-listings-grid">
           {safeAuctions.length > 0 ? (
             <>
               {safeAuctions.slice(0, 4).map((auction) => (
@@ -908,17 +908,19 @@ const Home = () => {
             <i className="fas fa-arrow-right"></i>
           </Link>
         </div>
-        <div className="listings-grid locations-grid">
+        <div className="home-listings-grid">
           {safeLocations.slice(0, 4).map((location, index) => (
             <Link
               key={index}
               to={`/?city=${location.city}`}
               className="location-card"
             >
+              <div style={{width: '100%'}}>
               <h3>{location.city}</h3>
               <div className="location-stats">
                 <i className="fas fa-map-marker-alt"></i>
                 <span>{location.listing_count} Listings</span>
+              </div>
               </div>
             </Link>
           ))}
@@ -960,14 +962,15 @@ const Home = () => {
             <i className="fas fa-arrow-right"></i>
           </Link>
         </div>
-        <div className="listings-grid home-listings-grid">
+        <div className="home-listings-grid">
           {safeLatest.length > 0 ? (
             <>
               {safeLatest.slice(0, 4).map((listing) => (
-                <ListingCard key={listing._id || listing.id} listing={listing} />
+                <ListingCard isHome={true} key={listing._id || listing.id} listing={listing} />
               ))}
               {safeLatest.length > 5 && (
                 <ListingCard
+                  isHome={true}
                   listing={safeLatest[5]}
                   className="blur-card"
                 />

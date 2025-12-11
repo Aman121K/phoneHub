@@ -19,7 +19,7 @@ import {
 } from '@mui/icons-material';
 import './ListingCard.css';
 
-const ListingCard = ({ listing, className }) => {
+const ListingCard = ({ listing, className, isHome = false }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageError, setImageError] = useState(false);
 
@@ -105,7 +105,7 @@ const ListingCard = ({ listing, className }) => {
     <Card
       component={Link}
       to={listingRoute}
-      className={`listing-card ${className || ''}`}
+      className={isHome ? 'home-listing-card' : `listing-card ${className || ''}`}
       sx={{
         textDecoration: 'none',
         color: 'inherit',

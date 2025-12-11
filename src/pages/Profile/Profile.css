@@ -94,9 +94,18 @@
 }
 
 .listings-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  justify-content: flex-start;
+}
+
+.listings-grid > * {
+  flex: 1 1 calc(25% - 1.5rem);
+  min-width: 280px;
 }
 
 .listing-card {
@@ -174,7 +183,11 @@
   }
 
   .listings-grid {
-    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .listings-grid > * {
+    flex-basis: 100%;
+    min-width: 100%;
   }
 }
-
