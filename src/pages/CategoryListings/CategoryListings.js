@@ -293,7 +293,7 @@ const CategoryListings = () => {
           {listings.length === 0 ? (
             <div className="no-listings">
               <p>No listings found in this category.</p>
-              <Link to="/post-ad" className="post-ad-btn">Post an Ad</Link>
+              {/* <Link to="/post-ad" className="post-ad-btn">Post an Ad</Link> */}
             </div>
           ) : (
             <div className="listings-grid">

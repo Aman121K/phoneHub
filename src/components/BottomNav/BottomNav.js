@@ -25,7 +25,7 @@ const BottomNav = () => {
         <svg className="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h10M7 12h10M7 17h6" />
         </svg>
-        <span className="nav-label">Single Sell</span>
+        <span className="nav-label">Single iPhone</span>
       </Link>
 
       <Link to="/post-ad" className="nav-item nav-item-post">

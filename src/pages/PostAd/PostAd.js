@@ -21,7 +21,11 @@ const PostAd = () => {
     sellType: 'single',
     start_price: '',
     end_date: '',
-    quantity: 1
+    quantity: 1,
+    version: '',
+    colour: '',
+    charge: '',
+    box: ''
   });
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
@@ -60,10 +64,21 @@ const PostAd = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    
+    // If sellType changes to 'single', set quantity to 1
+    if (name === 'sellType' && value === 'single') {
+      setFormData({
+        ...formData,
+        [name]: value,
+        quantity: 1
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      });
+    }
   };
 
   const handleImageChange = (e) => {
@@ -179,12 +194,13 @@ const PostAd = () => {
         formDataToSend.append('start_price', formData.start_price);
         formDataToSend.append('end_date', formData.end_date);
         formDataToSend.append('sellType', formData.sellType || 'single');
-        formDataToSend.append('quantity', formData.quantity || 1);
+        formDataToSend.append('quantity', formData.sellType === 'single' ? 1 : (formData.quantity || 1));
+        formDataToSend.append('version', formData.version || '');
+        formDataToSend.append('colour', formData.colour || '');
+        formDataToSend.append('charge', formData.charge || '');
+        formDataToSend.append('box', formData.box || '');
         if (formData.per_price) {
           formDataToSend.append('per_price', formData.per_price);
-        }
-        if (formData.color) {
-          formDataToSend.append('color', formData.color);
         }
         if (formData.warranty) {
           formDataToSend.append('warranty', formData.warranty);
@@ -222,6 +238,10 @@ const PostAd = () => {
         formDataToSend.append('listing_type', formData.listing_type);
         formDataToSend.append('sellType', formData.sellType || 'single');
         formDataToSend.append('quantity', formData.quantity || 1);
+        formDataToSend.append('version', formData.version || '');
+        formDataToSend.append('colour', formData.colour || '');
+        formDataToSend.append('charge', formData.charge || '');
+        formDataToSend.append('box', formData.box || '');
         if (formData.per_price) {
           formDataToSend.append('per_price', formData.per_price);
         }
@@ -349,6 +369,58 @@ const PostAd = () => {
             </div>
           </div>
 
+          <div className="form-row">
+            <div className="form-group">
+              <label>Version</label>
+              <input
+                type="text"
+                name="version"
+                value={formData.version}
+                onChange={handleChange}
+                placeholder="e.g., iOS 17.2"
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Colour</label>
+              <input
+                type="text"
+                name="colour"
+                value={formData.colour}
+                onChange={handleChange}
+                placeholder="e.g., Natural Titanium"
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Charge</label>
+              <select
+                name="charge"
+                value={formData.charge}
+                onChange={handleChange}
+              >
+                <option value="">Select Charger</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Box</label>
+              <select
+                name="box"
+                value={formData.box}
+                onChange={handleChange}
+              >
+                <option value="">Select Box</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+
           <div className="form-group">
             <label>City *</label>
             <input
@@ -420,7 +492,14 @@ const PostAd = () => {
               placeholder="1"
               min="1"
               required
+              disabled={formData.sellType === 'single'}
+              style={formData.sellType === 'single' ? { background: '#f3f4f6', cursor: 'not-allowed' } : {}}
             />
+            {formData.sellType === 'single' && (
+              <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
+                Quantity is fixed to 1 for single sell
+              </small>
+            )}
           </div>
 
           {formData.listing_type === 'fixed_price' ? (

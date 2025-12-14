@@ -460,7 +460,7 @@ const Home = () => {
 
   const handleBidSuccess = (auctionId, bidAmount) => {
     // Update the auction in the list with new bid
-    setAuctions(prevAuctions => 
+    setAuctions(prevAuctions =>
       prevAuctions.map(auction => {
         if ((auction._id || auction.id) === auctionId) {
           return {
@@ -495,8 +495,7 @@ const Home = () => {
             </h1>
 
             <p className="hero-subtitle">
-              Certified quality check, secure payments, and best price guarantee.
-              Join 50,000+ satisfied customers across the UAE.
+              Welcome to PhoneHub – the only dedicated platform built exclusively for iPhone buyers and sellers.
             </p>
           </div>
 
@@ -854,8 +853,8 @@ const Home = () => {
           {safeAuctions.length > 0 ? (
             <>
               {safeAuctions.slice(0, 4).map((auction) => (
-                <AuctionCard 
-                  key={auction._id || auction.id} 
+                <AuctionCard
+                  key={auction._id || auction.id}
                   auction={auction}
                   onBidSuccess={handleBidSuccess}
                 />
@@ -915,12 +914,12 @@ const Home = () => {
               to={`/?city=${location.city}`}
               className="location-card"
             >
-              <div style={{width: '100%'}}>
-              <h3>{location.city}</h3>
-              <div className="location-stats">
-                <i className="fas fa-map-marker-alt"></i>
-                <span>{location.listing_count} Listings</span>
-              </div>
+              <div style={{ width: '100%' }}>
+                <h3>{location.city}</h3>
+                <div className="location-stats">
+                  <i className="fas fa-map-marker-alt"></i>
+                  <span>{location.listing_count} Listings</span>
+                </div>
               </div>
             </Link>
           ))}

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+import AuctionCard from '../../components/AuctionCard/AuctionCard';
 import './AuctionDetail.css';
 
 const AuctionDetail = () => {
@@ -12,6 +13,8 @@ const AuctionDetail = () => {
   const [bidAmount, setBidAmount] = useState('');
   const [loading, setLoading] = useState(true);
   const [bidding, setBidding] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [similarAuctions, setSimilarAuctions] = useState([]);
 
   useEffect(() => {
     fetchAuction();
@@ -19,42 +22,57 @@ const AuctionDetail = () => {
     return () => clearInterval(interval);
   }, [id]);
 
+  useEffect(() => {
+    if (auction) {
+      fetchSimilarAuctions();
+    }
+  }, [auction]);
+
   const fetchAuction = async () => {
     try {
       const response = await axios.get(`/api/auctions/${id}`);
-      setAuction(response.data);
-      if (response.data.current_price) {
-        setBidAmount((parseFloat(response.data.current_price) + 10).toFixed(2));
+      if (response.data && (response.data.id || response.data._id)) {
+        setAuction(response.data);
+        if (response.data.current_price) {
+          setBidAmount((parseFloat(response.data.current_price) + 10).toFixed(2));
+        }
+      } else {
+        setAuction(null);
       }
     } catch (error) {
       console.error('Error fetching auction:', error);
-      // Mock auction for testing
-      const endDate = new Date();
-      endDate.setDate(endDate.getDate() + 7);
-      const mockAuction = {
-        id: id,
-        title: 'iPhone 15 Pro Max 512GB - Live Auction',
-        description: 'Brand new iPhone 15 Pro Max in Natural Titanium. Still sealed in box. Full warranty. Perfect condition. All accessories included.',
-        current_price: 4200,
-        start_price: 4000,
-        bid_count: 12,
-        city: 'Dubai',
-        image_url: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop',
-        category_name: 'iPhone 15 Pro Max',
-        seller_name: 'Ahmed Al Maktoum',
-        end_date: endDate,
-        status: 'live',
-        bids: [
-          { id: '1', bidder_name: 'John Smith', bid_amount: 4200, created_at: new Date() },
-          { id: '2', bidder_name: 'Sarah Johnson', bid_amount: 4100, created_at: new Date(Date.now() - 3600000) },
-          { id: '3', bidder_name: 'Mike Wilson', bid_amount: 4050, created_at: new Date(Date.now() - 7200000) }
-        ]
-      };
-      setAuction(mockAuction);
-      setBidAmount('4210.00');
+      if (error.response?.status === 404 || error.response?.status === 500) {
+        setAuction(null);
+      }
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchSimilarAuctions = async () => {
+    try {
+      const response = await axios.get('/api/auctions?limit=8');
+      const filtered = response.data.filter(item => 
+        (item._id || item.id) !== (auction._id || auction.id)
+      );
+      setSimilarAuctions(filtered.slice(0, 8));
+    } catch (error) {
+      console.error('Error fetching similar auctions:', error);
+    }
+  };
+
+  const getAuctionImages = () => {
+    if (!auction) return [];
+    // Check for images array first
+    if (auction.images && Array.isArray(auction.images) && auction.images.length > 0) {
+      return auction.images.filter(img => img && img.trim() !== '');
+    }
+    // Fallback to image_url
+    if (auction.image_url) {
+      return [auction.image_url];
+    }
+    // Return placeholder if no images
+    return [];
   };
 
   const handleBid = async (e) => {
@@ -71,7 +89,9 @@ const AuctionDetail = () => {
       });
       alert('Bid placed successfully!');
       fetchAuction();
-      setBidAmount('');
+      if (auction.current_price) {
+        setBidAmount((parseFloat(auction.current_price) + 10).toFixed(2));
+      }
     } catch (error) {
       alert(error.response?.data?.error || 'Error placing bid');
     } finally {
@@ -79,165 +99,253 @@ const AuctionDetail = () => {
     }
   };
 
+  const handlePreviousImage = () => {
+    const images = getAuctionImages();
+    setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const handleNextImage = () => {
+    const images = getAuctionImages();
+    setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div className="auction-detail-page">
+        <div className="loading">Loading...</div>
+      </div>
+    );
   }
 
-  if (!auction) {
-    return <div className="error">Auction not found</div>;
+  if (!auction || (!auction.id && !auction._id)) {
+    return (
+      <div className="auction-detail-page">
+        <div className="auction-not-found-container">
+          <div className="not-found-content">
+            <div className="not-found-emoji">😕</div>
+            <h2 className="not-found-title">Auction Not Found</h2>
+            <p className="not-found-message">
+              Oops! The auction you're looking for doesn't exist or may have been removed.
+            </p>
+            <div className="not-found-actions">
+              <Link to="/auctions" className="not-found-btn primary">
+                Browse Live Auctions
+              </Link>
+              <Link to="/" className="not-found-btn secondary">
+                Go to Home
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  const isEnded = new Date(auction.end_date) < new Date();
+  const isEnded = auction.end_date ? new Date(auction.end_date) < new Date() : false;
   const isLive = auction.status === 'live' && !isEnded;
+  const images = getAuctionImages();
 
   return (
     <div className="auction-detail-page">
       <div className="auction-detail-container">
-        <div className="auction-main">
-          <div className="auction-images-gallery">
-            {auction.image_url ? (
-              <div className="images-scroll-container">
-                <div className="gallery-image-item">
-                  <img src={auction.image_url} alt={auction.title} />
+        {/* Image Section */}
+        <div className="listing-image-section">
+          {images.length > 0 ? (
+            <div className="main-image-wrapper">
+              <img 
+                src={images[currentImageIndex]} 
+                alt={`${auction.title} - Image ${currentImageIndex + 1}`}
+                className="main-product-image"
+                onError={(e) => {
+                  e.target.src = '/logo.png';
+                }}
+              />
+              {images.length > 1 && (
+                <>
+                  <button 
+                    className="image-nav-btn image-nav-left"
+                    onClick={handlePreviousImage}
+                    aria-label="Previous image"
+                  >
+                    <i className="fas fa-chevron-left"></i>
+                  </button>
+                  <button 
+                    className="image-nav-btn image-nav-right"
+                    onClick={handleNextImage}
+                    aria-label="Next image"
+                  >
+                    <i className="fas fa-chevron-right"></i>
+                  </button>
+                  <div className="image-counter">
+                    {currentImageIndex + 1} / {images.length}
+                  </div>
+                </>
+              )}
+              {isLive && (
+                <div className="live-badge-overlay">
+                  <span className="live-badge-text">LIVE</span>
                 </div>
-                <div className="gallery-image-item">
-                  <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=500&h=500&fit=crop" alt={auction.title} />
-                </div>
-                <div className="gallery-image-item">
-                  <img src="https://images.unsplash.com/photo-1632669021382-3e0d1c1b0b4c?w=500&h=500&fit=crop" alt={auction.title} />
-                </div>
-                <div className="gallery-image-item">
-                  <img src="https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=500&h=500&fit=crop" alt={auction.title} />
-                </div>
-              </div>
+              )}
+            </div>
+          ) : (
+            <div className="main-image-wrapper placeholder">
+              <img src="/logo.png" alt="PhoneHub Logo" className="main-product-image" />
+            </div>
+          )}
+        </div>
+
+        {/* Details Card */}
+        <div className="listing-details-card">
+          {/* Product Title */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
+            <h2 className="product-title">{auction.title}</h2>
+            {isLive ? (
+              <div className="status-badge-live">LIVE</div>
             ) : (
-              <div className="images-scroll-container">
-                <div className="gallery-image-item placeholder">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
-                  </svg>
-                </div>
-                <div className="gallery-image-item placeholder">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
-                  </svg>
-                </div>
-                <div className="gallery-image-item placeholder">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
-                  </svg>
-                </div>
+              <div className="status-badge-ended">ENDED</div>
+            )}
+          </div>
+
+          {/* Auction Attributes */}
+          <div className="product-attributes">
+            <div className="attribute-item">
+              <span className="attribute-label">Category</span>
+              <span className="attribute-value">{auction.category_name || 'N/A'}</span>
+            </div>
+            <div className="attribute-item">
+              <span className="attribute-label">Start Price</span>
+              <span className="attribute-value">AED {auction.start_price}</span>
+            </div>
+            <div className="attribute-item">
+              <span className="attribute-label">Total Bids</span>
+              <span className="attribute-value">{auction.bids?.length || 0}</span>
+            </div>
+            {!isEnded && (
+              <div className="attribute-item">
+                <span className="attribute-label">Ends</span>
+                <span className="attribute-value">{new Date(auction.end_date).toLocaleString()}</span>
               </div>
             )}
           </div>
 
-          <div className="auction-content">
-            <div className="auction-header">
-              <h1>{auction.title}</h1>
-              <div className={`status-badge ${isLive ? 'live' : 'ended'}`}>
-                {isLive ? 'LIVE' : 'ENDED'}
-              </div>
+          {/* Seller Information */}
+          <div className="seller-info-section">
+            <div className="seller-avatar">
+              <span className="seller-avatar-text">
+                {(auction.seller_name || 'Seller').charAt(0).toLowerCase()}
+              </span>
             </div>
+            <span className="seller-name">{auction.seller_name || 'Seller'}</span>
+          </div>
 
-            <div className="auction-price-section">
-              <div className="current-price">
-                <span className="label">Current Price</span>
-                <span className="price">AED {auction.current_price}</span>
-              </div>
-              {!isEnded && (
-                <div className="end-date">
-                  Ends: {new Date(auction.end_date).toLocaleString()}
+          {/* Separator */}
+          <div className="detail-separator"></div>
+
+          {/* Location and Current Price */}
+          <div className="location-price-section">
+            <div className="location-info">
+              <i className="fas fa-map-marker-alt location-icon"></i>
+              <span className="location-text">{auction.city || 'Dubai'}</span>
+            </div>
+            <div className="price-info">
+              <span className="price-amount">AED {auction.current_price}</span>
+            </div>
+          </div>
+
+          {/* Bid Section */}
+          {isLive ? (
+            <div className="bid-section-card">
+              <h3 className="bid-section-title">Place Your Bid</h3>
+              {user ? (
+                <form onSubmit={handleBid} className="bid-form">
+                  <div className="form-group">
+                    <label>Bid Amount (AED)</label>
+                    <input
+                      type="number"
+                      value={bidAmount}
+                      onChange={(e) => setBidAmount(e.target.value)}
+                      min={parseFloat(auction.current_price) + 1}
+                      step="0.01"
+                      required
+                      className="bid-input"
+                    />
+                    <small>Minimum bid: AED {parseFloat(auction.current_price) + 1}</small>
+                  </div>
+                  <button type="submit" className="bid-btn-primary" disabled={bidding}>
+                    {bidding ? 'Placing Bid...' : 'Place Bid'}
+                  </button>
+                </form>
+              ) : (
+                <div className="login-prompt">
+                  <p>Please login to place a bid</p>
+                  <button onClick={() => navigate('/login')} className="login-btn">
+                    Login
+                  </button>
                 </div>
               )}
             </div>
-
-            <div className="auction-description">
-              <h2>Description</h2>
-              <p>{auction.description || 'No description provided.'}</p>
-            </div>
-
-            <div className="auction-meta">
-              <div className="meta-item">
-                <strong>Category:</strong> {auction.category_name}
-              </div>
-              <div className="meta-item">
-                <strong>Location:</strong> {auction.city}
-              </div>
-              <div className="meta-item">
-                <strong>Seller:</strong> {auction.seller_name}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="auction-sidebar">
-          {isLive ? (
-            <>
-              <div className="bid-section">
-                <h3>Place a Bid</h3>
-                {user ? (
-                  <form onSubmit={handleBid} className="bid-form">
-                    <div className="form-group">
-                      <label>Bid Amount (AED)</label>
-                      <input
-                        type="number"
-                        value={bidAmount}
-                        onChange={(e) => setBidAmount(e.target.value)}
-                        min={parseFloat(auction.current_price) + 1}
-                        step="0.01"
-                        required
-                      />
-                      <small>Minimum bid: AED {parseFloat(auction.current_price) + 1}</small>
-                    </div>
-                    <button type="submit" className="bid-btn" disabled={bidding}>
-                      {bidding ? 'Placing Bid...' : 'Place Bid'}
-                    </button>
-                  </form>
-                ) : (
-                  <div className="login-prompt">
-                    <p>Please login to place a bid</p>
-                    <button onClick={() => navigate('/login')} className="login-btn">
-                      Login
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              <div className="bids-section">
-                <h3>Recent Bids ({auction.bids?.length || 0})</h3>
-                {auction.bids && auction.bids.length > 0 ? (
-                  <div className="bids-list">
-                    {auction.bids.slice(0, 10).map((bid) => (
-                      <div key={bid.id} className="bid-item">
-                        <div className="bid-info">
-                          <strong>{bid.bidder_name}</strong>
-                          <span>AED {bid.bid_amount}</span>
-                        </div>
-                        <div className="bid-time">
-                          {new Date(bid.created_at).toLocaleString()}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="no-bids">No bids yet</p>
-                )}
-              </div>
-            </>
           ) : (
-            <div className="ended-section">
-              <h3>Auction Ended</h3>
-              <p>Final Price: AED {auction.current_price}</p>
+            <div className="ended-section-card">
+              <h3 className="bid-section-title">Auction Ended</h3>
+              <p>Final Price: <strong>AED {auction.current_price}</strong></p>
               {auction.bids && auction.bids.length > 0 && (
-                <p>Winner: {auction.bids[0].bidder_name}</p>
+                <p>Winner: <strong>{auction.bids[0].bidder_name}</strong></p>
               )}
+            </div>
+          )}
+
+          {/* Recent Bids */}
+          {auction.bids && auction.bids.length > 0 && (
+            <div className="bids-section-card">
+              <h3 className="bid-section-title">Recent Bids ({auction.bids.length})</h3>
+              <div className="bids-list">
+                {auction.bids.slice(0, 10).map((bid) => (
+                  <div key={bid.id} className="bid-item">
+                    <div className="bid-info">
+                      <strong>{bid.bidder_name}</strong>
+                      <span className="bid-amount">AED {bid.bid_amount}</span>
+                    </div>
+                    <div className="bid-time">
+                      {new Date(bid.created_at).toLocaleString()}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Description Section */}
+          {auction.description && (
+            <div className="description-section">
+              <h3 className="description-title">Description</h3>
+              <p className="description-text">{auction.description}</p>
             </div>
           )}
         </div>
       </div>
+
+      {/* Similar Auctions Section */}
+      {similarAuctions.length > 0 && (
+        <div className="similar-products-section">
+          <div className="section-header">
+            <h2 className="section-title">Similar Auctions</h2>
+            <Link 
+              to="/auctions" 
+              className="view-all-link"
+            >
+              View All
+              <i className="fas fa-chevron-right"></i>
+            </Link>
+          </div>
+          <div className="similar-products-grid">
+            {similarAuctions.map((similarAuction) => (
+              <AuctionCard key={similarAuction._id || similarAuction.id} auction={similarAuction} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default AuctionDetail;
-

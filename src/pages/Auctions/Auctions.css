@@ -13,14 +13,14 @@
 .page-header {
   margin-bottom: 2rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: flex-start;
   gap: 1rem;
   flex-wrap: wrap;
 }
 
 .page-header > div {
-  flex: 1;
+  flex: 0 0 auto;
   min-width: 0;
 }
 
@@ -200,25 +200,16 @@
 }
 
 .page-header h1 {
-  font-size: 2.75rem;
+  font-size: 1.5rem;
   color: #1e293b;
-  margin-bottom: 0.75rem;
-  font-weight: 800;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, #2563eb 0%, #f97316 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  letter-spacing: -0.02em;
 }
 
 .page-header::after {
-  content: '';
-  display: block;
-  width: 80px;
-  height: 4px;
-  background: linear-gradient(135deg, #2563eb 0%, #f97316 100%);
-  margin: 1rem auto;
-  border-radius: 2px;
+  display: none;
 }
 
 .page-header p {
@@ -255,60 +246,51 @@
 }
 
 .listings-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
   width: 100%;
   box-sizing: border-box;
   padding: 0;
   overflow-x: hidden;
   overflow-y: visible;
-  align-items: stretch;
-  justify-content: flex-start;
+  align-items: start;
 }
 
-.listings-grid > * {
-  flex: 1 1 calc(25% - 1.5rem);
-  min-width: 280px;
-}
-
+/* Desktop: Show 5 cards per row */
 @media (min-width: 1400px) {
-  .listings-grid > * {
-    flex-basis: calc(20% - 1.5rem);
+  .listings-grid {
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 
+/* Large tablets: Show 4 cards per row */
 @media (min-width: 1100px) and (max-width: 1399px) {
-  .listings-grid > * {
-    flex-basis: calc(25% - 1.5rem);
+  .listings-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
+/* Tablets: Show 3 cards per row */
 @media (min-width: 768px) and (max-width: 1099px) {
-  .listings-grid > * {
-    flex-basis: calc(33.333% - 1.25rem);
+  .listings-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
+/* Small tablets: Show 2 cards per row */
 @media (min-width: 576px) and (max-width: 767px) {
   .listings-grid {
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
-  }
-
-  .listings-grid > * {
-    flex-basis: calc(50% - 1rem);
-    min-width: 240px;
   }
 }
 
+/* Mobile: Show 1 card per row */
 @media (max-width: 575px) {
   .listings-grid {
+    grid-template-columns: 1fr;
     gap: 1rem;
-  }
-
-  .listings-grid > * {
-    flex-basis: 100%;
-    min-width: 100%;
   }
 }
 
@@ -610,6 +592,22 @@
   }
 }
 
+/* Mobile Filter Toggle Button */
+.mobile-filter-toggle {
+  display: none;
+}
+
+/* Mobile Filter Close Button */
+.mobile-filter-close {
+  display: none;
+}
+
+.filters-header-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 @media (max-width: 767px) {
   .auctions-page {
     padding: 1rem;
@@ -617,10 +615,109 @@
 
   .category-content-wrapper {
     gap: 1.5rem;
+    position: relative;
   }
 
-  .filters-sidebar {
+  /* Show mobile filter toggle button */
+  .mobile-filter-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
     padding: 1rem;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .mobile-filter-toggle:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+  }
+
+  .mobile-filter-toggle i {
+    font-size: 1rem;
+  }
+
+  /* Hide filters sidebar by default on mobile */
+  .filters-sidebar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    padding: 2rem 1rem;
+    overflow-y: auto;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  /* Show filters when mobile-open class is present */
+  .filters-sidebar.mobile-open {
+    display: flex;
+  }
+
+  /* Filter content styling for mobile overlay */
+  .filters-sidebar.mobile-open {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+  }
+
+  .filters-sidebar.mobile-open .filters-sidebar-content {
+    background: white;
+    width: 100%;
+    max-width: 400px;
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  /* Show mobile close button */
+  .mobile-filter-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: #f1f5f9;
+    border: none;
+    border-radius: 50%;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+  }
+
+  .mobile-filter-close:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+  }
+
+  .filters-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .filters-header h2 {
+    margin: 0;
   }
 
   .listings-header {
@@ -643,7 +740,7 @@
   }
 
   .page-header h1 {
-    font-size: 1.75rem;
+    font-size: 0.5rem;
   }
 
   .page-header p {

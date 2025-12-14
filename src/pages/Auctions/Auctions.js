@@ -26,6 +26,7 @@ const Auctions = () => {
     city: '',
     sortBy: 'newest'
   });
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   useEffect(() => {
     fetchAuctions();
@@ -164,6 +165,7 @@ const Auctions = () => {
 
   const applyFilters = () => {
     setAppliedFilters({ ...filters });
+    setShowMobileFilters(false);
   };
 
   const clearFilters = () => {
@@ -198,11 +200,37 @@ const Auctions = () => {
       </div>
 
       <div className="category-content-wrapper">
+        {/* Mobile Filter Toggle Button */}
+        <button 
+          className="mobile-filter-toggle"
+          onClick={() => setShowMobileFilters(!showMobileFilters)}
+        >
+          {showMobileFilters ? (
+            <>
+              <i className="fas fa-times"></i> Close Filters
+            </>
+          ) : (
+            <>
+              <i className="fas fa-filter"></i> Filters
+            </>
+          )}
+        </button>
+
         {/* Filters Sidebar */}
-        <aside className="filters-sidebar">
+        <aside className={`filters-sidebar ${showMobileFilters ? 'mobile-open' : ''}`}>
+          <div className="filters-sidebar-content">
           <div className="filters-header">
             <h2>Filters</h2>
-            <button onClick={clearFilters} className="clear-filters-btn">Clear All</button>
+            <div className="filters-header-actions">
+              <button onClick={clearFilters} className="clear-filters-btn">Clear All</button>
+              <button 
+                className="mobile-filter-close"
+                onClick={() => setShowMobileFilters(false)}
+                aria-label="Close filters"
+              >
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
           </div>
 
           {/* Price Range */}
@@ -290,6 +318,7 @@ const Auctions = () => {
           <button onClick={applyFilters} className="apply-filters-btn">
             Apply Filters
           </button>
+          </div>
         </aside>
 
         {/* Main Content */}
@@ -339,4 +368,3 @@ const Auctions = () => {
 };
 
 export default Auctions;
-
