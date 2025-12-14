@@ -67,7 +67,7 @@ const ListingDetail = () => {
   const fetchSimilarListings = async () => {
     try {
       const categoryId = listing.category?._id || listing.category_id;
-      const categorySlug = listing.category?.slug;
+      const categorySlug = listing.category?.slug || listing.category_slug;
       
       if (categorySlug) {
         const response = await axios.get(`/api/listings?category=${categorySlug}&limit=10`);
@@ -445,27 +445,70 @@ const ListingDetail = () => {
           {/* Product Attributes */}
           <div className="product-attributes">
             <div className="attribute-item">
-              <span className="attribute-label">Age</span>
-              <span className="attribute-value">{listing.condition || 'Brand New'}</span>
+              <span className="attribute-label">Condition</span>
+              <span className="attribute-value">{listing.condition || 'N/A'}</span>
             </div>
             <div className="attribute-item">
               <span className="attribute-label">Storage</span>
               <span className="attribute-value">{listing.storage || 'N/A'}</span>
             </div>
+            {listing.version && (
+              <div className="attribute-item">
+                <span className="attribute-label">Version</span>
+                <span className="attribute-value">{listing.version}</span>
+              </div>
+            )}
+            {listing.colour && (
+              <div className="attribute-item">
+                <span className="attribute-label">Color</span>
+                <span className="attribute-value">{listing.colour}</span>
+              </div>
+            )}
             <div className="attribute-item">
               <span className="attribute-label">Warranty</span>
               <span className="attribute-value">{listing.warranty ? 'Yes' : 'No'}</span>
             </div>
+            {listing.charge !== undefined && (
+              <div className="attribute-item">
+                <span className="attribute-label">Charger Included</span>
+                <span className="attribute-value">{listing.charge === 'Yes' || listing.charge === true ? 'Yes' : 'No'}</span>
+              </div>
+            )}
+            {listing.box !== undefined && (
+              <div className="attribute-item">
+                <span className="attribute-label">Box Included</span>
+                <span className="attribute-value">{listing.box === 'Yes' || listing.box === true ? 'Yes' : 'No'}</span>
+              </div>
+            )}
+            {listing.quantity && (
+              <div className="attribute-item">
+                <span className="attribute-label">Quantity</span>
+                <span className="attribute-value">{listing.quantity}</span>
+              </div>
+            )}
           </div>
 
           {/* Seller Information */}
           <div className="seller-info-section">
             <div className="seller-avatar">
               <span className="seller-avatar-text">
-                {(listing.user?.name || listing.seller_name || 'Seller').charAt(0).toLowerCase()}
+                {(listing.user?.name || listing.seller_name || 'Seller').charAt(0).toUpperCase()}
               </span>
             </div>
-            <span className="seller-name">{listing.user?.name || listing.seller_name || 'Seller'}</span>
+            <div className="seller-details">
+              <span className="seller-name">{listing.user?.name || listing.seller_name || 'Seller'}</span>
+              {listing.seller_business_name && (
+                <span className="seller-business">{listing.seller_business_name}</span>
+              )}
+              {listing.seller_type && (
+                <span className="seller-type">{listing.seller_type === 'business' ? 'Business Seller' : 'Individual Seller'}</span>
+              )}
+              {listing.seller_city && (
+                <span className="seller-city">
+                  <i className="fas fa-map-marker-alt"></i> {listing.seller_city}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Separator */}
@@ -475,11 +518,125 @@ const ListingDetail = () => {
           <div className="location-price-section">
             <div className="location-info">
               <i className="fas fa-map-marker-alt location-icon"></i>
-              <span className="location-text">{listing.city || 'Dubai'}</span>
+              <span className="location-text">{listing.city || listing.seller_city || 'Dubai'}</span>
             </div>
             <div className="price-info">
-              <span className="price-amount">AED {listing.price}</span>
+              {listing.listingType === 'auction' ? (
+                <div className="auction-price-info">
+                  {listing.current_price && (
+                    <div className="price-row">
+                      <span className="price-label">Current Bid:</span>
+                      <span className="price-amount">AED {listing.current_price}</span>
+                    </div>
+                  )}
+                  {listing.start_price && (
+                    <div className="price-row">
+                      <span className="price-label">Starting Price:</span>
+                      <span className="price-amount-small">AED {listing.start_price}</span>
+                    </div>
+                  )}
+                  {listing.bids && Array.isArray(listing.bids) && listing.bids.length > 0 && (
+                    <div className="price-row">
+                      <span className="price-label">Total Bids:</span>
+                      <span className="price-amount-small">{listing.bids.length}</span>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="fixed-price-info">
+                  <span className="price-amount">AED {listing.price || listing.current_price || listing.start_price || 'N/A'}</span>
+                  {listing.perPrice && (
+                    <span className="price-per-unit">AED {listing.perPrice} per unit</span>
+                  )}
+                </div>
+              )}
             </div>
+          </div>
+
+          {/* Category Information */}
+          {listing.category_name && (
+            <div className="category-info-section">
+              <div className="info-item">
+                <span className="info-label">Category:</span>
+                <span className="info-value">{listing.category_name}</span>
+              </div>
+              {listing.listingType && (
+                <div className="info-item">
+                  <span className="info-label">Listing Type:</span>
+                  <span className="info-value">{listing.listingType === 'auction' ? 'Auction' : 'Fixed Price'}</span>
+                </div>
+              )}
+              {listing.sellType && (
+                <div className="info-item">
+                  <span className="info-label">Sell Type:</span>
+                  <span className="info-value">{listing.sellType === 'single' ? 'Single Sell' : 'Bulk Sell'}</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Auction Information */}
+          {listing.listingType === 'auction' && (
+            <div className="auction-info-section">
+              <h3 className="section-subtitle">Auction Details</h3>
+              {listing.status && (
+                <div className="info-item">
+                  <span className="info-label">Status:</span>
+                  <span className={`info-value status-${listing.status}`}>{listing.status}</span>
+                </div>
+              )}
+              {listing.end_date && (
+                <div className="info-item">
+                  <span className="info-label">End Date:</span>
+                  <span className="info-value">{new Date(listing.end_date).toLocaleString()}</span>
+                </div>
+              )}
+              {listing.bids && Array.isArray(listing.bids) && listing.bids.length > 0 && (
+                <div className="bids-section">
+                  <h4 className="bids-title">Bids ({listing.bids.length})</h4>
+                  <div className="bids-list">
+                    {listing.bids.slice(0, 5).map((bid, index) => (
+                      <div key={index} className="bid-item">
+                        <span className="bid-amount">AED {bid.amount || bid.bidAmount || 'N/A'}</span>
+                        {bid.bidder_name && (
+                          <span className="bidder-name">by {bid.bidder_name}</span>
+                        )}
+                        {bid.createdAt && (
+                          <span className="bid-date">{new Date(bid.createdAt).toLocaleString()}</span>
+                        )}
+                      </div>
+                    ))}
+                    {listing.bids.length > 5 && (
+                      <div className="bid-item more-bids">
+                        <span>+{listing.bids.length - 5} more bids</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Listing Metadata */}
+          <div className="metadata-section">
+            {listing.createdAt && (
+              <div className="info-item">
+                <span className="info-label">Listed On:</span>
+                <span className="info-value">{new Date(listing.createdAt).toLocaleString()}</span>
+              </div>
+            )}
+            {listing.updatedAt && listing.updatedAt !== listing.createdAt && (
+              <div className="info-item">
+                <span className="info-label">Last Updated:</span>
+                <span className="info-value">{new Date(listing.updatedAt).toLocaleString()}</span>
+              </div>
+            )}
+            {listing.listing_id && (
+              <div className="info-item">
+                <span className="info-label">Listing ID:</span>
+                <span className="info-value">{listing.listing_id}</span>
+              </div>
+            )}
           </div>
 
           {/* Action Buttons */}
@@ -492,9 +649,9 @@ const ListingDetail = () => {
                 <i className="fas fa-envelope"></i>
                 Send Message
               </button>
-              {listing.user?.phone && (
+              {(listing.user?.phone || listing.seller_phone) && (
                 <a 
-                  href={`tel:${listing.user.phone}`}
+                  href={`tel:${listing.user?.phone || listing.seller_phone}`}
                   className="call-seller-btn"
                 >
                   <i className="fas fa-phone"></i>
@@ -508,9 +665,9 @@ const ListingDetail = () => {
                 <i className="fas fa-envelope"></i>
                 Send Message
               </Link>
-              {listing.user?.phone ? (
+              {(listing.user?.phone || listing.seller_phone) ? (
                 <a 
-                  href={`tel:${listing.user.phone}`}
+                  href={`tel:${listing.user?.phone || listing.seller_phone}`}
                   className="call-seller-btn"
                 >
                   <i className="fas fa-phone"></i>
@@ -670,7 +827,7 @@ const ListingDetail = () => {
           <div className="section-header">
             <h2 className="section-title">Similar Products</h2>
             <Link 
-              to={`/category/${listing.category?.slug || 'iphone'}`} 
+              to={`/category/${listing.category?.slug || listing.category_slug || 'iphone'}`} 
               className="view-all-link"
             >
               View All
