@@ -602,6 +602,12 @@
     width: 100%;
     position: static;
   }
+  
+  /* Hide description text on tablets and mobile */
+  .page-header p,
+  .page-header > div > p {
+    display: none !important;
+  }
 }
 
 @media (max-width: 767px) {
@@ -641,7 +647,11 @@
   }
 
   .page-header p {
-    font-size: 1rem;
+    display: none !important;
+  }
+  
+  .page-header > div > p {
+    display: none !important;
   }
 
   .create-auction-btn {

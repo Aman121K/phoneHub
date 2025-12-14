@@ -479,6 +479,18 @@
   .login-right h2 {
     font-size: 1.75rem;
   }
+  
+  /* Hide welcome text and benefits on mobile */
+  .login-left h1,
+  .login-intro,
+  .login-benefits {
+    display: none !important;
+  }
+  
+  /* Hide entire blue section on mobile */
+  .login-left {
+    display: none !important;
+  }
 
   .register-benefits {
     grid-template-columns: 1fr;
@@ -570,5 +582,17 @@
 
   .info-box svg {
     margin: 0 auto;
+  }
+  
+  /* Hide welcome text and benefits on mobile */
+  .login-left h1,
+  .login-intro,
+  .login-benefits {
+    display: none !important;
+  }
+  
+  /* Hide entire blue section on mobile */
+  .login-left {
+    display: none !important;
   }
 }
