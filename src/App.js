@@ -20,6 +20,7 @@ import Register from './pages/Auth/Register';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import ResetPassword from './pages/Auth/ResetPassword';
 import CategoryListings from './pages/CategoryListings/CategoryListings';
+import LocationListings from './pages/LocationListings/LocationListings';
 import SearchResults from './pages/SearchResults/SearchResults';
 import Auctions from './pages/Auctions/Auctions';
 import AuctionDetail from './pages/AuctionDetail/AuctionDetail';
@@ -51,6 +52,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/categories" element={<Categories />} />
                 <Route path="/category/:slug" element={<CategoryListings />} />
+                <Route path="/location/:cityName" element={<LocationListings />} />
                 <Route path="/search" element={<SearchResults />} />
                 <Route path="/listing/:id" element={<ListingDetail />} />
                 <Route path="/auctions" element={<Auctions />} />

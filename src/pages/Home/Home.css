@@ -381,7 +381,7 @@
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-  transition: all 0.3s ease;
+  transition: box-shadow 0.3s ease;
   border: 2px solid #2563eb;
   cursor: pointer;
   text-decoration: none;
@@ -393,6 +393,10 @@
   flex-shrink: 0;
   position: relative;
   overflow: hidden;
+}
+
+.category-card:hover {
+  transform: none !important;
 }
 
 /* Only apply blur to category cards within home page categories section */
@@ -513,6 +517,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  margin-top: 2rem;
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -641,6 +646,7 @@
 }
 
 .home-listings-grid .listing-card,
+.home-listings-grid .home-listing-card,
 .home-listings-grid .auction-card-component {
   flex-shrink: 0;
   width: 280px !important;
@@ -648,10 +654,14 @@
   max-width: 280px;
   height: auto;
   min-height: 320px;
+  border-radius: 12px !important;
+  overflow: hidden !important;
 }
 
 .home-listings-grid .listing-card.blur-card,
+.home-listings-grid .home-listing-card.blur-card,
 .home-listings-grid .listing-card:nth-child(6),
+.home-listings-grid .home-listing-card:nth-child(6),
 .home-listings-grid .auction-card-component.blur-card,
 .home-listings-grid .auction-card-component:nth-child(6) {
   opacity: 0.5;
@@ -661,7 +671,9 @@
 }
 
 .home-listings-grid .listing-card.blur-card::after,
-.home-listings-grid .listing-card:nth-child(6)::after {
+.home-listings-grid .home-listing-card.blur-card::after,
+.home-listings-grid .listing-card:nth-child(6)::after,
+.home-listings-grid .home-listing-card:nth-child(6)::after {
   content: '';
   position: absolute;
   top: 0;
@@ -671,6 +683,7 @@
   background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.8) 100%);
   pointer-events: none;
   z-index: 1;
+  border-radius: 12px;
 }
 
 /* Category cards in home-listings-grid */
@@ -981,7 +994,7 @@
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   position: relative;
-  transition: all 0.3s ease;
+  transition: box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
   text-decoration: none;
@@ -991,6 +1004,10 @@
   max-width: calc((100% - 7.5rem) / 5.5);
   flex: 0 0 calc((100% - 7.5rem) / 5.5);
   flex-shrink: 0;
+}
+
+.auction-card:hover {
+  transform: none !important;
 }
 
 .auction-card:nth-child(6) {
@@ -1143,7 +1160,7 @@
   border-radius: 16px;
   text-align: center;
   box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25), 0 2px 8px rgba(37, 99, 235, 0.15);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   color: #fff;
   position: relative;
@@ -1154,6 +1171,10 @@
   justify-content: center;
   min-height: 180px;
   border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.location-card:hover {
+  transform: none !important;
 }
 
 .location-card::before {
@@ -1274,8 +1295,8 @@
 .advertise-btn {
   display: inline-block;
   padding: 1rem 2.5rem;
-  background: #fff;
-  color: #2563eb;
+  background: #ea580c;
+  color: #ffffff;
   border-radius: 8px;
   font-weight: 700;
   font-size: 1.1rem;
@@ -1288,7 +1309,7 @@
 .advertise-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-  background: #f8fafc;
+  background: #ea580c;
 }
 
 /* Post Ad Section */
@@ -1557,6 +1578,8 @@
   .post-ad-btn {
     padding: 0.875rem 2rem;
     font-size: 1rem;
+    background: #fff;
+    color: #ea580c;
   }
   
   .view-all-btn {

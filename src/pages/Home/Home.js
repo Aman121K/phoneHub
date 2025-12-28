@@ -495,7 +495,7 @@ const Home = () => {
             </h1>
 
             <p className="hero-subtitle">
-              Welcome to PhoneHub – the only dedicated platform built exclusively for iPhone buyers and sellers.
+              Welcome to PhoneHub the only dedicated platform built exclusively for iPhone buyers and sellers.
             </p>
           </div>
 
@@ -908,33 +908,40 @@ const Home = () => {
           </Link>
         </div>
         <div className="home-listings-grid">
-          {safeLocations.slice(0, 4).map((location, index) => (
-            <Link
-              key={index}
-              to={`/?city=${location.city}`}
-              className="location-card"
-            >
-              <div style={{ width: '100%' }}>
-                <h3>{location.city}</h3>
+          {safeLocations.slice(0, 4).map((location, index) => {
+            // Convert city name to URL-friendly format (e.g., "Abu Dhabi" -> "abu-dhabi")
+            const citySlug = location.city.toLowerCase().replace(/\s+/g, '-');
+            return (
+              <Link
+                key={index}
+                to={`/location/${citySlug}`}
+                className="location-card"
+              >
+                <div style={{ width: '100%' }}>
+                  <h3>{location.city}</h3>
+                  <div className="location-stats">
+                    <i className="fas fa-map-marker-alt"></i>
+                    <span>{location.listing_count} Listings</span>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+          {safeLocations.length > 5 && (() => {
+            const citySlug = safeLocations[5].city.toLowerCase().replace(/\s+/g, '-');
+            return (
+              <Link
+                to={`/location/${citySlug}`}
+                className="location-card"
+              >
+                <h3>{safeLocations[5].city}</h3>
                 <div className="location-stats">
                   <i className="fas fa-map-marker-alt"></i>
-                  <span>{location.listing_count} Listings</span>
+                  <span>{safeLocations[5].listing_count} Listings</span>
                 </div>
-              </div>
-            </Link>
-          ))}
-          {safeLocations.length > 5 && (
-            <Link
-              to={`/?city=${safeLocations[5].city}`}
-              className="location-card"
-            >
-              <h3>{safeLocations[5].city}</h3>
-              <div className="location-stats">
-                <i className="fas fa-map-marker-alt"></i>
-                <span>{safeLocations[5].listing_count} Listings</span>
-              </div>
-            </Link>
-          )}
+              </Link>
+            );
+          })()}
         </div>
       </section>
 

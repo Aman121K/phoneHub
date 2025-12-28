@@ -189,8 +189,8 @@ const Auctions = () => {
     <div className="auctions-page">
       <div className="page-header">
         <div>
-          <h1>Live Auctions</h1>
-          <p>Bid on your favorite iPhones</p>
+          <h3>List of ads for Live Auction Listing</h3>
+          {/* <p>Bid on your favorite iPhones</p> */}
         </div>
         {user && user.userType === 'buyer' && (
           <Link to="/post-ad" className="create-auction-btn">

@@ -79,12 +79,13 @@ const Blog = () => {
                     <img src={post.featuredImage} alt={post.title} />
                   </div>
                 )}
-                <div className="blog-category">
+                {/* <div className="blog-category">
                   {getCategoryFromTags(post.tags)}
-                </div>
+                </div> */}
                 <h2>{post.title}</h2>
                 <p className="blog-excerpt">
-                  {post.excerpt || post.content?.substring(0, 150) + '...' || 'No excerpt available.'}
+                Every Android Phone Got Hacked, But Not iPhone?” — The Truth Behind the Claim and bold headline recently made waves:
+                  {/* {post.description || post.excerpt || (post.content ? post.content.substring(0, 150) + '...' : 'No description available.')} */}
                 </p>
                 <div className="blog-meta">
                   <span className="blog-date">

@@ -252,26 +252,10 @@ const BulkSell = () => {
   return (
     <div className="bulk-sell-page">
       <div className="page-header">
-        <h1>Bulk iphone Listings</h1>
+        <h3>List of ads for Bulk iPhone Listing</h3>
       </div>
 
       <div className="category-content-wrapper">
-        {/* Mobile Filter Toggle Button */}
-        <button 
-          className="mobile-filter-toggle"
-          onClick={() => setShowMobileFilters(!showMobileFilters)}
-        >
-          {showMobileFilters ? (
-            <>
-              <i className="fas fa-times"></i> Close Filters
-            </>
-          ) : (
-            <>
-              <i className="fas fa-filter"></i> Filters
-            </>
-          )}
-        </button>
-
         {/* Filters Sidebar */}
         <aside className={`filters-sidebar ${showMobileFilters ? 'mobile-open' : ''}`}>
           <div className="filters-sidebar-content">
@@ -381,6 +365,21 @@ const BulkSell = () => {
         <div className="listings-main">
           <div className="listings-header">
             <p className="listings-count">{listings.length} listings found</p>
+            {/* Mobile Filter Toggle Button */}
+            <button 
+              className="mobile-filter-toggle"
+              onClick={() => setShowMobileFilters(!showMobileFilters)}
+            >
+              {showMobileFilters ? (
+                <>
+                  <i className="fas fa-times"></i> Close
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-filter"></i> Filter
+                </>
+              )}
+            </button>
             <div className="sort-wrapper">
               <label htmlFor="sortBy">Sort by:</label>
               <select

@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import ListingCard from '../../components/ListingCard/ListingCard';
-import './SingleSell.css';
+import './LocationListings.css';
 
-const SingleSell = () => {
+const LocationListings = () => {
+  const { cityName } = useParams();
+  // Decode city name from URL (e.g., "abu-dhabi" -> "Abu Dhabi")
+  // Convert to proper case: split by space, capitalize first letter of each word
+  const citySlug = decodeURIComponent(cityName);
+  const cityWords = citySlug.split('-').map(word => 
+    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+  );
+  const city = cityWords.join(' ');
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
@@ -12,7 +20,6 @@ const SingleSell = () => {
     maxPrice: '',
     condition: '',
     storage: '',
-    city: '',
     sortBy: 'newest'
   });
   const [appliedFilters, setAppliedFilters] = useState({
@@ -20,14 +27,13 @@ const SingleSell = () => {
     maxPrice: '',
     condition: '',
     storage: '',
-    city: '',
     sortBy: 'newest'
   });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   useEffect(() => {
     fetchListings();
-  }, [appliedFilters]);
+  }, [cityName, appliedFilters]);
 
   const mockListings = [
     {
@@ -36,143 +42,12 @@ const SingleSell = () => {
       price: 4500,
       condition: 'Brand New',
       storage: '256GB',
-      city: 'Dubai',
+      city: city,
       listingType: 'fixed_price',
-      sellType: 'single',
       imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop',
-        'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=500&h=500&fit=crop',
-      ],
-      user: { name: 'Ahmed Al Maktoum', city: 'Dubai' },
+      user: { name: 'Ahmed Al Maktoum', city: city },
       category: { name: 'iPhone 15 Pro Max', slug: 'iphone-15-pro-max' },
       createdAt: new Date('2025-01-15')
-    },
-    {
-      _id: '2',
-      title: 'iPhone 14 Pro 128GB - Excellent Condition',
-      price: 3200,
-      condition: 'Excellent',
-      storage: '128GB',
-      city: 'Abu Dhabi',
-      listingType: 'fixed_price',
-      sellType: 'single',
-      imageUrl: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=500&h=500&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=500&h=500&fit=crop',
-        'https://images.unsplash.com/photo-1632669021382-3e0d1c1b0b4c?w=500&h=500&fit=crop',
-      ],
-      user: { name: 'Sarah Johnson', city: 'Abu Dhabi' },
-      category: { name: 'iPhone 14 Pro', slug: 'iphone-14-pro' },
-      createdAt: new Date('2025-01-14')
-    },
-    {
-      _id: '3',
-      title: 'iPhone 13 Pro Max 512GB - Good Condition',
-      price: 2800,
-      condition: 'Good',
-      storage: '512GB',
-      city: 'Sharjah',
-      listingType: 'fixed_price',
-      sellType: 'single',
-      imageUrl: 'https://images.unsplash.com/photo-1632669021382-3e0d1c1b0b4c?w=500&h=500&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1632669021382-3e0d1c1b0b4c?w=500&h=500&fit=crop',
-        'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=500&h=500&fit=crop',
-      ],
-      user: { name: 'Mohammed Hassan', city: 'Sharjah' },
-      category: { name: 'iPhone 13 Pro Max', slug: 'iphone-13-pro-max' },
-      createdAt: new Date('2025-01-13')
-    },
-    {
-      _id: '4',
-      title: 'iPhone 12 64GB - Fair Condition',
-      price: 1800,
-      condition: 'Fair',
-      storage: '64GB',
-      city: 'Dubai',
-      listingType: 'fixed_price',
-      sellType: 'single',
-      imageUrl: 'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=500&h=500&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=500&h=500&fit=crop',
-        'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop',
-      ],
-      user: { name: 'Ahmed Al Maktoum', city: 'Dubai' },
-      category: { name: 'iPhone 12', slug: 'iphone-12' },
-      createdAt: new Date('2025-01-12')
-    },
-    {
-      _id: '5',
-      title: 'iPhone 15 Pro 1TB - Premium',
-      price: 5200,
-      condition: 'Brand New',
-      storage: '1TB',
-      city: 'Abu Dhabi',
-      listingType: 'fixed_price',
-      sellType: 'single',
-      imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop',
-        'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=500&h=500&fit=crop',
-      ],
-      user: { name: 'Sarah Johnson', city: 'Abu Dhabi' },
-      category: { name: 'iPhone 15 Pro', slug: 'iphone-15-pro' },
-      createdAt: new Date('2025-01-11')
-    },
-    {
-      _id: '6',
-      title: 'iPhone 14 256GB - Very Good',
-      price: 2500,
-      condition: 'Very Good',
-      storage: '256GB',
-      city: 'Dubai',
-      listingType: 'fixed_price',
-      sellType: 'single',
-      imageUrl: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=500&h=500&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=500&h=500&fit=crop',
-        'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=500&h=500&fit=crop',
-      ],
-      user: { name: 'Ahmed Al Maktoum', city: 'Dubai' },
-      category: { name: 'iPhone 14', slug: 'iphone-14' },
-      createdAt: new Date('2025-01-10')
-    },
-    {
-      _id: '7',
-      title: 'iPhone 11 Pro 256GB - Good',
-      price: 2200,
-      condition: 'Good',
-      storage: '256GB',
-      city: 'Sharjah',
-      listingType: 'fixed_price',
-      sellType: 'single',
-      imageUrl: 'https://images.unsplash.com/photo-1632669021382-3e0d1c1b0b4c?w=500&h=500&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1632669021382-3e0d1c1b0b4c?w=500&h=500&fit=crop',
-        'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop',
-      ],
-      user: { name: 'Mohammed Hassan', city: 'Sharjah' },
-      category: { name: 'iPhone 11 Pro', slug: 'iphone-11-pro' },
-      createdAt: new Date('2025-01-09')
-    },
-    {
-      _id: '8',
-      title: 'iPhone XS Max 256GB - Fair',
-      price: 1500,
-      condition: 'Fair',
-      storage: '256GB',
-      city: 'Ajman',
-      listingType: 'fixed_price',
-      sellType: 'single',
-      imageUrl: 'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=500&h=500&fit=crop',
-      images: [
-        'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=500&h=500&fit=crop',
-        'https://images.unsplash.com/photo-1632669021382-3e0d1c1b0b4c?w=500&h=500&fit=crop',
-      ],
-      user: { name: 'Ali Ahmed', city: 'Ajman' },
-      category: { name: 'iPhone XS Max', slug: 'iphone-xs-max' },
-      createdAt: new Date('2025-01-08')
     }
   ];
 
@@ -180,16 +55,16 @@ const SingleSell = () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      params.append('type', 'single_sell');
+      params.append('city', city);
       
       if (appliedFilters.minPrice) params.append('minPrice', appliedFilters.minPrice);
       if (appliedFilters.maxPrice) params.append('maxPrice', appliedFilters.maxPrice);
       if (appliedFilters.condition) params.append('condition', appliedFilters.condition);
       if (appliedFilters.storage) params.append('storage', appliedFilters.storage);
-      if (appliedFilters.city) params.append('city', appliedFilters.city);
+      if (appliedFilters.sortBy) params.append('sortBy', appliedFilters.sortBy);
 
-      const response = await axios.get(`/api/listings?${params.toString()}`);
-      let fetchedListings = response.data.length > 0 ? response.data : mockListings;
+      const listingsRes = await axios.get(`/api/listings?${params.toString()}`).catch(() => ({ data: [] }));
+      let fetchedListings = listingsRes.data.length > 0 ? listingsRes.data : mockListings;
 
       // Apply sorting
       if (appliedFilters.sortBy === 'newest') {
@@ -230,7 +105,6 @@ const SingleSell = () => {
       maxPrice: '',
       condition: '',
       storage: '',
-      city: '',
       sortBy: 'newest'
     };
     setFilters(clearedFilters);
@@ -242,9 +116,9 @@ const SingleSell = () => {
   }
 
   return (
-    <div className="single-sell-page">
+    <div className="location-listings-page">
       <div className="page-header">
-        <h3>List of ads for Single iPhone Listing</h3>
+        <h1>Listings in {city}</h1>
       </div>
 
       <div className="category-content-wrapper">
@@ -325,27 +199,6 @@ const SingleSell = () => {
             </select>
           </div>
 
-          {/* City */}
-          <div className="filter-section">
-            <h3>Location</h3>
-            <select
-              name="city"
-              value={filters.city}
-              onChange={handleFilterChange}
-              className="filter-select"
-            >
-              <option value="">All Locations</option>
-              <option value="Dubai">Dubai</option>
-              <option value="Abu Dhabi">Abu Dhabi</option>
-              <option value="Sharjah">Sharjah</option>
-              <option value="Ajman">Ajman</option>
-              <option value="Ras al Khaimah">Ras al Khaimah</option>
-              <option value="Fujairah">Fujairah</option>
-              <option value="Umm al Quwain">Umm al Quwain</option>
-              <option value="Al Ain">Al Ain</option>
-            </select>
-          </div>
-
           {/* Apply Filter Button */}
           <button onClick={applyFilters} className="apply-filters-btn">
             Apply Filters
@@ -356,7 +209,7 @@ const SingleSell = () => {
         {/* Main Content */}
         <div className="listings-main">
           <div className="listings-header">
-            <p className="listings-count">{listings.length} listings found</p>
+            <p className="listings-count">{listings.length} listings found in {city}</p>
             {/* Mobile Filter Toggle Button */}
             <button 
               className="mobile-filter-toggle"
@@ -395,7 +248,7 @@ const SingleSell = () => {
 
           {listings.length === 0 ? (
             <div className="no-listings">
-              <p>No single sell listings available at the moment.</p>
+              <p>No listings found in {city}.</p>
             </div>
           ) : (
             <div className="listings-grid">
@@ -410,5 +263,5 @@ const SingleSell = () => {
   );
 };
 
-export default SingleSell;
+export default LocationListings;
 

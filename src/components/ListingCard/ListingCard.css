@@ -17,9 +17,9 @@
 .listing-card {
   background: #ffffff;
   border-radius: 12px;
-  overflow: visible;
+  overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: none;
   display: flex;
   flex-direction: column;
   text-decoration: none;
@@ -32,6 +32,11 @@
   box-sizing: border-box;
 }
 
+.listing-card:hover {
+  transform: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
 
 .listing-image-container {
   width: 100%;
@@ -42,6 +47,7 @@
   justify-content: center;
   overflow: hidden;
   position: relative;
+  border-radius: 12px 12px 0 0;
 }
 
 .listing-image {
