@@ -675,6 +675,8 @@
   margin: 3rem auto 0;
   padding: 0 1.5rem;
   background: transparent;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .section-header {
@@ -751,9 +753,65 @@
   }
 }
 
-@media (max-width: 575px) {
+@media (max-width: 767px) {
+  .similar-products-section {
+    padding: 0 1rem;
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: visible;
+    box-sizing: border-box;
+  }
+  
   .similar-products-grid {
-    grid-template-columns: 1fr;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+    padding-bottom: 0.5rem;
+    gap: 1rem;
+    grid-template-columns: none !important;
+    width: 100%;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .similar-products-grid::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  .similar-products-grid::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+  }
+  
+  .similar-products-grid::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+  
+  .similar-products-grid::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+
+  .similar-products-grid > * {
+    flex: 0 0 auto;
+    width: 200px !important;
+    min-width: 200px !important;
+    max-width: 200px !important;
+  }
+  
+  .similar-products-grid .listing-card {
+    width: 200px !important;
+    min-width: 200px !important;
+    max-width: 200px !important;
+    flex: 0 0 200px !important;
   }
 }
 
@@ -932,10 +990,6 @@
     font-size: 0.9375rem;
   }
 
-  .similar-products-section {
-    padding: 0 1rem;
-    margin-top: 2rem;
-  }
 
   .section-title {
     font-size: 1.5rem;
