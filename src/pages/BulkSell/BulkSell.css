@@ -321,7 +321,7 @@
   }
 
   .page-header h1 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 
   .category-content-wrapper {
@@ -329,35 +329,9 @@
     position: relative;
   }
 
-  /* Show mobile filter toggle button */
+  /* Mobile filter toggle button - will be styled in listings-header */
   .mobile-filter-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    width: 100%;
-    padding: 1rem;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-bottom: 1rem;
-    font-family: 'Inter', sans-serif;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-    transition: all 0.3s ease;
-  }
-
-  .mobile-filter-toggle:hover {
-    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
-  }
-
-  .mobile-filter-toggle i {
-    font-size: 1rem;
+    display: none;
   }
 
   /* Hide filters sidebar by default on mobile */
@@ -391,12 +365,42 @@
     background: white;
     width: 100%;
     max-width: 400px;
-    padding: 1.5rem;
     border-radius: 16px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     position: relative;
     max-height: 90vh;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+  }
+
+  .filters-sidebar.mobile-open .filters-header {
+    padding: 1.5rem 1.5rem 1rem;
+    flex-shrink: 0;
+  }
+
+  .filters-sidebar.mobile-open .filter-section {
+    padding: 0 1.5rem;
+  }
+
+  .filters-sidebar.mobile-open .apply-filters-btn {
+    position: sticky;
+    bottom: 0;
+    margin-top: 1rem;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    z-index: 10;
+    background: white;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    border-radius: 0 0 16px 16px;
+    flex-shrink: 0;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
   }
 
   /* Show mobile close button */
@@ -432,19 +436,64 @@
   }
 
   .listings-header {
-    flex-direction: column;
-    align-items: flex-start;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .listings-count {
+    display: none;
+  }
+
+  .mobile-filter-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    width: auto;
+    flex: 1;
+    padding: 0.65rem 0.85rem;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    cursor: pointer;
+    margin-bottom: 0;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .mobile-filter-toggle:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+  }
+
+  .mobile-filter-toggle i {
+    font-size: 0.75rem;
   }
 
   .sort-wrapper {
-    width: 100%;
+    width: auto;
+    flex: 1;
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
     align-items: center;
+    gap: 0.4rem;
+  }
+
+  .sort-wrapper label {
+    display: none;
   }
 
   .sort-select {
     width: 100%;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.75rem;
   }
 }

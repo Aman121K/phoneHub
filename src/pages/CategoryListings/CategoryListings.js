@@ -167,7 +167,7 @@ const CategoryListings = () => {
   return (
     <div className="category-listings-page">
       <div className="page-header">
-        <h1>List of ads for {category?.name || 'Category'}</h1>
+        <h2>List of ads for {category?.name || 'Category'}</h2>
       </div>
 
       <div className="category-content-wrapper">

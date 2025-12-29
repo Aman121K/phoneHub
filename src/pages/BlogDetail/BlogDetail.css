@@ -93,6 +93,7 @@
 
 .blog-date {
   color: #9ca3af;
+  /* align-self: flex-end; */
 }
 
 .blog-views {

@@ -247,7 +247,7 @@
 
 .listings-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 280px));
   gap: 1.5rem;
   width: 100%;
   box-sizing: border-box;
@@ -255,34 +255,68 @@
   overflow-x: hidden;
   overflow-y: visible;
   align-items: start;
+  justify-content: start;
+}
+
+.listings-grid > * {
+  width: 280px !important;
+  max-width: 280px !important;
+  min-width: 280px !important;
+}
+
+.listings-grid .auction-card-component,
+.listings-grid .auction-card-component[class*="MuiCard-root"],
+.auctions-page .listings-grid .auction-card-component {
+  width: 280px !important;
+  max-width: 280px !important;
+  min-width: 280px !important;
+}
+
+/* Override Material-UI inline styles */
+.auctions-page .listings-grid .auction-card-component[style*="width"] {
+  width: 280px !important;
+  max-width: 280px !important;
 }
 
 /* Desktop: Show 5 cards per row */
 @media (min-width: 1400px) {
   .listings-grid {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 280px));
+    max-width: 100%;
   }
 }
 
 /* Large tablets: Show 4 cards per row */
 @media (min-width: 1100px) and (max-width: 1399px) {
   .listings-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 280px));
   }
 }
 
 /* Tablets: Show 3 cards per row */
 @media (min-width: 768px) and (max-width: 1099px) {
   .listings-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(280px, 280px));
   }
 }
 
 /* Small tablets: Show 2 cards per row */
 @media (min-width: 576px) and (max-width: 767px) {
   .listings-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(240px, 240px));
     gap: 1rem;
+  }
+  
+  .listings-grid > * {
+    width: 240px !important;
+    max-width: 240px !important;
+    min-width: 240px !important;
+  }
+  
+  .listings-grid .auction-card-component {
+    width: 240px !important;
+    max-width: 240px !important;
+    min-width: 240px !important;
   }
 }
 
@@ -291,6 +325,12 @@
   .listings-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+  
+  .listings-grid > * {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
   }
 }
 
@@ -680,12 +720,42 @@
     background: white;
     width: 100%;
     max-width: 400px;
-    padding: 1.5rem;
     border-radius: 16px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     position: relative;
     max-height: 90vh;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+  }
+
+  .filters-sidebar.mobile-open .filters-header {
+    padding: 1.5rem 1.5rem 1rem;
+    flex-shrink: 0;
+  }
+
+  .filters-sidebar.mobile-open .filter-section {
+    padding: 0 1.5rem;
+  }
+
+  .filters-sidebar.mobile-open .apply-filters-btn {
+    position: sticky;
+    bottom: 0;
+    margin-top: 1rem;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    z-index: 10;
+    background: white;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    border-radius: 0 0 16px 16px;
+    flex-shrink: 0;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
   }
 
   /* Show mobile close button */

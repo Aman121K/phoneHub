@@ -1,18 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-.single-sell-page {
+.location-listings-page {
   max-width: 1600px;
   margin: 0 auto;
   padding: 2rem 1.5rem;
   font-family: 'Inter', sans-serif;
   box-sizing: border-box;
-  width: 100%;
-  overflow-x: hidden;
+}
+
+@media (min-width: 1025px) {
+  .location-listings-page {
+    padding: 2rem 1.5rem 2rem 100px;
+  }
 }
 
 .page-header {
   margin-bottom: 2rem;
-  text-align: left;
 }
 
 .page-header h1 {
@@ -21,29 +24,12 @@
   margin-bottom: 0;
   font-weight: 700;
   font-family: 'Inter', sans-serif;
-  text-align: left;
-  background: none !important;
-  -webkit-background-clip: unset !important;
-  -webkit-text-fill-color: #1e293b !important;
-  background-clip: unset !important;
-}
-
-/* Remove any lines below the title */
-.page-header::after,
-.page-header::before,
-.page-header h1::after,
-.page-header h1::before {
-  display: none !important;
-  content: none !important;
 }
 
 .category-content-wrapper {
   display: flex;
   gap: 2rem;
   align-items: flex-start;
-  width: 100%;
-  box-sizing: border-box;
-  overflow-x: hidden;
 }
 
 /* Filters Sidebar */
@@ -65,26 +51,6 @@
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #e5e7eb;
-}
-
-.filters-header-actions {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-.filters-sidebar-content {
-  width: 100%;
-}
-
-/* Mobile Filter Toggle Button */
-.mobile-filter-toggle {
-  display: none;
-}
-
-/* Mobile Filter Close Button */
-.mobile-filter-close {
-  display: none;
 }
 
 .filters-header h2 {
@@ -232,12 +198,6 @@
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-.page-header p {
-  color: #64748b;
-  font-size: 1.1rem;
-  font-family: 'Inter', sans-serif;
-}
-
 .listings-grid {
   display: flex;
   flex-wrap: wrap;
@@ -304,6 +264,11 @@
   font-family: 'Inter', sans-serif;
 }
 
+.no-listings p {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
 .loading {
   text-align: center;
   padding: 3rem;
@@ -316,7 +281,6 @@
 @media (max-width: 1024px) {
   .category-content-wrapper {
     flex-direction: column;
-    position: relative;
   }
 
   .filters-sidebar {
@@ -326,7 +290,7 @@
 }
 
 @media (max-width: 767px) {
-  .single-sell-page {
+  .location-listings-page {
     padding: 1.5rem 1rem;
   }
 
@@ -335,17 +299,12 @@
   }
 
   .page-header h1 {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
   }
 
   .category-content-wrapper {
     gap: 1.5rem;
     position: relative;
-  }
-
-  /* Mobile filter toggle button - will be styled in listings-header */
-  .mobile-filter-toggle {
-    display: none;
   }
 
   /* Hide filters sidebar by default on mobile */
@@ -362,6 +321,7 @@
     overflow-y: auto;
     align-items: flex-start;
     justify-content: center;
+    width: 100%;
   }
 
   /* Show filters when mobile-open class is present */
@@ -379,42 +339,30 @@
     background: white;
     width: 100%;
     max-width: 400px;
+    padding: 1.5rem;
+    padding-bottom: 5rem;
     border-radius: 16px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     position: relative;
     max-height: 90vh;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 0;
-  }
-
-  .filters-sidebar.mobile-open .filters-header {
-    padding: 1.5rem 1.5rem 1rem;
-    flex-shrink: 0;
-  }
-
-  .filters-sidebar.mobile-open .filter-section {
-    padding: 0 1.5rem;
   }
 
   .filters-sidebar.mobile-open .apply-filters-btn {
     position: sticky;
     bottom: 0;
-    margin-top: 1rem;
-    margin-bottom: 0;
-    margin-left: 0;
-    margin-right: 0;
+    margin-top: auto;
+    margin-bottom: 1rem;
     z-index: 10;
     background: white;
-    padding: 1rem 1.5rem;
+    padding-top: 1rem;
     border-top: 1px solid #e5e7eb;
-    border-radius: 0 0 16px 16px;
-    flex-shrink: 0;
-    width: 100%;
-    box-sizing: border-box;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 
   /* Show mobile close button */
@@ -438,19 +386,13 @@
     color: #1e293b;
   }
 
-  .filters-header {
+  .filters-header-actions {
     display: flex;
-    justify-content: space-between;
+    gap: 0.5rem;
     align-items: center;
-    margin-bottom: 1.5rem;
-  }
-
-  .filters-header h2 {
-    margin: 0;
   }
 
   .listings-header {
-    display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -511,3 +453,4 @@
     font-size: 0.75rem;
   }
 }
+

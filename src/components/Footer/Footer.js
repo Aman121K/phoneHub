@@ -20,7 +20,7 @@ const Footer = () => {
           <div className="footer-section">
             <h3 className="footer-title">PhoneHub</h3>
             <p className="footer-description">
-              Welcome to PhoneHub – the only dedicated platform built exclusively for iPhone buyers and sellers.
+              Welcome to PhoneHub the only dedicated platform built exclusively for iPhone buyers and sellers.
             </p>
             <form className="subscribe-form" onSubmit={handleSubscribe}>
               <input

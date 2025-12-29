@@ -105,7 +105,7 @@ const ListingCard = ({ listing, className, isHome = false }) => {
     <Card
       component={Link}
       to={listingRoute}
-      className={isHome ? 'home-listing-card' : `listing-card ${className || ''}`}
+      className={isHome ? `home-listing-card listing-card ${className || ''}` : `listing-card ${className || ''}`}
       sx={{
         textDecoration: 'none',
         color: 'inherit',
@@ -113,14 +113,9 @@ const ListingCard = ({ listing, className, isHome = false }) => {
         display: 'flex',
         flexDirection: 'column',
         borderRadius: '12px',
-        overflow: 'visible',
+        overflow: 'hidden',
         border: '1px solid #e2e8f0',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        // '&:hover': {
-        //   transform: 'translateY(-8px)',
-        //   boxShadow: '0 12px 32px rgba(0, 0, 0, 0.12)',
-        //   borderColor: '#2563eb',
-        // },
+        transition: 'none',
         flexShrink: 0,
       }}
     >
@@ -134,6 +129,7 @@ const ListingCard = ({ listing, className, isHome = false }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          borderRadius: '12px 12px 0 0',
         }}
       >
         {/* Share Button */}
