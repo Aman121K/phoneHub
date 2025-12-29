@@ -325,12 +325,23 @@
   .listings-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
   
   .listings-grid > * {
-    width: 100%;
-    max-width: 100%;
-    min-width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    box-sizing: border-box;
+  }
+  
+  .listings-grid .auction-card-component {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
   }
 }
 
@@ -656,6 +667,17 @@
   .category-content-wrapper {
     gap: 1.5rem;
     position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  .listings-main {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
 
   /* Show mobile filter toggle button */

@@ -241,9 +241,66 @@
 .single-sell {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.single-sell > * {
+  flex: 1 1 calc(25% - 1.5rem);
+  min-width: 240px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1400px) {
+  .single-sell > * {
+    flex-basis: calc(20% - 1.5rem);
+  }
+}
+
+@media (min-width: 1100px) and (max-width: 1399px) {
+  .single-sell > * {
+    flex-basis: calc(25% - 1.5rem);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1099px) {
+  .single-sell > * {
+    flex-basis: calc(33.333% - 1.25rem);
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .single-sell {
+    gap: 1rem;
+  }
+
+  .single-sell > * {
+    flex-basis: calc(50% - 1rem);
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 575px) {
+  .single-sell {
+    gap: 1rem;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  .single-sell > * {
+    flex-basis: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
 }
 
 /* .listings-grid {
@@ -348,6 +405,17 @@
   .category-content-wrapper {
     gap: 1.5rem;
     position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  .listings-main {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
 
   /* Mobile filter toggle button - will be styled in listings-header */

@@ -231,7 +231,7 @@
   width: 100%;
   box-sizing: border-box;
   padding: 0;
-  overflow-x: visible;
+  overflow-x: hidden;
   overflow-y: visible;
   justify-content: flex-start;
 }
@@ -273,11 +273,18 @@
 @media (max-width: 575px) {
   .listings-grid {
     gap: 1rem;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
 
   .listings-grid > * {
     flex-basis: 100%;
     min-width: 100%;
+    max-width: 100%;
+    width: 100% !important;
+    box-sizing: border-box;
   }
 }
 
@@ -327,6 +334,17 @@
   .category-content-wrapper {
     gap: 1.5rem;
     position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+
+  .listings-main {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
 
   /* Mobile filter toggle button - will be styled in listings-header */
