@@ -85,19 +85,19 @@ const Register = () => {
               <svg className="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              Access to millions of buyers
+              Access to millions of buyers.
             </li>
             <li>
               <svg className="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              Fast and secure transactions
+              Fast and secure transactions.
             </li>
             <li>
               <svg className="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              24/7 customer support
+              24/7 customer support.
             </li>
             <li>
               <svg className="check-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
