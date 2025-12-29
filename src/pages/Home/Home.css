@@ -1522,11 +1522,18 @@
     flex: 0 0 auto;
   }
   
-  .listing-card {
+  /* .listing-card {
     width: 100% !important;
     min-width: 100% !important;
     max-width: 100% !important;
     flex: 0 0 100% !important;
+  } */
+  
+  .listing-card {
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+    flex: 0 0 200px;
   }
   
   .auctions-grid {

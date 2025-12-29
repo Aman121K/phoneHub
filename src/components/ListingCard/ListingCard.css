@@ -26,8 +26,8 @@
   color: inherit;
   position: relative;
   border: 1px solid #e5e7eb;
-  width: 240px;
-  height: 376px;
+  /* width: 240px;
+  height: 376px; */
   flex-shrink: 0;
   box-sizing: border-box;
 }

@@ -398,7 +398,7 @@ const SingleSell = () => {
               <p>No single sell listings available at the moment.</p>
             </div>
           ) : (
-            <div className="listings-grid">
+            <div className="single-sell">
               {listings.map((listing) => (
                 <ListingCard key={listing._id || listing.id} listing={listing} />
               ))}
