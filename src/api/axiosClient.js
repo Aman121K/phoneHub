@@ -6,8 +6,8 @@ import axios from 'axios';
 const baseURL =
   process.env.REACT_APP_API_URL ||
   process.env.REACT_APP_BASE_URL ||
-  'http://localhost:5000';
-  // 'https://phonehub-backend-pltz.onrender.com';
+  // 'http://localhost:5000';
+  'https://phonehub-backend-pltz.onrender.com';
 
 if (baseURL) {
   axios.defaults.baseURL = baseURL;
