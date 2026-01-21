@@ -83,7 +83,7 @@ const Footer = () => {
               <li><Link to="/post-ad">Submit Listing</Link></li>
               <li><Link to="/login">Sign in</Link></li>
               <li><Link to="/register">Register</Link></li>
-              <li><Link to="/blog">Our News</Link></li>
+              <li><Link to="/blog">Blog</Link></li>
               <li><Link to="/contact">Contact Us</Link></li>
             </ul>
           </div>
@@ -130,12 +130,12 @@ const Footer = () => {
             <h3 className="footer-title">Social Links</h3>
             <ul className="footer-links">
               <li>
-                <a href="https://www.facebook.com/phonehub.ae" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.facebook.com/profile.php?id=61578920245578" target="_blank" rel="noopener noreferrer">
                   <i className="fab fa-facebook-f"></i> Facebook
                 </a>
               </li>
               <li>
-                <a href="https://www.instagram.com/phonehub.ae" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.instagram.com/phonehub_ae?igsh=MTFuZmdrcG13NWhoYQ%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer">
                   <i className="fab fa-instagram"></i> Instagram
                 </a>
               </li>

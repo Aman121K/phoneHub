@@ -81,8 +81,23 @@ export const AuthProvider = ({ children }) => {
     delete axios.defaults.headers.common['Authorization'];
   };
 
+  const refreshUser = async () => {
+    try {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        const response = await axios.get('/api/users/profile');
+        setUser(response.data);
+        return { success: true, user: response.data };
+      }
+      return { success: false, error: 'No token found' };
+    } catch (error) {
+      console.error('Error refreshing user:', error);
+      return { success: false, error: error.response?.data?.error || 'Failed to refresh user' };
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, refreshUser, loading }}>
       {children}
     </AuthContext.Provider>
   );

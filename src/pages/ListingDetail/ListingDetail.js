@@ -3,6 +3,19 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import ListingCard from '../../components/ListingCard/ListingCard';
+import {
+  Modal,
+  Fade,
+  Backdrop,
+  Box,
+  Typography,
+  IconButton,
+  Divider,
+} from '@mui/material';
+import {
+  VerifiedUser,
+  Info,
+} from '@mui/icons-material';
 import './ListingDetail.css';
 
 const ListingDetail = () => {
@@ -20,6 +33,7 @@ const ListingDetail = () => {
   const [reportReason, setReportReason] = useState('');
   const [reportDescription, setReportDescription] = useState('');
   const [reporting, setReporting] = useState(false);
+  const [verificationModalOpen, setVerificationModalOpen] = useState(false);
 
   useEffect(() => {
     fetchListing();
@@ -383,6 +397,26 @@ const ListingDetail = () => {
     // TODO: Implement favorite functionality with backend
   };
 
+  const handleVerificationInfoClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setVerificationModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setVerificationModalOpen(false);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
+
   if (loading) {
     return <div className="loading">Loading...</div>;
   }
@@ -496,7 +530,9 @@ const ListingDetail = () => {
               </span>
             </div>
             <div className="seller-details">
-              <span className="seller-name">{listing.user?.name || listing.seller_name || 'Seller'}</span>
+              <span className="seller-name">
+                {listing.user?.name || listing.seller_name || 'Seller'}
+              </span>
               {listing.seller_business_name && (
                 <span className="seller-business">{listing.seller_business_name}</span>
               )}
@@ -510,6 +546,44 @@ const ListingDetail = () => {
               )}
             </div>
           </div>
+
+          {/* Verified Seller Bar (OLX Style) */}
+          {listing.user?.verifiedBatch && (
+            <div 
+              className="verified-seller-bar"
+              style={{
+                backgroundColor: '#e3f2fd',
+                padding: '0.75rem 1rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                borderRadius: '8px',
+                marginTop: '1rem',
+                marginBottom: '1rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <VerifiedUser style={{ fontSize: '1.125rem', color: '#1976d2' }} />
+                <span style={{
+                  fontSize: '0.875rem',
+                  fontWeight: 500,
+                  color: '#1976d2',
+                  fontFamily: "'Inter', sans-serif",
+                }}>
+                  VERIFIED SELLER
+                </span>
+              </div>
+              <IconButton
+                onClick={handleVerificationInfoClick}
+                style={{
+                  padding: '0.25rem',
+                }}
+                size="small"
+              >
+                <Info style={{ fontSize: '1rem', color: '#1976d2' }} />
+              </IconButton>
+            </div>
+          )}
 
           {/* Separator */}
           <div className="detail-separator"></div>
@@ -841,6 +915,137 @@ const ListingDetail = () => {
           </div>
         </div>
       )}
+
+      {/* Verification Info Modal */}
+      <Modal
+        open={verificationModalOpen}
+        onClose={handleCloseModal}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={verificationModalOpen}>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: { xs: '90%', sm: '400px' },
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
+              padding: '24px',
+              outline: 'none',
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px', mb: '20px' }}>
+              <Box
+                sx={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  backgroundColor: '#e3f2fd',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <VerifiedUser sx={{ fontSize: '28px', color: '#1976d2' }} />
+              </Box>
+              <Box>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontSize: '1.125rem',
+                    fontWeight: 600,
+                    color: '#1f2937',
+                    fontFamily: "'Inter', sans-serif",
+                  }}
+                >
+                  Verified Seller
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontSize: '0.875rem',
+                    color: '#6b7280',
+                    fontFamily: "'Inter', sans-serif",
+                  }}
+                >
+                  This seller is verified
+                </Typography>
+              </Box>
+            </Box>
+
+            <Divider sx={{ mb: '20px' }} />
+
+            <Box>
+              <Typography
+                variant="body2"
+                sx={{
+                  fontSize: '0.875rem',
+                  color: '#6b7280',
+                  mb: '8px',
+                  fontFamily: "'Inter', sans-serif",
+                }}
+              >
+                Verified Since
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  color: '#1f2937',
+                  fontFamily: "'Inter', sans-serif",
+                }}
+              >
+                {formatDate(listing?.user?.verifiedBatchPurchasedAt)}
+              </Typography>
+            </Box>
+
+            <Box sx={{ mt: '24px', pt: '20px', borderTop: '1px solid #e5e7eb' }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  fontSize: '0.8125rem',
+                  color: '#6b7280',
+                  lineHeight: 1.6,
+                  fontFamily: "'Inter', sans-serif",
+                }}
+              >
+                This seller has completed our verification process and has been verified since the purchase date shown above.
+              </Typography>
+            </Box>
+
+            <Box sx={{ mt: '24px', display: 'flex', justifyContent: 'flex-end' }}>
+              <IconButton
+                onClick={handleCloseModal}
+                sx={{
+                  backgroundColor: '#f3f4f6',
+                  '&:hover': {
+                    backgroundColor: '#e5e7eb',
+                  },
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    color: '#374151',
+                    fontFamily: "'Inter', sans-serif",
+                  }}
+                >
+                  Close
+                </Typography>
+              </IconButton>
+            </Box>
+          </Box>
+        </Fade>
+      </Modal>
     </div>
   );
 };

@@ -10,18 +10,24 @@ import {
   Avatar,
   Chip,
   Divider,
+  Modal,
+  Fade,
+  Backdrop,
 } from '@mui/material';
 import {
   ChevronLeft,
   ChevronRight,
   LocationOn,
   Share,
+  Info,
+  VerifiedUser,
 } from '@mui/icons-material';
 import './ListingCard.css';
 
 const ListingCard = ({ listing, className, isHome = false }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageError, setImageError] = useState(false);
+  const [verificationModalOpen, setVerificationModalOpen] = useState(false);
 
   // Get all images for the listing
   const getImages = () => {
@@ -94,6 +100,26 @@ const ListingCard = ({ listing, className, isHome = false }) => {
       navigator.clipboard.writeText(listingUrl);
       alert('Link copied to clipboard!');
     }
+  };
+
+  const handleVerificationInfoClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setVerificationModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setVerificationModalOpen(false);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
   };
 
   // Determine the correct route based on listing type
@@ -363,6 +389,190 @@ const ListingCard = ({ listing, className, isHome = false }) => {
           </Typography>
         </Box>
       </CardContent>
+
+      {/* Verified Seller Bar (OLX Style) */}
+      {listing.user?.verifiedBatch && (
+        <Box
+          sx={{
+            backgroundColor: '#e3f2fd',
+            padding: '0.5rem 0.65rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderTop: '1px solid #e5e7eb',
+          }}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <VerifiedUser 
+              sx={{ 
+                fontSize: '1rem', 
+                color: '#1976d2',
+              }} 
+            />
+            <Typography
+              variant="body2"
+              sx={{
+                fontSize: '0.7rem',
+                fontWeight: 500,
+                color: '#1976d2',
+                fontFamily: "'Inter', sans-serif",
+              }}
+            >
+              VERIFIED SELLER
+            </Typography>
+          </Box>
+          <IconButton
+            onClick={handleVerificationInfoClick}
+            sx={{
+              padding: '0.25rem',
+              '&:hover': {
+                backgroundColor: 'rgba(25, 118, 210, 0.1)',
+              },
+            }}
+            size="small"
+          >
+            <Info sx={{ fontSize: '0.9rem', color: '#1976d2' }} />
+          </IconButton>
+        </Box>
+      )}
+
+      {/* Verification Info Modal */}
+      <Modal
+        open={verificationModalOpen}
+        onClose={handleCloseModal}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <Fade in={verificationModalOpen}>
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: { xs: '90%', sm: '400px' },
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
+              padding: '24px',
+              outline: 'none',
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px', mb: '20px' }}>
+              <Box
+                sx={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  backgroundColor: '#e3f2fd',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <VerifiedUser sx={{ fontSize: '28px', color: '#1976d2' }} />
+              </Box>
+              <Box>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontSize: '1.125rem',
+                    fontWeight: 600,
+                    color: '#1f2937',
+                    fontFamily: "'Inter', sans-serif",
+                  }}
+                >
+                  Verified Seller
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontSize: '0.875rem',
+                    color: '#6b7280',
+                    fontFamily: "'Inter', sans-serif",
+                  }}
+                >
+                  This seller is verified
+                </Typography>
+              </Box>
+            </Box>
+
+            <Divider sx={{ mb: '20px' }} />
+
+            <Box>
+              <Typography
+                variant="body2"
+                sx={{
+                  fontSize: '0.875rem',
+                  color: '#6b7280',
+                  mb: '8px',
+                  fontFamily: "'Inter', sans-serif",
+                }}
+              >
+                Verified Since
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontSize: '1rem',
+                  fontWeight: 600,
+                  color: '#1f2937',
+                  fontFamily: "'Inter', sans-serif",
+                }}
+              >
+                {formatDate(listing.user?.verifiedBatchPurchasedAt)}
+              </Typography>
+            </Box>
+
+            <Box sx={{ mt: '24px', pt: '20px', borderTop: '1px solid #e5e7eb' }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  fontSize: '0.8125rem',
+                  color: '#6b7280',
+                  lineHeight: 1.6,
+                  fontFamily: "'Inter', sans-serif",
+                }}
+              >
+                This seller has completed our verification process and has been verified since the purchase date shown above.
+              </Typography>
+            </Box>
+
+            <Box sx={{ mt: '24px', display: 'flex', justifyContent: 'flex-end' }}>
+              <IconButton
+                onClick={handleCloseModal}
+                sx={{
+                  backgroundColor: '#f3f4f6',
+                  '&:hover': {
+                    backgroundColor: '#e5e7eb',
+                  },
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: '0.875rem',
+                    fontWeight: 500,
+                    color: '#374151',
+                    fontFamily: "'Inter', sans-serif",
+                  }}
+                >
+                  Close
+                </Typography>
+              </IconButton>
+            </Box>
+          </Box>
+        </Fade>
+      </Modal>
     </Card>
   );
 };

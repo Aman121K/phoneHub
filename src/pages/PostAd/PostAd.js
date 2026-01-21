@@ -31,6 +31,16 @@ const PostAd = () => {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [loading, setLoading] = useState(false);
   const [imageError, setImageError] = useState('');
+  const [wantFeatured, setWantFeatured] = useState(false);
+  const [featuredDuration, setFeaturedDuration] = useState(7);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+
+  const showToast = (message, type = 'success') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => {
+      setToast({ show: false, message: '', type: 'success' });
+    }, 4000);
+  };
 
   useEffect(() => {
     if (!user) {
@@ -46,6 +56,15 @@ const PostAd = () => {
     if (user.city) {
       setFormData(prev => ({ ...prev, city: user.city }));
     }
+    
+    // Check if payment was cancelled
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('payment_cancelled') === 'true') {
+      showToast('Payment was cancelled. Your listing was not created. Please try again.', 'error');
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    
     fetchCategories();
   }, [user, navigate]);
 
@@ -59,7 +78,7 @@ const PostAd = () => {
       }
     } catch (error) {
       console.error('Error fetching categories:', error);
-      alert('Failed to load categories. Please refresh the page.');
+      // Don't show toast here as it's called before showToast is defined
     }
   };
 
@@ -151,19 +170,19 @@ const PostAd = () => {
 
     // Validate buyer can only create auctions
     if (user.userType === 'buyer' && formData.listing_type !== 'auction') {
-      alert('Buyers can only create auctions. Please select auction as listing type.');
+      showToast('Buyers can only create auctions. Please select auction as listing type.', 'error');
       return;
     }
 
     // Validate auction fields for buyers
     if (user.userType === 'buyer' && formData.listing_type === 'auction') {
       if (!formData.start_price || !formData.end_date) {
-        alert('Start price and end date are required for auctions');
+        showToast('Start price and end date are required for auctions', 'error');
         return;
       }
       const endDate = new Date(formData.end_date);
       if (endDate <= new Date()) {
-        alert('End date must be in the future');
+        showToast('End date must be in the future', 'error');
         return;
       }
     }
@@ -216,10 +235,104 @@ const PostAd = () => {
         // Clean up preview URLs
         imagePreviews.forEach(preview => URL.revokeObjectURL(preview));
         
-        alert('Auction created successfully!');
-        navigate('/auctions');
+        showToast('Auction created successfully!', 'success');
+        setTimeout(() => {
+          navigate('/auctions');
+        }, 1500);
       } else {
         // Sellers use the regular listings endpoint
+        // If user wants featured listing, process payment FIRST
+        if (wantFeatured && user.userType === 'seller') {
+          try {
+            // First, upload images to get URLs (we need to do this before payment)
+            // For now, we'll store image files in FormData and send them as base64 or URLs
+            // Actually, we need to upload images first to get URLs, then send listing data with image URLs
+            
+            // Upload images first to get URLs
+            const imageUploadFormData = new FormData();
+            images.forEach((image) => {
+              imageUploadFormData.append('images', image);
+            });
+            
+            // Upload images to get URLs (we'll use a temporary endpoint or include in listing data)
+            // For simplicity, we'll include images in the listing data as files
+            // But Stripe needs URLs, so we need to upload first
+            
+            // Actually, let's create a simpler approach: upload images first, get URLs, then create payment
+            // Or we can include image files in the payment request and handle upload after payment
+            
+            // Better approach: Create payment with listing data including image files
+            // The backend will handle image upload after payment success
+            const listingDataFormData = new FormData();
+            
+            // Append images
+            images.forEach((image) => {
+              listingDataFormData.append('images', image);
+            });
+            
+            // Append listing data as JSON string (we'll parse it on backend)
+            const listingData = {
+              category_id: formData.category_id,
+              title: formData.title,
+              description: formData.description || '',
+              storage: formData.storage || '',
+              condition: formData.condition || '',
+              city: formData.city,
+              listing_type: formData.listing_type,
+              sellType: formData.sellType || 'single',
+              quantity: formData.quantity || 1,
+              version: formData.version || '',
+              colour: formData.colour || '',
+              charge: formData.charge || '',
+              box: formData.box || '',
+              warranty: formData.warranty || false
+            };
+            
+            if (formData.per_price) {
+              listingData.per_price = formData.per_price;
+            }
+            
+            if (formData.listing_type === 'auction') {
+              listingData.price = formData.start_price;
+              listingData.start_price = formData.start_price;
+              listingData.end_date = formData.end_date;
+            } else {
+              listingData.price = formData.price;
+            }
+            
+            listingDataFormData.append('listingData', JSON.stringify(listingData));
+            listingDataFormData.append('duration', featuredDuration);
+            
+            // Create payment session with listing data
+            const paymentResponse = await axios.post(
+              '/api/payments/featured-listing-before-create',
+              listingDataFormData,
+              {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  'Authorization': `Bearer ${token}`
+                }
+              }
+            );
+            
+            if (paymentResponse.data.paymentLink) {
+              // Clean up preview URLs
+              imagePreviews.forEach(preview => URL.revokeObjectURL(preview));
+              
+              showToast('Redirecting to payment...', 'success');
+              setTimeout(() => {
+                window.location.href = paymentResponse.data.paymentLink;
+              }, 1000);
+              return;
+            }
+          } catch (error) {
+            console.error('Error creating featured listing payment:', error);
+            showToast('Error: ' + (error.response?.data?.error || 'Failed to initiate payment. Please try again.'), 'error');
+            setLoading(false);
+            return;
+          }
+        } else {
+          // Regular listing creation (no featured)
         // Create FormData for file upload
         const formDataToSend = new FormData();
         
@@ -254,7 +367,7 @@ const PostAd = () => {
           formDataToSend.append('price', formData.price);
         }
 
-        await axios.post('/api/listings', formDataToSend, {
+        const response = await axios.post('/api/listings', formDataToSend, {
           headers: {
             'Content-Type': 'multipart/form-data',
             'Authorization': `Bearer ${token}`
@@ -264,15 +377,28 @@ const PostAd = () => {
         // Clean up preview URLs
         imagePreviews.forEach(preview => URL.revokeObjectURL(preview));
         
-        alert('Listing created successfully!');
-        navigate('/');
+        showToast('Listing created successfully!', 'success');
+        setTimeout(() => {
+          navigate('/');
+        }, 1500);
+        }
       }
     } catch (error) {
       console.error('Error creating listing/auction:', error);
-      alert('Error: ' + (error.response?.data?.error || 'Unknown error'));
+      showToast('Error: ' + (error.response?.data?.error || 'Unknown error'), 'error');
     } finally {
       setLoading(false);
     }
+  };
+
+  const getFeaturedPrice = (duration) => {
+    const pricing = {
+      7: 50,
+      10: 70,
+      15: 100,
+      30: 180
+    };
+    return pricing[duration] || 50;
   };
 
   if (!user) {
@@ -281,6 +407,19 @@ const PostAd = () => {
 
   return (
     <div className="post-ad-page">
+      {/* Toast Notification */}
+      {toast.show && (
+        <div className={`toast toast-${toast.type}`}>
+          <div className="toast-content">
+            <span className="toast-icon">{toast.type === 'success' ? '✓' : '✕'}</span>
+            <span className="toast-message">{toast.message}</span>
+          </div>
+          <button className="toast-close" onClick={() => setToast({ show: false, message: '', type: 'success' })}>
+            ×
+          </button>
+        </div>
+      )}
+
       <div className="post-ad-container">
         <h1>{user?.userType === 'buyer' ? 'Create an Auction' : 'Post an Ad'}</h1>
         <form onSubmit={handleSubmit} className="post-ad-form">
@@ -561,6 +700,54 @@ const PostAd = () => {
                 />
               </div>
             </>
+          )}
+
+          {/* Featured Listing Option - Only for sellers */}
+          {user.userType === 'seller' && (
+            <div className="featured-listing-section">
+              <div className="featured-listing-header">
+                <input
+                  type="checkbox"
+                  id="wantFeatured"
+                  checked={wantFeatured}
+                  onChange={(e) => setWantFeatured(e.target.checked)}
+                  className="featured-checkbox"
+                />
+                <label htmlFor="wantFeatured" className="featured-label">
+                  <span className="featured-icon">⭐</span>
+                  Feature this listing on homepage
+                </label>
+              </div>
+              
+              {wantFeatured && (
+                <div className="featured-duration-options">
+                  <p className="featured-description">
+                    Choose how long you want your listing to appear at the top of the homepage:
+                  </p>
+                  <div className="duration-grid">
+                    {[
+                      { days: 7, label: '7 Days', price: 50 },
+                      { days: 10, label: '10 Days', price: 70 },
+                      { days: 15, label: '15 Days', price: 100 },
+                      { days: 30, label: '1 Month', price: 180 }
+                    ].map((option) => (
+                      <div
+                        key={option.days}
+                        className={`duration-option ${featuredDuration === option.days ? 'selected' : ''}`}
+                        onClick={() => setFeaturedDuration(option.days)}
+                      >
+                        <div className="duration-label">{option.label}</div>
+                        <div className="duration-price">AED {option.price}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="featured-total">
+                    <strong>Total: AED {getFeaturedPrice(featuredDuration)}</strong>
+                    <small>Your listing will be featured for {featuredDuration} days</small>
+                  </div>
+                </div>
+              )}
+            </div>
           )}
 
           <div className="form-group">

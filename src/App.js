@@ -36,6 +36,9 @@ import RefundPolicy from './pages/RefundPolicy/RefundPolicy';
 import Terms from './pages/Terms/Terms';
 import PostingPolicy from './pages/PostingPolicy/PostingPolicy';
 import AuctionPolicy from './pages/AuctionPolicy/AuctionPolicy';
+import PaymentSuccess from './pages/Payment/PaymentSuccess';
+import PaymentCancel from './pages/Payment/PaymentCancel';
+import PaymentFailure from './pages/Payment/PaymentFailure';
 import './App.css';
 
 function App() {
@@ -77,6 +80,9 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/payment/success" element={<PaymentSuccess />} />
+                <Route path="/payment/cancel" element={<PaymentCancel />} />
+                <Route path="/payment/failure" element={<PaymentFailure />} />
               </Routes>
             </main>
             <Footer />
