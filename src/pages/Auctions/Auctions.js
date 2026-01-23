@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
 import './Auctions.css';
 import AuctionCard from '../../components/AuctionCard/AuctionCard';
 
 const Auctions = () => {
+  const { user } = useAuth();
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
