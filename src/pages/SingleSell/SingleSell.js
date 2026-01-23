@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import ListingCard from '../../components/ListingCard/ListingCard';
 import './SingleSell.css';
@@ -24,10 +23,6 @@ const SingleSell = () => {
     sortBy: 'newest'
   });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-
-  useEffect(() => {
-    fetchListings();
-  }, [appliedFilters]);
 
   const mockListings = [
     {
@@ -176,7 +171,7 @@ const SingleSell = () => {
     }
   ];
 
-  const fetchListings = async () => {
+  const fetchListings = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -209,7 +204,11 @@ const SingleSell = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [appliedFilters, mockListings]);
+
+  useEffect(() => {
+    fetchListings();
+  }, [fetchListings]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;

@@ -1,18 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import './Blog.css';
 
 const Blog = () => {
-  const navigate = useNavigate();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchBlogs();
-  }, []);
-
-  const fetchBlogs = async () => {
+  const fetchBlogs = useCallback(async () => {
     try {
       const response = await axios.get('/api/blogs');
       setBlogs(response.data || []);
@@ -22,7 +16,11 @@ const Blog = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchBlogs();
+  }, [fetchBlogs]);
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -34,16 +32,6 @@ const Blog = () => {
     });
   };
 
-  const getCategoryFromTags = (tags) => {
-    if (!tags || tags.length === 0) return 'News';
-    // Map common tags to categories
-    const tag = tags[0].toLowerCase();
-    if (tag.includes('buying') || tag.includes('guide')) return 'BUYING GUIDE';
-    if (tag.includes('selling') || tag.includes('tips')) return 'SELLING TIPS';
-    if (tag.includes('maintenance')) return 'MAINTENANCE';
-    if (tag.includes('market')) return 'MARKET TIPS';
-    return tags[0].toUpperCase();
-  };
 
   if (loading) {
     return (

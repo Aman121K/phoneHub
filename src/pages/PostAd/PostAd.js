@@ -225,7 +225,7 @@ const PostAd = () => {
           formDataToSend.append('warranty', formData.warranty);
         }
 
-        const response = await axios.post('/api/auctions/create', formDataToSend, {
+        await axios.post('/api/auctions/create', formDataToSend, {
           headers: {
             'Content-Type': 'multipart/form-data',
             'Authorization': `Bearer ${token}`
@@ -367,7 +367,7 @@ const PostAd = () => {
           formDataToSend.append('price', formData.price);
         }
 
-        const response = await axios.post('/api/listings', formDataToSend, {
+        await axios.post('/api/listings', formDataToSend, {
           headers: {
             'Content-Type': 'multipart/form-data',
             'Authorization': `Bearer ${token}`

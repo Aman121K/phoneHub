@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import ListingCard from '../../components/ListingCard/ListingCard';
 import './SearchResults.css';
@@ -35,14 +35,6 @@ const SearchResults = () => {
     city: searchParams.get('city') || '',
     sortBy: searchParams.get('sortBy') || 'newest'
   });
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    fetchListings();
-  }, [appliedFilters]);
 
   const mockListings = [
     {
@@ -86,17 +78,11 @@ const SearchResults = () => {
     }
   ];
 
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get('/api/categories').catch(() => ({ data: [] }));
-      setCategories(response.data || []);
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-      setCategories([]);
-    }
-  };
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
-  const fetchListings = async () => {
+  const fetchListings = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -158,7 +144,22 @@ const SearchResults = () => {
     } finally {
       setLoading(false);
     }
+  }, [appliedFilters, setSearchParams, mockListings]);
+
+  useEffect(() => {
+    fetchListings();
+  }, [fetchListings]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get('/api/categories').catch(() => ({ data: [] }));
+      setCategories(response.data || []);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      setCategories([]);
+    }
   };
+
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;

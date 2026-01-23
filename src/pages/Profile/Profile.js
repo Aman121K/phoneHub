@@ -45,7 +45,7 @@ const Profile = () => {
         fetchProfile(); // Update local profile state
       }, 1500);
     }
-  }, [user, navigate]);
+  }, [user, navigate, refreshUser]);
 
   const fetchProfile = async () => {
     try {

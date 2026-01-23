@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../../context/AuthContext';
 import './Auctions.css';
 import AuctionCard from '../../components/AuctionCard/AuctionCard';
 
 const Auctions = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth();
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
@@ -27,10 +24,6 @@ const Auctions = () => {
     sortBy: 'newest'
   });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-
-  useEffect(() => {
-    fetchAuctions();
-  }, [appliedFilters]);
 
   const mockAuctions = [
     {
@@ -105,7 +98,7 @@ const Auctions = () => {
     }
   ];
 
-  const fetchAuctions = async () => {
+  const fetchAuctions = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -137,7 +130,11 @@ const Auctions = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [appliedFilters, mockAuctions]);
+
+  useEffect(() => {
+    fetchAuctions();
+  }, [fetchAuctions]);
 
   const handleBidSuccess = (auctionId, bidAmount) => {
     // Update the auction in the list with new bid

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -16,19 +16,7 @@ const AuctionDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [similarAuctions, setSimilarAuctions] = useState([]);
 
-  useEffect(() => {
-    fetchAuction();
-    const interval = setInterval(fetchAuction, 5000); // Refresh every 5 seconds
-    return () => clearInterval(interval);
-  }, [id]);
-
-  useEffect(() => {
-    if (auction) {
-      fetchSimilarAuctions();
-    }
-  }, [auction]);
-
-  const fetchAuction = async () => {
+  const fetchAuction = useCallback(async () => {
     try {
       const response = await axios.get(`/api/auctions/${id}`);
       if (response.data && (response.data.id || response.data._id)) {
@@ -47,9 +35,9 @@ const AuctionDetail = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
-  const fetchSimilarAuctions = async () => {
+  const fetchSimilarAuctions = useCallback(async () => {
     try {
       const response = await axios.get('/api/auctions?limit=8');
       const filtered = response.data.filter(item => 
@@ -59,7 +47,19 @@ const AuctionDetail = () => {
     } catch (error) {
       console.error('Error fetching similar auctions:', error);
     }
-  };
+  }, [auction]);
+
+  useEffect(() => {
+    fetchAuction();
+    const interval = setInterval(fetchAuction, 5000); // Refresh every 5 seconds
+    return () => clearInterval(interval);
+  }, [fetchAuction]);
+
+  useEffect(() => {
+    if (auction) {
+      fetchSimilarAuctions();
+    }
+  }, [auction, fetchSimilarAuctions]);
 
   const getAuctionImages = () => {
     if (!auction) return [];
@@ -154,7 +154,7 @@ const AuctionDetail = () => {
             <div className="main-image-wrapper">
               <img 
                 src={images[currentImageIndex]} 
-                alt={`${auction.title} - Image ${currentImageIndex + 1}`}
+                alt={`${auction.title} ${currentImageIndex + 1}`}
                 className="main-product-image"
                 onError={(e) => {
                   e.target.src = '/logo.png';

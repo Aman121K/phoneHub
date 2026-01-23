@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -35,17 +35,7 @@ const ListingDetail = () => {
   const [reporting, setReporting] = useState(false);
   const [verificationModalOpen, setVerificationModalOpen] = useState(false);
 
-  useEffect(() => {
-    fetchListing();
-  }, [id]);
-
-  useEffect(() => {
-    if (listing) {
-      fetchSimilarListings();
-    }
-  }, [listing]);
-
-  const fetchListing = async () => {
+  const fetchListing = useCallback(async () => {
     try {
       const response = await axios.get(`/api/listings/${id}`);
       setListing(response.data);
@@ -76,11 +66,10 @@ const ListingDetail = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
-  const fetchSimilarListings = async () => {
+  const fetchSimilarListings = useCallback(async () => {
     try {
-      const categoryId = listing.category?._id || listing.category_id;
       const categorySlug = listing.category?.slug || listing.category_slug;
       
       if (categorySlug) {
@@ -317,7 +306,17 @@ const ListingDetail = () => {
       );
       setSimilarListings(filtered);
     }
-  };
+  }, [listing]);
+
+  useEffect(() => {
+    fetchListing();
+  }, [fetchListing]);
+
+  useEffect(() => {
+    if (listing) {
+      fetchSimilarListings();
+    }
+  }, [listing, fetchSimilarListings]);
 
   // Get listing images - support both images array and single imageUrl
   const getListingImages = () => {
@@ -436,7 +435,7 @@ const ListingDetail = () => {
             <div className="main-image-wrapper">
               <img 
                 src={images[currentImageIndex]} 
-                alt={`${listing.title} - Image ${currentImageIndex + 1}`}
+                alt={`${listing.title} ${currentImageIndex + 1}`}
                 className="main-product-image"
                 onError={(e) => {
                   e.target.src = '/logo.png';
