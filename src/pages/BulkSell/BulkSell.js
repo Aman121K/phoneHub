@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import ListingCard from '../../components/ListingCard/ListingCard';
 import './BulkSell.css';
@@ -25,11 +24,7 @@ const BulkSell = () => {
   });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  useEffect(() => {
-    fetchListings();
-  }, [appliedFilters]);
-
-  const mockListings = [
+  const mockListings = useMemo(() => [
     {
       _id: '1',
       title: 'Bulk iPhone 15 Pro Max 256GB - 10 Units',
@@ -182,9 +177,9 @@ const BulkSell = () => {
       category: { name: 'iPhone XS Max', slug: 'iphone-xs-max' },
       createdAt: new Date('2025-01-08')
     }
-  ];
+  ], []);
 
-  const fetchListings = async () => {
+  const fetchListings = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -217,7 +212,11 @@ const BulkSell = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [appliedFilters, mockListings]);
+
+  useEffect(() => {
+    fetchListings();
+  }, [fetchListings]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;

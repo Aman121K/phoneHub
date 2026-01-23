@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Categories.css';
@@ -6,10 +6,6 @@ import './Categories.css';
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   const mockCategories = [
     { id: '1', name: 'iPhone SE', slug: 'iphone-se', ad_count: 15 },
@@ -45,7 +41,7 @@ const Categories = () => {
     { id: '31', name: 'iPhone 16 Pro Max', slug: 'iphone-16-pro-max', ad_count: 41 }
   ];
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const response = await axios.get('/api/categories');
       setCategories(response.data.length > 0 ? response.data : mockCategories);
@@ -55,7 +51,11 @@ const Categories = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [mockCategories]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   if (loading) {
     return <div className="loading">Loading...</div>;

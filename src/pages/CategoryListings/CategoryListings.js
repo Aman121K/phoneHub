@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import ListingCard from '../../components/ListingCard/ListingCard';
 import './CategoryListings.css';
@@ -9,7 +9,6 @@ const CategoryListings = () => {
   const [listings, setListings] = useState([]);
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState([]);
   const [filters, setFilters] = useState({
     minPrice: '',
     maxPrice: '',
@@ -27,15 +26,7 @@ const CategoryListings = () => {
     sortBy: 'newest'
   });
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    fetchListings();
-  }, [slug, appliedFilters]);
-
-  const mockListings = [
+  const mockListings = useMemo(() => [
     {
       _id: '1',
       title: 'iPhone 15 Pro Max 256GB - Brand New',
@@ -75,9 +66,9 @@ const CategoryListings = () => {
       category: { name: 'iPhone 15 Pro Max', slug: 'iphone-15-pro-max' },
       createdAt: new Date('2025-01-13')
     }
-  ];
+  ], []);
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const response = await axios.get('/api/categories').catch(() => ({ data: [] }));
       const allCategories = response.data || [];
@@ -88,14 +79,17 @@ const CategoryListings = () => {
         return !name.includes('pro') && !name.includes('plus') && !name.includes('mini');
       });
       
-      setCategories(mainCategories);
+      // Categories not used, removed setCategories
     } catch (error) {
       console.error('Error fetching categories:', error);
-      setCategories([]);
     }
-  };
+  }, []);
 
-  const fetchListings = async () => {
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  const fetchListings = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -133,7 +127,11 @@ const CategoryListings = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [slug, appliedFilters, mockListings]);
+
+  useEffect(() => {
+    fetchListings();
+  }, [fetchListings]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;

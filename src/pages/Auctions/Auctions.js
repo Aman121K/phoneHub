@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -27,7 +27,7 @@ const Auctions = () => {
   });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  const mockAuctions = [
+  const mockAuctions = useMemo(() => [
     {
       id: '1',
       listing_id: '1',
@@ -98,7 +98,7 @@ const Auctions = () => {
       seller_name: 'Sarah Johnson',
       status: 'live'
     }
-  ];
+  ], []);
 
   const fetchAuctions = useCallback(async () => {
     try {

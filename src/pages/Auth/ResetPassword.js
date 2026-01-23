@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Auth.css';
@@ -19,17 +19,7 @@ const ResetPassword = () => {
   const [loading, setLoading] = useState(false);
   const [tokenValid, setTokenValid] = useState(null);
 
-  useEffect(() => {
-    // Check if token is valid when component mounts
-    if (token) {
-      verifyToken();
-    } else {
-      setTokenValid(false);
-      setError('Invalid or missing reset token. Please request a new password reset link.');
-    }
-  }, [token]);
-
-  const verifyToken = async () => {
+  const verifyToken = useCallback(async () => {
     try {
       const response = await axios.get(`/api/auth/verify-reset-token?token=${token}`);
       if (response.data.valid) {
@@ -42,7 +32,17 @@ const ResetPassword = () => {
       setTokenValid(false);
       setError('This reset link has expired or is invalid. Please request a new one.');
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    // Check if token is valid when component mounts
+    if (token) {
+      verifyToken();
+    } else {
+      setTokenValid(false);
+      setError('Invalid or missing reset token. Please request a new password reset link.');
+    }
+  }, [token, verifyToken]);
 
   const handleChange = (e) => {
     setFormData({

@@ -66,6 +66,7 @@ const PostAd = () => {
     }
     
     fetchCategories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, navigate]);
 
   const fetchCategories = async () => {

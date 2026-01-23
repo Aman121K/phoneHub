@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Locations.css';
@@ -7,11 +7,7 @@ const Locations = () => {
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchLocations();
-  }, []);
-
-  const mockLocations = [
+  const mockLocations = useMemo(() => [
     { city: 'Dubai', listing_count: 245 },
     { city: 'Abu Dhabi', listing_count: 189 },
     { city: 'Sharjah', listing_count: 156 },
@@ -24,9 +20,9 @@ const Locations = () => {
     { city: 'Kalba', listing_count: 19 },
     { city: 'Dibba', listing_count: 15 },
     { city: 'Jebel Ali', listing_count: 42 }
-  ];
+  ], []);
 
-  const fetchLocations = async () => {
+  const fetchLocations = useCallback(async () => {
     try {
       const response = await axios.get('/api/locations');
       setLocations(response.data.length > 0 ? response.data : mockLocations);
@@ -36,7 +32,11 @@ const Locations = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [mockLocations]);
+
+  useEffect(() => {
+    fetchLocations();
+  }, [fetchLocations]);
 
   if (loading) {
     return <div className="loading">Loading...</div>;

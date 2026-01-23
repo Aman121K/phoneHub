@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -42,9 +42,9 @@ const EditListing = () => {
     }
     fetchCategories();
     fetchListing();
-  }, [user, navigate, id]);
+  }, [user, navigate, id, fetchCategories, fetchListing]);
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const response = await axios.get('/api/categories');
       if (response.data && Array.isArray(response.data)) {
@@ -53,9 +53,9 @@ const EditListing = () => {
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
-  };
+  }, []);
 
-  const fetchListing = async () => {
+  const fetchListing = useCallback(async () => {
     try {
       const response = await axios.get(`/api/listings/${id}`);
       const listing = response.data;
@@ -97,7 +97,7 @@ const EditListing = () => {
     } finally {
       setFetching(false);
     }
-  };
+  }, [id, user, navigate]);
 
   const handleChange = (e) => {
     setFormData({

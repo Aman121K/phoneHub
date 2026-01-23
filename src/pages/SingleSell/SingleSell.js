@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import ListingCard from '../../components/ListingCard/ListingCard';
 import './SingleSell.css';
@@ -24,7 +24,7 @@ const SingleSell = () => {
   });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  const mockListings = [
+  const mockListings = useMemo(() => [
     {
       _id: '1',
       title: 'iPhone 15 Pro Max 256GB - Brand New',
@@ -169,7 +169,7 @@ const SingleSell = () => {
       category: { name: 'iPhone XS Max', slug: 'iphone-xs-max' },
       createdAt: new Date('2025-01-08')
     }
-  ];
+  ], []);
 
   const fetchListings = useCallback(async () => {
     try {

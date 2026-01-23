@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import './Payment.css';
 
 const PaymentSuccess = () => {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user, refreshUser } = useAuth();
+  const { refreshUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [payment, setPayment] = useState(null);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const verifyPayment = async () => {
+  const verifyPayment = useCallback(async () => {
       const paymentId = searchParams.get('payment_id');
       const paymentIntentId = searchParams.get('pi');
 
@@ -104,10 +102,11 @@ const PaymentSuccess = () => {
       } finally {
         setLoading(false);
       }
-    };
+  }, [searchParams, refreshUser]);
 
+  useEffect(() => {
     verifyPayment();
-  }, [searchParams]);
+  }, [verifyPayment]);
 
   if (loading) {
     return (

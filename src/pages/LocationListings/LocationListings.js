@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import ListingCard from '../../components/ListingCard/ListingCard';
 import './LocationListings.css';
@@ -31,11 +31,7 @@ const LocationListings = () => {
   });
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  useEffect(() => {
-    fetchListings();
-  }, [cityName, appliedFilters]);
-
-  const mockListings = [
+  const mockListings = useMemo(() => [
     {
       _id: '1',
       title: 'iPhone 15 Pro Max 256GB - Brand New',
@@ -49,9 +45,9 @@ const LocationListings = () => {
       category: { name: 'iPhone 15 Pro Max', slug: 'iphone-15-pro-max' },
       createdAt: new Date('2025-01-15')
     }
-  ];
+  ], [city]);
 
-  const fetchListings = async () => {
+  const fetchListings = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -84,7 +80,11 @@ const LocationListings = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [city, appliedFilters, mockListings]);
+
+  useEffect(() => {
+    fetchListings();
+  }, [fetchListings]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;

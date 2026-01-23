@@ -374,27 +374,6 @@ const ListingDetail = () => {
     setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
-  const handleThumbnailClick = (index) => {
-    setCurrentImageIndex(index);
-  };
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: listing.title,
-        text: listing.description,
-        url: window.location.href
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Link copied to clipboard!');
-    }
-  };
-
-  const handleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    // TODO: Implement favorite functionality with backend
-  };
 
   const handleVerificationInfoClick = (e) => {
     e.preventDefault();

@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
-  Box,
   Typography,
   Card,
-  CardContent,
-  Button,
 } from '@mui/material';
-import { ArrowForward } from '@mui/icons-material';
 import ListingCard from '../../components/ListingCard/ListingCard';
 import AuctionCard from '../../components/AuctionCard/AuctionCard';
 import './Home.css';
@@ -381,11 +377,7 @@ const Home = () => {
     }
   ];
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [featuredRes, latestRes, auctionsRes, categoriesRes, locationsRes, singleSellRes, bulkSellRes] = await Promise.all([
         axios.get('/api/listings/featured').catch(() => ({ data: [] })),
@@ -435,7 +427,11 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -645,9 +641,8 @@ const Home = () => {
               className="category-card"
               sx={{
                 textDecoration: 'none',
-                color: 'inherit',
-                background: '#2563eb',
                 color: '#fff',
+                background: '#2563eb',
                 textAlign: 'center',
                 padding: '2rem 1.5rem',
                 borderRadius: '12px',
@@ -694,9 +689,8 @@ const Home = () => {
               className="category-card blur-card"
               sx={{
                 textDecoration: 'none',
-                color: 'inherit',
-                background: '#2563eb',
                 color: '#fff',
+                background: '#2563eb',
                 textAlign: 'center',
                 padding: '2rem 1.5rem',
                 borderRadius: '12px',

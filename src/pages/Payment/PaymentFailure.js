@@ -5,7 +5,6 @@ import './Payment.css';
 const PaymentFailure = () => {
   const [searchParams] = useSearchParams();
   const paymentId = searchParams.get('payment_id');
-  const paymentIntentId = searchParams.get('pi');
 
   return (
     <div className="payment-page">

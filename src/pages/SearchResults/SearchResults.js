@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import ListingCard from '../../components/ListingCard/ListingCard';
@@ -36,7 +36,7 @@ const SearchResults = () => {
     sortBy: searchParams.get('sortBy') || 'newest'
   });
 
-  const mockListings = [
+  const mockListings = useMemo(() => [
     {
       _id: '1',
       title: 'iPhone 15 Pro Max 256GB - Brand New',
@@ -76,7 +76,7 @@ const SearchResults = () => {
       category: { name: 'iPhone 13 Pro Max', slug: 'iphone-13-pro-max' },
       createdAt: new Date('2025-01-13')
     }
-  ];
+  ], []);
 
   useEffect(() => {
     fetchCategories();
