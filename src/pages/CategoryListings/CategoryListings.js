@@ -70,10 +70,8 @@ const CategoryListings = () => {
 
   const fetchCategories = useCallback(async () => {
     try {
-      const response = await axios.get('/api/categories').catch(() => ({ data: [] }));
-      const allCategories = response.data || [];
-      
-      // Categories not used, removed setCategories
+      // Fetch categories if needed in the future
+      await axios.get('/api/categories').catch(() => ({ data: [] }));
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
