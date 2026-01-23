@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './Categories.css';
@@ -7,7 +7,7 @@ const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const mockCategories = [
+  const mockCategories = useMemo(() => [
     { id: '1', name: 'iPhone SE', slug: 'iphone-se', ad_count: 15 },
     { id: '2', name: 'iPhone 6', slug: 'iphone-6', ad_count: 8 },
     { id: '3', name: 'iPhone 6s', slug: 'iphone-6s', ad_count: 12 },
@@ -39,7 +39,7 @@ const Categories = () => {
     { id: '29', name: 'iPhone 16 Plus', slug: 'iphone-16-plus', ad_count: 28 },
     { id: '30', name: 'iPhone 16 Pro', slug: 'iphone-16-pro', ad_count: 35 },
     { id: '31', name: 'iPhone 16 Pro Max', slug: 'iphone-16-pro-max', ad_count: 41 }
-  ];
+  ], []);
 
   const fetchCategories = useCallback(async () => {
     try {

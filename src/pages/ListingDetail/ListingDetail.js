@@ -27,7 +27,6 @@ const ListingDetail = () => {
   const [message, setMessage] = useState('');
   const [showMessageForm, setShowMessageForm] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isFavorite, setIsFavorite] = useState(false);
   const [similarListings, setSimilarListings] = useState([]);
   const [showReportForm, setShowReportForm] = useState(false);
   const [reportReason, setReportReason] = useState('');

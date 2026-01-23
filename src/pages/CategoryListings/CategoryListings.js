@@ -73,12 +73,6 @@ const CategoryListings = () => {
       const response = await axios.get('/api/categories').catch(() => ({ data: [] }));
       const allCategories = response.data || [];
       
-      // Filter out sub-categories (Pro, Pro Max, Plus, Mini variants)
-      const mainCategories = allCategories.filter(cat => {
-        const name = cat.name.toLowerCase();
-        return !name.includes('pro') && !name.includes('plus') && !name.includes('mini');
-      });
-      
       // Categories not used, removed setCategories
     } catch (error) {
       console.error('Error fetching categories:', error);

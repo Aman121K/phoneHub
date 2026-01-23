@@ -30,20 +30,6 @@ const EditListing = () => {
   const [fetching, setFetching] = useState(true);
   const [imageError, setImageError] = useState('');
 
-  useEffect(() => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
-    if (user.userType === 'buyer') {
-      alert('Buyers can only bid on listings. Please register as a seller to edit listings.');
-      navigate('/');
-      return;
-    }
-    fetchCategories();
-    fetchListing();
-  }, [user, navigate, id, fetchCategories, fetchListing]);
-
   const fetchCategories = useCallback(async () => {
     try {
       const response = await axios.get('/api/categories');
@@ -98,6 +84,20 @@ const EditListing = () => {
       setFetching(false);
     }
   }, [id, user, navigate]);
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    if (user.userType === 'buyer') {
+      alert('Buyers can only bid on listings. Please register as a seller to edit listings.');
+      navigate('/');
+      return;
+    }
+    fetchCategories();
+    fetchListing();
+  }, [user, navigate, id, fetchCategories, fetchListing]);
 
   const handleChange = (e) => {
     setFormData({

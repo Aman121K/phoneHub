@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
@@ -14,8 +14,10 @@ const toArray = (value) => (Array.isArray(value) ? value : []);
 
 const Home = () => {
   const navigate = useNavigate();
+  // eslint-disable-next-line no-unused-vars
   const [featuredListings, setFeaturedListings] = useState([]);
   const [latestListings, setLatestListings] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [similarProducts, setSimilarProducts] = useState([]);
   const [auctions, setAuctions] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -28,7 +30,7 @@ const Home = () => {
   const [selectedStorage, setSelectedStorage] = useState('');
 
   // Mock data for testing
-  const mockCategories = [
+  const mockCategories = useMemo(() => [
     { id: '1', name: 'iPhone 16 Pro Max', slug: 'iphone-16-pro-max', ad_count: 45 },
     { id: '2', name: 'iPhone 15 Pro', slug: 'iphone-15-pro', ad_count: 38 },
     { id: '3', name: 'iPhone 14 Pro Max', slug: 'iphone-14-pro-max', ad_count: 52 },
@@ -41,9 +43,9 @@ const Home = () => {
     { id: '10', name: 'iPhone XS Max', slug: 'iphone-xs-max', ad_count: 23 },
     { id: '11', name: 'iPhone XR', slug: 'iphone-xr', ad_count: 19 },
     { id: '12', name: 'iPhone SE', slug: 'iphone-se', ad_count: 15 }
-  ];
+  ], []);
 
-  const mockFeaturedListings = [
+  const mockFeaturedListings = useMemo(() => [
     {
       _id: '1',
       title: 'iPhone 15 Pro Max 256GB - Brand New',
@@ -194,9 +196,9 @@ const Home = () => {
       category: { name: 'iPhone XS Max', slug: 'iphone-xs-max' },
       createdAt: new Date('2025-01-08')
     }
-  ];
+  ], []);
 
-  const mockAuctions = [
+  const mockAuctions = useMemo(() => [
     {
       id: '1',
       listing_id: '1',
@@ -267,18 +269,18 @@ const Home = () => {
       end_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
       status: 'live'
     }
-  ];
+  ], []);
 
-  const mockLocations = [
+  const mockLocations = useMemo(() => [
     { city: 'Dubai', listing_count: 245 },
     { city: 'Abu Dhabi', listing_count: 189 },
     { city: 'Sharjah', listing_count: 156 },
     { city: 'Ajman', listing_count: 98 },
     { city: 'Ras al Khaimah', listing_count: 67 },
     { city: 'Fujairah', listing_count: 45 }
-  ];
+  ], []);
 
-  const mockSimilarProducts = [
+  const mockSimilarProducts = useMemo(() => [
     {
       _id: 'sp1',
       title: 'iPhone 15 Pro Max 512GB - Excellent',
@@ -375,7 +377,7 @@ const Home = () => {
       category: { name: 'iPhone 15 Pro Max', slug: 'iphone-15-pro-max' },
       createdAt: new Date('2025-01-11')
     }
-  ];
+  ], []);
 
   const fetchData = useCallback(async () => {
     try {
@@ -427,7 +429,7 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [mockFeaturedListings, mockAuctions, mockCategories, mockLocations, mockSimilarProducts]);
 
   useEffect(() => {
     fetchData();
