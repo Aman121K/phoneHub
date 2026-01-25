@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import ListingCard from '../../components/ListingCard/ListingCard';
 import { IconButton, Box } from '@mui/material';
-import { Edit, Delete } from '@mui/icons-material';
+import { Edit, Delete, Person, Email, Phone, LocationOn, VerifiedUser, Cancel } from '@mui/icons-material';
 import './Profile.css';
 
 const Profile = () => {
@@ -32,7 +32,11 @@ const Profile = () => {
     
     fetchProfile();
     fetchMyListings();
-    fetchMyBids();
+    
+    // Only fetch bids for buyer accounts
+    if (user && user.userType === 'buyer') {
+      fetchMyBids();
+    }
     
     // If coming from payment, refresh profile data
     if (fromPayment === 'success') {
@@ -246,28 +250,64 @@ const Profile = () => {
         {profile && (
           <div className="profile-info">
             <div className="info-item">
-              <strong>Name:</strong> {profile.name}
+              <div className="info-icon">
+                <Person />
+              </div>
+              <div className="info-content">
+                <span className="info-label">Name</span>
+                <span className="info-value">{profile.name || 'Not provided'}</span>
+              </div>
             </div>
             <div className="info-item">
-              <strong>Email:</strong> {profile.email}
+              <div className="info-icon">
+                <Email />
+              </div>
+              <div className="info-content">
+                <span className="info-label">Email</span>
+                <span className="info-value">{profile.email}</span>
+              </div>
             </div>
             {profile.phone && (
               <div className="info-item">
-                <strong>Phone:</strong> {profile.phone}
+                <div className="info-icon">
+                  <Phone />
+                </div>
+                <div className="info-content">
+                  <span className="info-label">Phone</span>
+                  <span className="info-value">{profile.phone}</span>
+                </div>
               </div>
             )}
             {profile.city && (
               <div className="info-item">
-                <strong>City:</strong> {profile.city}
+                <div className="info-icon">
+                  <LocationOn />
+                </div>
+                <div className="info-content">
+                  <span className="info-label">City</span>
+                  <span className="info-value">{profile.city}</span>
+                </div>
               </div>
             )}
             <div className="info-item">
-              <strong>Verified Batch:</strong> {profile.verifiedBatch ? 'Yes' : 'No'}
-              {profile.verifiedBatch && (
-                <span style={{ marginLeft: '0.5rem', color: '#27ae60', fontSize: '0.9rem' }}>
-                  ✓ Verified User
+              <div className={`info-icon ${profile.verifiedBatch ? 'verified' : 'not-verified'}`}>
+                {profile.verifiedBatch ? <VerifiedUser /> : <Cancel />}
+              </div>
+              <div className="info-content">
+                <span className="info-label">Verified Batch</span>
+                <span className={`info-value ${profile.verifiedBatch ? 'verified-text' : 'not-verified-text'}`}>
+                  {profile.verifiedBatch ? 'Verified' : 'Not Verified'}
                 </span>
-              )}
+                {profile.verifiedBatch && profile.verifiedBatchPurchasedAt && (
+                  <span className="info-date">
+                    Since {new Date(profile.verifiedBatchPurchasedAt).toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -317,6 +357,7 @@ const Profile = () => {
                 <Box key={listing._id || listing.id} sx={{ position: 'relative' }}>
                   <ListingCard listing={listing} />
                   <Box
+                    className="listing-action-buttons"
                     sx={{
                       position: 'absolute',
                       top: '8px',
@@ -332,18 +373,20 @@ const Profile = () => {
                         e.stopPropagation();
                         handleEditListing(listing._id || listing.id);
                       }}
+                      className="edit-listing-btn"
                       sx={{
                         backgroundColor: '#2563eb',
                         color: 'white',
-                        width: '32px',
-                        height: '32px',
+                        width: { xs: '36px', sm: '32px' },
+                        height: { xs: '36px', sm: '32px' },
+                        minWidth: { xs: '36px', sm: '32px' },
                         '&:hover': {
                           backgroundColor: '#1d4ed8',
                         },
                       }}
                       aria-label="Edit listing"
                     >
-                      <Edit sx={{ fontSize: '1rem' }} />
+                      <Edit sx={{ fontSize: { xs: '18px', sm: '1rem' } }} />
                     </IconButton>
                     <IconButton
                       onClick={(e) => {
@@ -351,18 +394,20 @@ const Profile = () => {
                         e.stopPropagation();
                         handleDeleteListing(listing._id || listing.id);
                       }}
+                      className="delete-listing-btn"
                       sx={{
                         backgroundColor: '#ef4444',
                         color: 'white',
-                        width: '32px',
-                        height: '32px',
+                        width: { xs: '36px', sm: '32px' },
+                        height: { xs: '36px', sm: '32px' },
+                        minWidth: { xs: '36px', sm: '32px' },
                         '&:hover': {
                           backgroundColor: '#dc2626',
                         },
                       }}
                       aria-label="Delete listing"
                     >
-                      <Delete sx={{ fontSize: '1rem' }} />
+                      <Delete sx={{ fontSize: { xs: '18px', sm: '1rem' } }} />
                     </IconButton>
                   </Box>
                 </Box>
@@ -371,103 +416,106 @@ const Profile = () => {
           )}
         </div>
 
-        <div className="my-bids-section">
-          <h2>My Bids ({myBids.length})</h2>
-          {myBids.length === 0 ? (
-            <div className="no-listings">
-              <p>You haven't placed any bids yet.</p>
-              <Link to="/auctions" className="post-ad-btn">Browse Auctions</Link>
-            </div>
-          ) : (
-            <div className="listings-grid">
-              {myBids.map((auction) => {
-                // Convert auction to listing format for ListingCard
-                const listingFormat = {
-                  _id: auction.id || auction._id, // Use auction ID for linking to auction detail
-                  id: auction.id || auction._id,
-                  title: auction.title,
-                  price: auction.current_price,
-                  city: auction.city,
-                  listingType: 'auction',
-                  imageUrl: auction.image_url,
-                  images: auction.images || (auction.image_url ? [auction.image_url] : []),
-                  description: auction.description,
-                  user: {
-                    name: auction.seller_name,
-                    city: auction.city
-                  },
-                  category: auction.category_name ? { name: auction.category_name } : null,
-                  // Add auction-specific info
-                  auctionInfo: {
-                    startPrice: auction.start_price,
-                    currentPrice: auction.current_price,
-                    endDate: auction.end_date,
-                    status: auction.status,
-                    myHighestBid: auction.my_highest_bid,
-                    myBidDate: auction.my_bid_date
-                  }
-                };
-                return (
-                  <div key={auction.id || auction._id} style={{ position: 'relative' }}>
-                    <ListingCard listing={listingFormat} />
-                    <div style={{
-                      position: 'absolute',
-                      top: '10px',
-                      right: '10px',
-                      background: 'rgba(249, 115, 22, 0.95)',
-                      color: 'white',
-                      padding: '0.5rem 1rem',
-                      borderRadius: '8px',
-                      fontSize: '0.85rem',
-                      fontWeight: 600,
-                      zIndex: 10,
-                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
-                      pointerEvents: 'none'
-                    }}>
-                      My Bid: AED {auction.my_highest_bid}
+        {/* My Bids Section - Only for buyer accounts */}
+        {user && user.userType === 'buyer' && (
+          <div className="my-bids-section">
+            <h2>My Bids ({myBids.length})</h2>
+            {myBids.length === 0 ? (
+              <div className="no-listings">
+                <p>You haven't placed any bids yet.</p>
+                <Link to="/auctions" className="post-ad-btn">Browse Auctions</Link>
+              </div>
+            ) : (
+              <div className="listings-grid">
+                {myBids.map((auction) => {
+                  // Convert auction to listing format for ListingCard
+                  const listingFormat = {
+                    _id: auction.id || auction._id, // Use auction ID for linking to auction detail
+                    id: auction.id || auction._id,
+                    title: auction.title,
+                    price: auction.current_price,
+                    city: auction.city,
+                    listingType: 'auction',
+                    imageUrl: auction.image_url,
+                    images: auction.images || (auction.image_url ? [auction.image_url] : []),
+                    description: auction.description,
+                    user: {
+                      name: auction.seller_name,
+                      city: auction.city
+                    },
+                    category: auction.category_name ? { name: auction.category_name } : null,
+                    // Add auction-specific info
+                    auctionInfo: {
+                      startPrice: auction.start_price,
+                      currentPrice: auction.current_price,
+                      endDate: auction.end_date,
+                      status: auction.status,
+                      myHighestBid: auction.my_highest_bid,
+                      myBidDate: auction.my_bid_date
+                    }
+                  };
+                  return (
+                    <div key={auction.id || auction._id} style={{ position: 'relative' }}>
+                      <ListingCard listing={listingFormat} />
+                      <div style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px',
+                        background: 'rgba(249, 115, 22, 0.95)',
+                        color: 'white',
+                        padding: '0.5rem 1rem',
+                        borderRadius: '8px',
+                        fontSize: '0.85rem',
+                        fontWeight: 600,
+                        zIndex: 10,
+                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                        pointerEvents: 'none'
+                      }}>
+                        My Bid: AED {auction.my_highest_bid}
+                      </div>
+                      {auction.status === 'live' && (
+                        <div style={{
+                          position: 'absolute',
+                          bottom: '10px',
+                          left: '10px',
+                          background: '#2563eb',
+                          color: 'white',
+                          padding: '0.5rem 1rem',
+                          borderRadius: '8px',
+                          fontSize: '0.85rem',
+                          fontWeight: 600,
+                          zIndex: 10,
+                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                          pointerEvents: 'none'
+                        }}>
+                          Live Auction
+                        </div>
+                      )}
+                      {auction.status === 'ended' && (
+                        <div style={{
+                          position: 'absolute',
+                          bottom: '10px',
+                          left: '10px',
+                          background: '#6b7280',
+                          color: 'white',
+                          padding: '0.5rem 1rem',
+                          borderRadius: '8px',
+                          fontSize: '0.85rem',
+                          fontWeight: 600,
+                          zIndex: 10,
+                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+                          pointerEvents: 'none'
+                        }}>
+                          Ended
+                        </div>
+                      )}
                     </div>
-                    {auction.status === 'live' && (
-                      <div style={{
-                        position: 'absolute',
-                        bottom: '10px',
-                        left: '10px',
-                        background: '#2563eb',
-                        color: 'white',
-                        padding: '0.5rem 1rem',
-                        borderRadius: '8px',
-                        fontSize: '0.85rem',
-                        fontWeight: 600,
-                        zIndex: 10,
-                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
-                        pointerEvents: 'none'
-                      }}>
-                        Live Auction
-                      </div>
-                    )}
-                    {auction.status === 'ended' && (
-                      <div style={{
-                        position: 'absolute',
-                        bottom: '10px',
-                        left: '10px',
-                        background: '#6b7280',
-                        color: 'white',
-                        padding: '0.5rem 1rem',
-                        borderRadius: '8px',
-                        fontSize: '0.85rem',
-                        fontWeight: 600,
-                        zIndex: 10,
-                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
-                        pointerEvents: 'none'
-                      }}>
-                        Ended
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

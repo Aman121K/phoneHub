@@ -477,19 +477,24 @@
   .filters-sidebar.mobile-open .apply-filters-btn {
     position: sticky;
     bottom: 0;
-    margin-top: 1rem;
+    margin-top: auto;
     margin-bottom: 0;
-    margin-left: 0;
-    margin-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: calc(100% - 3rem);
+    max-width: 300px;
     z-index: 10;
-    background: white;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
     padding: 1rem 1.5rem;
     border-top: 1px solid #e5e7eb;
-    border-radius: 0 0 16px 16px;
+    border-radius: 8px;
     flex-shrink: 0;
-    width: 100%;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    font-weight: 600;
+    font-size: 0.95rem;
     box-sizing: border-box;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    display: block;
   }
 
   /* Show mobile close button */

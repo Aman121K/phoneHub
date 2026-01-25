@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+import { getFirstName } from '../../utils/nameUtils';
 import './Messages.css';
 
 const Messages = () => {
@@ -54,9 +55,11 @@ const Messages = () => {
               >
                 <div className="message-header">
                   <strong>
-                    {(message.receiver_id || message.receiver?._id) === (user.id || user._id)
-                      ? message.sender_name || message.sender?.name
-                      : message.receiver_name || message.receiver?.name}
+                    {getFirstName(
+                      (message.receiver_id || message.receiver?._id) === (user.id || user._id)
+                        ? message.sender_name || message.sender?.name
+                        : message.receiver_name || message.receiver?.name
+                    )}
                   </strong>
                   {message.listing_title && (
                     <span className="listing-link">Re: {message.listing_title}</span>

@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import AuctionCard from '../../components/AuctionCard/AuctionCard';
+import { getFirstName, getFirstNameInitial } from '../../utils/nameUtils';
 import './AuctionDetail.css';
 
 const AuctionDetail = () => {
@@ -232,10 +233,10 @@ const AuctionDetail = () => {
           <div className="seller-info-section">
             <div className="seller-avatar">
               <span className="seller-avatar-text">
-                {(auction.seller_name || 'Seller').charAt(0).toLowerCase()}
+                {getFirstNameInitial(auction.seller_name || 'Seller')}
               </span>
             </div>
-            <span className="seller-name">{auction.seller_name || 'Seller'}</span>
+            <span className="seller-name">{getFirstName(auction.seller_name || 'Seller')}</span>
           </div>
 
           {/* Separator */}

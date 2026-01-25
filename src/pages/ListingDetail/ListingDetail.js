@@ -16,6 +16,7 @@ import {
   VerifiedUser,
   Info,
 } from '@mui/icons-material';
+import { getFirstName, getFirstNameInitial } from '../../utils/nameUtils';
 import './ListingDetail.css';
 
 const ListingDetail = () => {
@@ -503,12 +504,12 @@ const ListingDetail = () => {
           <div className="seller-info-section">
             <div className="seller-avatar">
               <span className="seller-avatar-text">
-                {(listing.user?.name || listing.seller_name || 'Seller').charAt(0).toUpperCase()}
+                {getFirstNameInitial(listing.user?.name || listing.seller_name || 'Seller').toUpperCase()}
               </span>
             </div>
             <div className="seller-details">
               <span className="seller-name">
-                {listing.user?.name || listing.seller_name || 'Seller'}
+                {getFirstName(listing.user?.name || listing.seller_name || 'Seller')}
               </span>
               {listing.seller_business_name && (
                 <span className="seller-business">{listing.seller_business_name}</span>

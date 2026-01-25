@@ -29,6 +29,11 @@ const EditListing = () => {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [imageError, setImageError] = useState('');
+  const [isAlreadyFeatured, setIsAlreadyFeatured] = useState(false);
+  const [wantFeatured, setWantFeatured] = useState(false);
+  const [featuredDuration, setFeaturedDuration] = useState(7);
+  const [featuring, setFeaturing] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -76,6 +81,9 @@ const EditListing = () => {
       } else if (listing.imageUrl) {
         setImagePreviews([listing.imageUrl]);
       }
+
+      // Check if listing is already featured
+      setIsAlreadyFeatured(listing.isFeatured || false);
     } catch (error) {
       console.error('Error fetching listing:', error);
       alert('Error loading listing. Please try again.');
@@ -98,6 +106,13 @@ const EditListing = () => {
     fetchCategories();
     fetchListing();
   }, [user, navigate, id, fetchCategories, fetchListing]);
+
+  // Reset sellType to 'single' for non-business sellers
+  useEffect(() => {
+    if (user && user.userType === 'seller' && user.sellerType !== 'business' && formData.sellType === 'bulk') {
+      setFormData(prev => ({ ...prev, sellType: 'single', quantity: 1 }));
+    }
+  }, [user, formData.sellType]);
 
   const handleChange = (e) => {
     setFormData({
@@ -152,6 +167,57 @@ const EditListing = () => {
     if (index < images.length) {
       const newImages = images.filter((_, i) => i !== index);
       setImages(newImages);
+    }
+  };
+
+  const showToast = (message, type = 'success') => {
+    setToast({ show: true, message, type });
+    setTimeout(() => {
+      setToast({ show: false, message: '', type: 'success' });
+    }, 4000);
+  };
+
+  const getFeaturedPrice = (duration) => {
+    const pricing = {
+      7: 50,
+      10: 70,
+      15: 100,
+      30: 180
+    };
+    return pricing[duration] || 50;
+  };
+
+  const handleFeatureListing = async () => {
+    if (!wantFeatured || isAlreadyFeatured) {
+      return;
+    }
+
+    setFeaturing(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        '/api/payments/featured-listing',
+        {
+          listingId: id,
+          duration: featuredDuration
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.data.paymentLink) {
+        showToast('Redirecting to payment...', 'success');
+        setTimeout(() => {
+          window.location.href = response.data.paymentLink;
+        }, 1000);
+      }
+    } catch (error) {
+      console.error('Error creating featured listing payment:', error);
+      showToast(error.response?.data?.error || 'Failed to initiate payment. Please try again.', 'error');
+      setFeaturing(false);
     }
   };
 
@@ -223,6 +289,19 @@ const EditListing = () => {
 
   return (
     <div className="edit-listing-page">
+      {/* Toast Notification */}
+      {toast.show && (
+        <div className={`toast toast-${toast.type}`}>
+          <div className="toast-content">
+            <span className="toast-icon">{toast.type === 'success' ? '✓' : '✕'}</span>
+            <span className="toast-message">{toast.message}</span>
+          </div>
+          <button className="toast-close" onClick={() => setToast({ show: false, message: '', type: 'success' })}>
+            ×
+          </button>
+        </div>
+      )}
+
       <div className="edit-listing-container">
         <h1>Edit Listing</h1>
         <form onSubmit={handleSubmit} className="edit-listing-form">
@@ -370,10 +449,18 @@ const EditListing = () => {
               value={formData.sellType}
               onChange={handleChange}
               required
+              disabled={user?.userType === 'seller' && user?.sellerType !== 'business' && formData.sellType === 'single'}
             >
               <option value="single">Single</option>
-              <option value="bulk">Bulk</option>
+              {user?.sellerType === 'business' && (
+                <option value="bulk">Bulk</option>
+              )}
             </select>
+            {user?.userType === 'seller' && user?.sellerType !== 'business' && (
+              <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
+                Bulk Sell is only available for business sellers
+              </small>
+            )}
           </div>
 
           {/* Images */}
@@ -405,6 +492,74 @@ const EditListing = () => {
               </div>
             )}
           </div>
+
+          {/* Featured Listing Option - Only for sellers and if not already featured */}
+          {user && user.userType === 'seller' && (
+            <div className="featured-listing-section">
+              {isAlreadyFeatured ? (
+                <div className="featured-status-message">
+                  <span className="featured-icon">⭐</span>
+                  <div>
+                    <strong>This listing is already featured!</strong>
+                    <p>Your listing is currently being featured on the homepage.</p>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="featured-listing-header">
+                    <input
+                      type="checkbox"
+                      id="wantFeatured"
+                      checked={wantFeatured}
+                      onChange={(e) => setWantFeatured(e.target.checked)}
+                      className="featured-checkbox"
+                    />
+                    <label htmlFor="wantFeatured" className="featured-label">
+                      <span className="featured-icon">⭐</span>
+                      Feature this listing on homepage
+                    </label>
+                  </div>
+                  
+                  {wantFeatured && (
+                    <div className="featured-duration-options">
+                      <p className="featured-description">
+                        Choose how long you want your listing to appear at the top of the homepage:
+                      </p>
+                      <div className="duration-grid">
+                        {[
+                          { days: 7, label: '7 Days', price: 50 },
+                          { days: 10, label: '10 Days', price: 70 },
+                          { days: 15, label: '15 Days', price: 100 },
+                          { days: 30, label: '1 Month', price: 180 }
+                        ].map((option) => (
+                          <div
+                            key={option.days}
+                            className={`duration-option ${featuredDuration === option.days ? 'selected' : ''}`}
+                            onClick={() => setFeaturedDuration(option.days)}
+                          >
+                            <div className="duration-label">{option.label}</div>
+                            <div className="duration-price">AED {option.price}</div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="featured-total">
+                        <strong>Total: AED {getFeaturedPrice(featuredDuration)}</strong>
+                        <small>Your listing will be featured for {featuredDuration} days</small>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleFeatureListing}
+                        className="feature-purchase-btn"
+                        disabled={featuring}
+                      >
+                        {featuring ? 'Processing...' : `Pay AED ${getFeaturedPrice(featuredDuration)} to Feature`}
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
 
           <div className="form-actions">
             <button

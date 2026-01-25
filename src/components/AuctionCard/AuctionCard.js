@@ -20,6 +20,7 @@ import {
   Share,
 } from '@mui/icons-material';
 import axios from 'axios';
+import { getFirstName, getFirstNameInitial } from '../../utils/nameUtils';
 import './AuctionCard.css';
 
 const AuctionCard = ({ auction, onBidSuccess }) => {
@@ -73,7 +74,7 @@ const AuctionCard = ({ auction, onBidSuccess }) => {
   };
 
   const getSellerInitial = (name) => {
-    return name ? name.charAt(0).toLowerCase() : 's';
+    return getFirstNameInitial(name);
   };
 
   const getSellerColor = (name) => {
@@ -373,7 +374,7 @@ const AuctionCard = ({ auction, onBidSuccess }) => {
                 fontFamily: "'Inter', sans-serif",
               }}
             >
-              {auction.seller_name || auction.user?.name || 'Seller'}
+              {getFirstName(auction.seller_name || auction.user?.name || 'Seller')}
             </Typography>
           </Box>
 

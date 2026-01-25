@@ -22,6 +22,7 @@ import {
   Info,
   VerifiedUser,
 } from '@mui/icons-material';
+import { getFirstName, getFirstNameInitial } from '../../utils/nameUtils';
 import './ListingCard.css';
 
 const ListingCard = ({ listing, className, isHome = false }) => {
@@ -71,7 +72,7 @@ const ListingCard = ({ listing, className, isHome = false }) => {
   };
 
   const getSellerInitial = (name) => {
-    return name ? name.charAt(0).toLowerCase() : 's';
+    return getFirstNameInitial(name);
   };
 
   const getSellerColor = (name) => {
@@ -353,7 +354,7 @@ const ListingCard = ({ listing, className, isHome = false }) => {
                 fontFamily: "'Inter', sans-serif",
               }}
             >
-              {listing.user?.name || 'Seller'}
+              {getFirstName(listing.user?.name || 'Seller')}
             </Typography>
           </Box>
 

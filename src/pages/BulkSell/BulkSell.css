@@ -406,12 +406,17 @@
   .filters-sidebar.mobile-open .apply-filters-btn {
     position: sticky;
     bottom: 0;
-    margin-top: 1rem;
+    margin-top: auto;
     margin-bottom: 0;
-    margin-left: 0;
-    margin-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: calc(100% - 3rem);
+    max-width: 300px;
     z-index: 10;
-    background: white;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    display: block;
+    display: block;
     padding: 1rem 1.5rem;
     border-top: 1px solid #e5e7eb;
     border-radius: 0 0 16px 16px;

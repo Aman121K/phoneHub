@@ -57,6 +57,11 @@ const PostAd = () => {
       setFormData(prev => ({ ...prev, city: user.city }));
     }
     
+    // Reset sellType to 'single' for non-business sellers
+    if (user.userType === 'seller' && user.sellerType !== 'business' && formData.sellType === 'bulk') {
+      setFormData(prev => ({ ...prev, sellType: 'single', quantity: 1 }));
+    }
+    
     // Check if payment was cancelled
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('payment_cancelled') === 'true') {
@@ -584,10 +589,18 @@ const PostAd = () => {
               value={formData.sellType}
               onChange={handleChange}
               required
+              disabled={user?.userType === 'seller' && user?.sellerType !== 'business' && formData.sellType === 'single'}
             >
               <option value="single">Single Sell</option>
-              <option value="bulk">Bulk Sell</option>
+              {user?.sellerType === 'business' && (
+                <option value="bulk">Bulk Sell</option>
+              )}
             </select>
+            {user?.userType === 'seller' && user?.sellerType !== 'business' && (
+              <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
+                Bulk Sell is only available for business sellers
+              </small>
+            )}
           </div>
 
           <div className="form-group">
