@@ -243,7 +243,6 @@ const AdminListings = () => {
                     <label>Listing Type *</label>
                     <select name="listing_type" value={formData.listing_type} onChange={handleFormChange} required>
                       <option value="fixed_price">Fixed Price</option>
-                      <option value="auction">Auction</option>
                     </select>
                   </div>
                 </div>
@@ -253,18 +252,6 @@ const AdminListings = () => {
                     <label>Price (AED) *</label>
                     <input type="number" name="price" value={formData.price} onChange={handleFormChange} required min="0" step="0.01" />
                   </div>
-                  {formData.listing_type === 'auction' && (
-                    <>
-                      <div className="form-group">
-                        <label>Start Price (AED) *</label>
-                        <input type="number" name="start_price" value={formData.start_price} onChange={handleFormChange} required min="0" step="0.01" />
-                      </div>
-                      <div className="form-group">
-                        <label>End Date *</label>
-                        <input type="datetime-local" name="end_date" value={formData.end_date} onChange={handleFormChange} required />
-                      </div>
-                    </>
-                  )}
                 </div>
 
                 <div className="form-row">
@@ -347,7 +334,6 @@ const AdminListings = () => {
               <select name="listingType" value={filters.listingType} onChange={handleFilterChange}>
                 <option value="">All Listing Types</option>
                 <option value="fixed_price">Fixed Price</option>
-                <option value="auction">Auction</option>
               </select>
               <select name="status" value={filters.status} onChange={handleFilterChange}>
                 <option value="">All Status</option>
@@ -424,4 +410,3 @@ const AdminListings = () => {
 };
 
 export default AdminListings;
-

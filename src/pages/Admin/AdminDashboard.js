@@ -13,8 +13,7 @@ const AdminDashboard = () => {
     totalUsers: 0,
     totalCategories: 0,
     singleSell: 0,
-    bulkSell: 0,
-    auctions: 0
+    bulkSell: 0
   });
   const [loading, setLoading] = useState(true);
 
@@ -44,8 +43,7 @@ const AdminDashboard = () => {
         totalUsers: users.length,
         totalCategories: categories.length,
         singleSell: listings.filter(l => l.sellType === 'single').length,
-        bulkSell: listings.filter(l => l.sellType === 'bulk').length,
-        auctions: listings.filter(l => l.listingType === 'auction').length
+        bulkSell: listings.filter(l => l.sellType === 'bulk').length
       });
     } catch (error) {
       console.error('Error fetching stats:', error);
@@ -141,7 +139,7 @@ const AdminDashboard = () => {
               </div>
               <div className="stat-info">
                 <h3>{stats.singleSell}</h3>
-                <p>Single iphone</p>
+                <p>Single Listing</p>
               </div>
             </div>
 
@@ -151,19 +149,10 @@ const AdminDashboard = () => {
               </div>
               <div className="stat-info">
                 <h3>{stats.bulkSell}</h3>
-                <p>Bulk iphone</p>
+                <p>Bulk Listing</p>
               </div>
             </div>
 
-            <div className="stat-card">
-              <div className="stat-icon yellow">
-                <i className="fas fa-gavel"></i>
-              </div>
-              <div className="stat-info">
-                <h3>{stats.auctions}</h3>
-                <p>Auctions</p>
-              </div>
-            </div>
           </div>
 
           <div className="admin-quick-actions">
@@ -172,7 +161,7 @@ const AdminDashboard = () => {
               <Link to="/admin/listings?action=create" className="quick-action-card">
                 <i className="fas fa-plus-circle"></i>
                 <h3>Create New Listing</h3>
-                <p>Add a new iPhone listing (single or bulk)</p>
+                <p>Add a new listing (single or bulk)</p>
               </Link>
               <Link to="/admin/categories?action=create" className="quick-action-card">
                 <i className="fas fa-tag"></i>
@@ -193,4 +182,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-

@@ -123,10 +123,7 @@ const ListingCard = ({ listing, className, isHome = false }) => {
     });
   };
 
-  // Determine the correct route based on listing type
-  const listingRoute = listing.listingType === 'auction' 
-    ? `/auction/${listing._id || listing.id}` 
-    : `/listing/${listing._id || listing.id}`;
+  const listingRoute = `/listing/${listing._id || listing.id}`;
 
   return (
     <Card
@@ -579,4 +576,3 @@ const ListingCard = ({ listing, className, isHome = false }) => {
 };
 
 export default ListingCard;
-

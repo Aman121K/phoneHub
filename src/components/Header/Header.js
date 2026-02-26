@@ -40,17 +40,12 @@ const Header = () => {
           <ul className="nav-links">
             <li>
               <Link to="/single-sell" className={`nav-link ${isActive('/single-sell') ? 'active' : ''}`}>
-                Single iphone
+                Single Listing
               </Link>
             </li>
             <li>
               <Link to="/bulk-sell" className={`nav-link ${isActive('/bulk-sell') ? 'active' : ''}`}>
-                Bulk iphone
-              </Link>
-            </li>
-            <li>
-              <Link to="/auctions" className={`nav-link ${isActive('/auctions') ? 'active' : ''}`}>
-                Auctions
+                Bulk Listing
               </Link>
             </li>
             <li>
@@ -69,7 +64,7 @@ const Header = () => {
               {user.userType !== 'buyer' && (
                 <Link to="/post-ad" className="btn-sell">
                   <i className="fas fa-plus"></i>
-                  <span className="btn-sell-text">Sell iPhone</span>
+                  <span className="btn-sell-text">Sell Listing</span>
                 </Link>
               )}
             </>
@@ -79,7 +74,7 @@ const Header = () => {
               <Link to="/register" className="nav-btn btn-signup">Sign Up</Link>
               <Link to="/post-ad" className="btn-sell">
                 <i className="fas fa-plus"></i>
-                <span className="btn-sell-text">Sell iPhone</span>
+                <span className="btn-sell-text">Sell Listing</span>
               </Link>
             </>
           )}
@@ -90,4 +85,3 @@ const Header = () => {
 };
 
 export default Header;
-

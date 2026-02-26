@@ -29,7 +29,7 @@ const About = () => {
             <li><strong>Dedicated to iPhones:</strong> We specialize exclusively in iPhone transactions</li>
             <li><strong>Safe Transactions:</strong> Secure platform with verified sellers</li>
             <li><strong>Easy to Use:</strong> Simple interface for posting and browsing listings</li>
-            <li><strong>Multiple Options:</strong> Choose between fixed price listings or auctions</li>
+            <li><strong>Multiple Options:</strong> Choose between single and bulk fixed price listings</li>
             <li><strong>Wide Selection:</strong> Browse all iPhone models from iPhone SE to iPhone 16 Pro Max</li>
             <li><strong>Location-Based:</strong> Find iPhones in your city across the UAE</li>
           </ul>
@@ -66,4 +66,3 @@ const About = () => {
 };
 
 export default About;
-

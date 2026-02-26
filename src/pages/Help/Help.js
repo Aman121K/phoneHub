@@ -26,17 +26,7 @@ const Help = () => {
               <p>
                 After logging in, click on "Sell iPhone" or "Post Ad" button. Fill in all the required 
                 information including iPhone model, condition, storage, price, and upload images. 
-                Choose between fixed price or auction listing.
-              </p>
-            </div>
-
-            <div className="faq-item">
-              <h3>What is the difference between Fixed Price and Auction?</h3>
-              <p>
-                <strong>Fixed Price:</strong> You set a specific price for your iPhone. Buyers can contact 
-                you directly to purchase at that price.<br/>
-                <strong>Auction:</strong> You set a starting price and end date. Buyers place bids, and 
-                the highest bidder wins when the auction ends.
+                Add your listing details and publish it as a fixed price listing.
               </p>
             </div>
 
@@ -45,14 +35,6 @@ const Help = () => {
               <p>
                 Click on "View Details" on any listing, then use the "Contact Seller" button to send a 
                 message. You can also access all your messages from the "Messages" section in your profile.
-              </p>
-            </div>
-
-            <div className="faq-item">
-              <h3>How do I place a bid on an auction?</h3>
-              <p>
-                Navigate to the auction listing, enter your bid amount (must be higher than the current bid), 
-                and click "Place Bid". You'll be notified if someone outbids you.
               </p>
             </div>
 
@@ -110,7 +92,6 @@ const Help = () => {
               <a href="/terms">Terms of Services</a>
               <a href="/refund-policy">Refund Policy</a>
               <a href="/posting-policy">Posting Policy</a>
-              <a href="/auction-policy">Auction Policy</a>
             </div>
           </section>
         </div>
@@ -120,4 +101,3 @@ const Help = () => {
 };
 
 export default Help;
-

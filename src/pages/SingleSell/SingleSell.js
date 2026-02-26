@@ -11,6 +11,7 @@ const SingleSell = () => {
     maxPrice: '',
     condition: '',
     storage: '',
+    brand: '',
     city: '',
     sortBy: 'newest'
   });
@@ -19,6 +20,7 @@ const SingleSell = () => {
     maxPrice: '',
     condition: '',
     storage: '',
+    brand: '',
     city: '',
     sortBy: 'newest'
   });
@@ -181,6 +183,7 @@ const SingleSell = () => {
       if (appliedFilters.maxPrice) params.append('maxPrice', appliedFilters.maxPrice);
       if (appliedFilters.condition) params.append('condition', appliedFilters.condition);
       if (appliedFilters.storage) params.append('storage', appliedFilters.storage);
+      if (appliedFilters.brand) params.append('brand', appliedFilters.brand);
       if (appliedFilters.city) params.append('city', appliedFilters.city);
 
       const response = await axios.get(`/api/listings?${params.toString()}`);
@@ -229,6 +232,7 @@ const SingleSell = () => {
       maxPrice: '',
       condition: '',
       storage: '',
+      brand: '',
       city: '',
       sortBy: 'newest'
     };
@@ -243,7 +247,7 @@ const SingleSell = () => {
   return (
     <div className="single-sell-page">
       <div className="page-header">
-        <h3>List of ads for Single iPhone Listing</h3>
+        <h3>List of ads for Single Listing</h3>
       </div>
 
       <div className="category-content-wrapper">
@@ -322,6 +326,18 @@ const SingleSell = () => {
               <option value="512GB">512GB</option>
               <option value="1TB">1TB</option>
             </select>
+          </div>
+
+          <div className="filter-section">
+            <h3>Brand</h3>
+            <input
+              type="text"
+              name="brand"
+              placeholder="e.g., Apple, Samsung"
+              value={filters.brand}
+              onChange={handleFilterChange}
+              className="filter-input"
+            />
           </div>
 
           {/* City */}
@@ -410,4 +426,3 @@ const SingleSell = () => {
 };
 
 export default SingleSell;
-

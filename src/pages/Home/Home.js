@@ -6,7 +6,6 @@ import {
   Card,
 } from '@mui/material';
 import ListingCard from '../../components/ListingCard/ListingCard';
-import AuctionCard from '../../components/AuctionCard/AuctionCard';
 import './Home.css';
 
 // Small helper to guarantee array operations don't explode in production (e.g. Vercel)
@@ -19,7 +18,6 @@ const Home = () => {
   const [latestListings, setLatestListings] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [similarProducts, setSimilarProducts] = useState([]);
-  const [auctions, setAuctions] = useState([]);
   const [categories, setCategories] = useState([]);
   const [popularLocations, setPopularLocations] = useState([]);
   const [singleSellListings, setSingleSellListings] = useState([]);
@@ -198,79 +196,6 @@ const Home = () => {
     }
   ], []);
 
-  const mockAuctions = useMemo(() => [
-    {
-      id: '1',
-      listing_id: '1',
-      title: 'iPhone 15 Pro Max 512GB - Live Auction',
-      current_price: 4200,
-      start_price: 3600,
-      bid_count: 12,
-      city: 'Dubai',
-      image_url: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop',
-      category_name: 'iPhone 15 Pro Max',
-      seller_name: 'Ahmed Al Maktoum',
-      end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      status: 'live'
-    },
-    {
-      id: '2',
-      listing_id: '2',
-      title: 'iPhone 14 Pro 256GB - Bidding Now',
-      current_price: 3000,
-      start_price: 2560,
-      bid_count: 8,
-      city: 'Abu Dhabi',
-      image_url: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=500&h=500&fit=crop',
-      category_name: 'iPhone 14 Pro',
-      seller_name: 'Sarah Johnson',
-      end_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
-      status: 'live'
-    },
-    {
-      id: '3',
-      listing_id: '3',
-      title: 'iPhone 13 Pro Max 1TB - Hot Auction',
-      current_price: 3500,
-      start_price: 2800,
-      bid_count: 15,
-      city: 'Sharjah',
-      image_url: 'https://images.unsplash.com/photo-1632669021382-3e0d1c1b0b4c?w=500&h=500&fit=crop',
-      category_name: 'iPhone 13 Pro Max',
-      seller_name: 'Mohammed Hassan',
-      end_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-      status: 'live'
-    },
-    {
-      id: '4',
-      listing_id: '3',
-      title: 'iPhone 13 Pro Max 1TB - Hot Auction',
-      current_price: 3500,
-      start_price: 2800,
-      bid_count: 15,
-      city: 'Sharjah',
-      image_url: 'https://images.unsplash.com/photo-1632669021382-3e0d1c1b0b4c?w=500&h=500&fit=crop',
-      category_name: 'iPhone 13 Pro Max',
-      seller_name: 'Mohammed Hassan',
-      end_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-      status: 'live'
-    },
-    {
-      id: '5',
-      listing_id: '3',
-      title: 'iPhone 13 Pro Max 1TB - Hot Auction',
-      current_price: 3500,
-      start_price: 2800,
-      bid_count: 15,
-      city: 'Sharjah',
-      image_url: 'https://images.unsplash.com/photo-1632669021382-3e0d1c1b0b4c?w=500&h=500&fit=crop',
-      category_name: 'iPhone 13 Pro Max',
-      seller_name: 'Mohammed Hassan',
-      end_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-      status: 'live'
-    }
-  ], []);
-
   const mockLocations = useMemo(() => [
     { city: 'Dubai', listing_count: 245 },
     { city: 'Abu Dhabi', listing_count: 189 },
@@ -381,10 +306,9 @@ const Home = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const [featuredRes, latestRes, auctionsRes, categoriesRes, locationsRes, singleSellRes, bulkSellRes] = await Promise.all([
+      const [featuredRes, latestRes, categoriesRes, locationsRes, singleSellRes, bulkSellRes] = await Promise.all([
         axios.get('/api/listings/featured').catch(() => ({ data: [] })),
         axios.get('/api/listings/latest').catch(() => ({ data: [] })),
-        axios.get('/api/auctions').catch(() => ({ data: [] })),
         axios.get('/api/categories').catch(() => ({ data: [] })),
         axios.get('/api/categories/locations').catch(() => ({ data: [] })),
         axios.get('/api/listings?type=single_sell').catch(() => ({ data: [] })),
@@ -394,7 +318,6 @@ const Home = () => {
       // Normalize API responses so UI doesn't crash on undefined/null responses
       const featuredData = toArray(featuredRes.data);
       const latestData = toArray(latestRes.data);
-      const auctionsData = toArray(auctionsRes.data);
       const categoriesData = toArray(categoriesRes.data);
       const locationsData = toArray(locationsRes.data);
       const singleSellData = toArray(singleSellRes.data);
@@ -404,7 +327,6 @@ const Home = () => {
       setFeaturedListings(featuredData.length > 0 ? featuredData : mockFeaturedListings);
       setLatestListings(latestData.length > 0 ? latestData : mockFeaturedListings);
       setSimilarProducts(mockSimilarProducts);
-      setAuctions(auctionsData.length > 0 ? auctionsData : mockAuctions);
       setCategories(categoriesData.length > 0 ? categoriesData : mockCategories);
       setPopularLocations(locationsData.length > 0 ? locationsData : mockLocations);
 
@@ -419,7 +341,6 @@ const Home = () => {
       setFeaturedListings(mockFeaturedListings);
       setLatestListings(mockFeaturedListings);
       setSimilarProducts(mockSimilarProducts);
-      setAuctions(mockAuctions);
       setCategories(mockCategories);
       setPopularLocations(mockLocations);
       const mockSingleSell = mockFeaturedListings?.slice(0, 8).map(item => ({ ...item, sellType: 'single' }));
@@ -429,7 +350,7 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
-  }, [mockFeaturedListings, mockAuctions, mockCategories, mockLocations, mockSimilarProducts]);
+  }, [mockFeaturedListings, mockCategories, mockLocations, mockSimilarProducts]);
 
   useEffect(() => {
     fetchData();
@@ -450,27 +371,10 @@ const Home = () => {
   };
 
   const safeCategories = toArray(categories);
-  const safeAuctions = toArray(auctions);
   const safeLocations = toArray(popularLocations);
   const safeLatest = toArray(latestListings);
   const safeSingleSell = toArray(singleSellListings);
   const safeBulkSell = toArray(bulkSellListings);
-
-  const handleBidSuccess = (auctionId, bidAmount) => {
-    // Update the auction in the list with new bid
-    setAuctions(prevAuctions =>
-      prevAuctions.map(auction => {
-        if ((auction._id || auction.id) === auctionId) {
-          return {
-            ...auction,
-            current_price: bidAmount,
-            bid_count: (auction.bid_count || 0) + 1
-          };
-        }
-        return auction;
-      })
-    );
-  };
 
   if (loading) {
     return <div className="loading">Loading...</div>;
@@ -488,7 +392,7 @@ const Home = () => {
             </div>
 
             <h1 className="hero-title">
-              Buy & Sell iPhones
+              Buy & Sell Listings
               <span> With Complete Confidence</span>
             </h1>
 
@@ -751,7 +655,7 @@ const Home = () => {
                 mb: '0.5rem',
               }}
             >
-              Single iphone
+              Single Listing
             </Typography>
             {/* <p className="section-subtitle">Sell Your iPhone Individually</p> */}
           </div>
@@ -795,7 +699,7 @@ const Home = () => {
                 mb: '0.5rem',
               }}
             >
-              Bulk iphone
+              Bulk Listing
             </Typography>
             {/* <p className="section-subtitle">Sell Multiple iPhones at Once</p> */}
           </div>
@@ -819,64 +723,18 @@ const Home = () => {
             </>
           ) : (
             <div className="no-listings">
-              <p>No bulk iphone listings available</p>
+              <p>No bulk listings available</p>
             </div>
           )}
         </div>
       </section>
 
-      {/* Auction Section */}
-      <section className="auction-section">
-        <div className="section-header section-header-row">
-          <Typography
-            variant="h2"
-            sx={{
-              fontSize: '1.5rem',
-              fontWeight: 700,
-              color: '#1e293b',
-              fontFamily: "'Inter', sans-serif",
-              mb: '0.5rem',
-            }}
-          >
-            Auction
-          </Typography>
-          <Link to="/auctions" className="view-all-link">
-            View All
-            <i className="fas fa-arrow-right"></i>
-          </Link>
-        </div>
-        <div className="home-listings-grid">
-          {safeAuctions.length > 0 ? (
-            <>
-              {safeAuctions.slice(0, 4).map((auction) => (
-                <AuctionCard
-                  key={auction._id || auction.id}
-                  auction={auction}
-                  onBidSuccess={handleBidSuccess}
-                />
-              ))}
-              {safeAuctions.length > 5 && (
-                <AuctionCard
-                  auction={safeAuctions[5]}
-                  className="blur-card"
-                  onBidSuccess={handleBidSuccess}
-                />
-              )}
-            </>
-          ) : (
-            <div className="no-auctions">
-              <p>No live auctions available</p>
-            </div>
-          )}
-        </div>
-
-        {/* Advertise With Us Section */}
-        <div className="advertise-section">
-          <div className="advertise-content">
-            <h3>Advertise With Us</h3>
-            <p>Reach thousands of iPhone buyers and sellers across the UAE</p>
-            <Link to="/contact" className="advertise-btn">Get Started</Link>
-          </div>
+      {/* Advertise With Us Section */}
+      <section className="advertise-section">
+        <div className="advertise-content">
+          <h3>Advertise With Us</h3>
+          <p>Reach thousands of iPhone buyers and sellers across the UAE</p>
+          <Link to="/contact" className="advertise-btn">Get Started</Link>
         </div>
       </section>
 

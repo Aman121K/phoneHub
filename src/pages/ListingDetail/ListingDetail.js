@@ -573,35 +573,12 @@ const ListingDetail = () => {
               <span className="location-text">{listing.city || listing.seller_city || 'Dubai'}</span>
             </div>
             <div className="price-info">
-              {listing.listingType === 'auction' ? (
-                <div className="auction-price-info">
-                  {listing.current_price && (
-                    <div className="price-row">
-                      <span className="price-label">Current Bid:</span>
-                      <span className="price-amount">AED {listing.current_price}</span>
-                    </div>
-                  )}
-                  {listing.start_price && (
-                    <div className="price-row">
-                      <span className="price-label">Starting Price:</span>
-                      <span className="price-amount-small">AED {listing.start_price}</span>
-                    </div>
-                  )}
-                  {listing.bids && Array.isArray(listing.bids) && listing.bids.length > 0 && (
-                    <div className="price-row">
-                      <span className="price-label">Total Bids:</span>
-                      <span className="price-amount-small">{listing.bids.length}</span>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="fixed-price-info">
-                  <span className="price-amount">AED {listing.price || listing.current_price || listing.start_price || 'N/A'}</span>
-                  {listing.perPrice && (
-                    <span className="price-per-unit">AED {listing.perPrice} per unit</span>
-                  )}
-                </div>
-              )}
+              <div className="fixed-price-info">
+                <span className="price-amount">AED {listing.price || listing.current_price || listing.start_price || 'N/A'}</span>
+                {listing.perPrice && (
+                  <span className="price-per-unit">AED {listing.perPrice} per unit</span>
+                )}
+              </div>
             </div>
           </div>
 
@@ -615,55 +592,13 @@ const ListingDetail = () => {
               {listing.listingType && (
                 <div className="info-item">
                   <span className="info-label">Listing Type:</span>
-                  <span className="info-value">{listing.listingType === 'auction' ? 'Auction' : 'Fixed Price'}</span>
+                  <span className="info-value">Fixed Price</span>
                 </div>
               )}
               {listing.sellType && (
                 <div className="info-item">
                   <span className="info-label">Sell Type:</span>
                   <span className="info-value">{listing.sellType === 'single' ? 'Single Sell' : 'Bulk Sell'}</span>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Auction Information */}
-          {listing.listingType === 'auction' && (
-            <div className="auction-info-section">
-              <h3 className="section-subtitle">Auction Details</h3>
-              {listing.status && (
-                <div className="info-item">
-                  <span className="info-label">Status:</span>
-                  <span className={`info-value status-${listing.status}`}>{listing.status}</span>
-                </div>
-              )}
-              {listing.end_date && (
-                <div className="info-item">
-                  <span className="info-label">End Date:</span>
-                  <span className="info-value">{new Date(listing.end_date).toLocaleString()}</span>
-                </div>
-              )}
-              {listing.bids && Array.isArray(listing.bids) && listing.bids.length > 0 && (
-                <div className="bids-section">
-                  <h4 className="bids-title">Bids ({listing.bids.length})</h4>
-                  <div className="bids-list">
-                    {listing.bids.slice(0, 5).map((bid, index) => (
-                      <div key={index} className="bid-item">
-                        <span className="bid-amount">AED {bid.amount || bid.bidAmount || 'N/A'}</span>
-                        {bid.bidder_name && (
-                          <span className="bidder-name">by {bid.bidder_name}</span>
-                        )}
-                        {bid.createdAt && (
-                          <span className="bid-date">{new Date(bid.createdAt).toLocaleString()}</span>
-                        )}
-                      </div>
-                    ))}
-                    {listing.bids.length > 5 && (
-                      <div className="bid-item more-bids">
-                        <span>+{listing.bids.length - 5} more bids</span>
-                      </div>
-                    )}
-                  </div>
                 </div>
               )}
             </div>
@@ -1029,4 +964,3 @@ const ListingDetail = () => {
 };
 
 export default ListingDetail;
-

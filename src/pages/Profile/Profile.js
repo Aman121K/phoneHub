@@ -12,7 +12,6 @@ const Profile = () => {
   const { user, logout, refreshUser } = useAuth();
   const [profile, setProfile] = useState(null);
   const [myListings, setMyListings] = useState([]);
-  const [myBids, setMyBids] = useState([]);
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -32,11 +31,6 @@ const Profile = () => {
     
     fetchProfile();
     fetchMyListings();
-    
-    // Only fetch bids for buyer accounts
-    if (user && user.userType === 'buyer') {
-      fetchMyBids();
-    }
     
     // If coming from payment, refresh profile data
     if (fromPayment === 'success') {
@@ -68,15 +62,6 @@ const Profile = () => {
       setMyListings(response.data);
     } catch (error) {
       console.error('Error fetching listings:', error);
-    }
-  };
-
-  const fetchMyBids = async () => {
-    try {
-      const response = await axios.get('/api/auctions/my-bids');
-      setMyBids(response.data);
-    } catch (error) {
-      console.error('Error fetching my bids:', error);
     }
   };
 
@@ -356,170 +341,71 @@ const Profile = () => {
               {myListings.map((listing) => (
                 <Box key={listing._id || listing.id} sx={{ position: 'relative' }}>
                   <ListingCard listing={listing} />
-                  <Box
-                    className="listing-action-buttons"
-                    sx={{
-                      position: 'absolute',
-                      top: '8px',
-                      right: '8px',
-                      display: 'flex',
-                      gap: '0.5rem',
-                      zIndex: 10,
-                    }}
-                  >
-                    <IconButton
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleEditListing(listing._id || listing.id);
-                      }}
-                      className="edit-listing-btn"
+                  {listing.status === 'active' && (
+                    <Box
+                      className="listing-action-buttons"
                       sx={{
-                        backgroundColor: '#2563eb',
-                        color: 'white',
-                        width: { xs: '36px', sm: '32px' },
-                        height: { xs: '36px', sm: '32px' },
-                        minWidth: { xs: '36px', sm: '32px' },
-                        '&:hover': {
-                          backgroundColor: '#1d4ed8',
-                        },
+                        position: 'absolute',
+                        top: '8px',
+                        right: '8px',
+                        display: 'flex',
+                        gap: '0.5rem',
+                        zIndex: 10,
                       }}
-                      aria-label="Edit listing"
                     >
-                      <Edit sx={{ fontSize: { xs: '18px', sm: '1rem' } }} />
-                    </IconButton>
-                    <IconButton
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleDeleteListing(listing._id || listing.id);
-                      }}
-                      className="delete-listing-btn"
-                      sx={{
-                        backgroundColor: '#ef4444',
-                        color: 'white',
-                        width: { xs: '36px', sm: '32px' },
-                        height: { xs: '36px', sm: '32px' },
-                        minWidth: { xs: '36px', sm: '32px' },
-                        '&:hover': {
-                          backgroundColor: '#dc2626',
-                        },
-                      }}
-                      aria-label="Delete listing"
-                    >
-                      <Delete sx={{ fontSize: { xs: '18px', sm: '1rem' } }} />
-                    </IconButton>
-                  </Box>
+                      <IconButton
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleEditListing(listing._id || listing.id);
+                        }}
+                        className="edit-listing-btn"
+                        sx={{
+                          backgroundColor: '#2563eb',
+                          color: 'white',
+                          width: { xs: '36px', sm: '32px' },
+                          height: { xs: '36px', sm: '32px' },
+                          minWidth: { xs: '36px', sm: '32px' },
+                          '&:hover': {
+                            backgroundColor: '#1d4ed8',
+                          },
+                        }}
+                        aria-label="Edit listing"
+                      >
+                        <Edit sx={{ fontSize: { xs: '18px', sm: '1rem' } }} />
+                      </IconButton>
+                      <IconButton
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleDeleteListing(listing._id || listing.id);
+                        }}
+                        className="delete-listing-btn"
+                        sx={{
+                          backgroundColor: '#ef4444',
+                          color: 'white',
+                          width: { xs: '36px', sm: '32px' },
+                          height: { xs: '36px', sm: '32px' },
+                          minWidth: { xs: '36px', sm: '32px' },
+                          '&:hover': {
+                            backgroundColor: '#dc2626',
+                          },
+                        }}
+                        aria-label="Delete listing"
+                      >
+                        <Delete sx={{ fontSize: { xs: '18px', sm: '1rem' } }} />
+                      </IconButton>
+                    </Box>
+                  )}
                 </Box>
               ))}
             </div>
           )}
         </div>
 
-        {/* My Bids Section - Only for buyer accounts */}
-        {user && user.userType === 'buyer' && (
-          <div className="my-bids-section">
-            <h2>My Bids ({myBids.length})</h2>
-            {myBids.length === 0 ? (
-              <div className="no-listings">
-                <p>You haven't placed any bids yet.</p>
-                <Link to="/auctions" className="post-ad-btn">Browse Auctions</Link>
-              </div>
-            ) : (
-              <div className="listings-grid">
-                {myBids.map((auction) => {
-                  // Convert auction to listing format for ListingCard
-                  const listingFormat = {
-                    _id: auction.id || auction._id, // Use auction ID for linking to auction detail
-                    id: auction.id || auction._id,
-                    title: auction.title,
-                    price: auction.current_price,
-                    city: auction.city,
-                    listingType: 'auction',
-                    imageUrl: auction.image_url,
-                    images: auction.images || (auction.image_url ? [auction.image_url] : []),
-                    description: auction.description,
-                    user: {
-                      name: auction.seller_name,
-                      city: auction.city
-                    },
-                    category: auction.category_name ? { name: auction.category_name } : null,
-                    // Add auction-specific info
-                    auctionInfo: {
-                      startPrice: auction.start_price,
-                      currentPrice: auction.current_price,
-                      endDate: auction.end_date,
-                      status: auction.status,
-                      myHighestBid: auction.my_highest_bid,
-                      myBidDate: auction.my_bid_date
-                    }
-                  };
-                  return (
-                    <div key={auction.id || auction._id} style={{ position: 'relative' }}>
-                      <ListingCard listing={listingFormat} />
-                      <div style={{
-                        position: 'absolute',
-                        top: '10px',
-                        right: '10px',
-                        background: 'rgba(249, 115, 22, 0.95)',
-                        color: 'white',
-                        padding: '0.5rem 1rem',
-                        borderRadius: '8px',
-                        fontSize: '0.85rem',
-                        fontWeight: 600,
-                        zIndex: 10,
-                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
-                        pointerEvents: 'none'
-                      }}>
-                        My Bid: AED {auction.my_highest_bid}
-                      </div>
-                      {auction.status === 'live' && (
-                        <div style={{
-                          position: 'absolute',
-                          bottom: '10px',
-                          left: '10px',
-                          background: '#2563eb',
-                          color: 'white',
-                          padding: '0.5rem 1rem',
-                          borderRadius: '8px',
-                          fontSize: '0.85rem',
-                          fontWeight: 600,
-                          zIndex: 10,
-                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
-                          pointerEvents: 'none'
-                        }}>
-                          Live Auction
-                        </div>
-                      )}
-                      {auction.status === 'ended' && (
-                        <div style={{
-                          position: 'absolute',
-                          bottom: '10px',
-                          left: '10px',
-                          background: '#6b7280',
-                          color: 'white',
-                          padding: '0.5rem 1rem',
-                          borderRadius: '8px',
-                          fontSize: '0.85rem',
-                          fontWeight: 600,
-                          zIndex: 10,
-                          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
-                          pointerEvents: 'none'
-                        }}>
-                          Ended
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );
 };
 
 export default Profile;
-

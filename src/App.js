@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { AuthProvider } from './context/AuthContext';
@@ -22,8 +22,6 @@ import ResetPassword from './pages/Auth/ResetPassword';
 import CategoryListings from './pages/CategoryListings/CategoryListings';
 import LocationListings from './pages/LocationListings/LocationListings';
 import SearchResults from './pages/SearchResults/SearchResults';
-import Auctions from './pages/Auctions/Auctions';
-import AuctionDetail from './pages/AuctionDetail/AuctionDetail';
 import About from './pages/About/About';
 import Blog from './pages/Blog/Blog';
 import BlogDetail from './pages/BlogDetail/BlogDetail';
@@ -35,7 +33,6 @@ import Help from './pages/Help/Help';
 import RefundPolicy from './pages/RefundPolicy/RefundPolicy';
 import Terms from './pages/Terms/Terms';
 import PostingPolicy from './pages/PostingPolicy/PostingPolicy';
-import AuctionPolicy from './pages/AuctionPolicy/AuctionPolicy';
 import PaymentSuccess from './pages/Payment/PaymentSuccess';
 import PaymentCancel from './pages/Payment/PaymentCancel';
 import PaymentFailure from './pages/Payment/PaymentFailure';
@@ -58,8 +55,6 @@ function App() {
                 <Route path="/location/:cityName" element={<LocationListings />} />
                 <Route path="/search" element={<SearchResults />} />
                 <Route path="/listing/:id" element={<ListingDetail />} />
-                <Route path="/auctions" element={<Auctions />} />
-                <Route path="/auction/:id" element={<AuctionDetail />} />
                 <Route path="/single-sell" element={<SingleSell />} />
                 <Route path="/bulk-sell" element={<BulkSell />} />
                 <Route path="/locations" element={<Locations />} />
@@ -75,7 +70,6 @@ function App() {
                 <Route path="/refund-policy" element={<RefundPolicy />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/posting-policy" element={<PostingPolicy />} />
-                <Route path="/auction-policy" element={<AuctionPolicy />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -83,6 +77,7 @@ function App() {
                 <Route path="/payment/success" element={<PaymentSuccess />} />
                 <Route path="/payment/cancel" element={<PaymentCancel />} />
                 <Route path="/payment/failure" element={<PaymentFailure />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </main>
             <Footer />
@@ -95,4 +90,3 @@ function App() {
 }
 
 export default App;
-

@@ -122,7 +122,6 @@ const Footer = () => {
               <li><Link to="/refund-policy">Refund and Returns Policy</Link></li>
               <li><Link to="/terms">Terms of Services</Link></li>
               <li><Link to="/posting-policy">Posting Policy</Link></li>
-              <li><Link to="/auction-policy">Auction Policy</Link></li>
             </ul>
           </div>
 
@@ -167,4 +166,3 @@ const Footer = () => {
 };
 
 export default Footer;
-

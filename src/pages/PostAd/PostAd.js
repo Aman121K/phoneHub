@@ -15,6 +15,7 @@ const PostAd = () => {
     price: '',
     per_price: '',
     storage: '',
+    brand: '',
     condition: '',
     city: '',
     listing_type: 'fixed_price',
@@ -22,7 +23,9 @@ const PostAd = () => {
     start_price: '',
     end_date: '',
     quantity: 1,
+    device_os_type: 'ios',
     version: '',
+    ram: '',
     colour: '',
     charge: '',
     box: ''
@@ -46,11 +49,6 @@ const PostAd = () => {
     if (!user) {
       navigate('/login');
       return;
-    }
-    // Allow buyers to create auctions, but not fixed price listings
-    if (user.userType === 'buyer' && formData.listing_type !== 'auction') {
-      // Set default to auction for buyers
-      setFormData(prev => ({ ...prev, listing_type: 'auction' }));
     }
     // Set city from user profile and lock it
     if (user.city) {
@@ -90,6 +88,21 @@ const PostAd = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === 'category_id') {
+      const selectedCategory = categories.find(cat => (cat._id || cat.id) === value);
+      const categoryDeviceOsType = selectedCategory?.deviceOsType;
+      if (categoryDeviceOsType === 'android' || categoryDeviceOsType === 'ios') {
+        setFormData({
+          ...formData,
+          category_id: value,
+          device_os_type: categoryDeviceOsType,
+          version: categoryDeviceOsType === 'ios' ? formData.version : '',
+          ram: categoryDeviceOsType === 'android' ? formData.ram : ''
+        });
+        return;
+      }
+    }
     
     // If sellType changes to 'single', set quantity to 1
     if (name === 'sellType' && value === 'single') {
@@ -97,6 +110,13 @@ const PostAd = () => {
         ...formData,
         [name]: value,
         quantity: 1
+      });
+    } else if (name === 'device_os_type') {
+      setFormData({
+        ...formData,
+        device_os_type: value,
+        version: value === 'ios' ? formData.version : '',
+        ram: value === 'android' ? formData.ram : ''
       });
     } else {
       setFormData({
@@ -174,23 +194,13 @@ const PostAd = () => {
       return;
     }
 
-    // Validate buyer can only create auctions
-    if (user.userType === 'buyer' && formData.listing_type !== 'auction') {
-      showToast('Buyers can only create auctions. Please select auction as listing type.', 'error');
+    if (formData.device_os_type === 'android' && !formData.ram) {
+      showToast('RAM is required for Android listings', 'error');
       return;
     }
-
-    // Validate auction fields for buyers
-    if (user.userType === 'buyer' && formData.listing_type === 'auction') {
-      if (!formData.start_price || !formData.end_date) {
-        showToast('Start price and end date are required for auctions', 'error');
-        return;
-      }
-      const endDate = new Date(formData.end_date);
-      if (endDate <= new Date()) {
-        showToast('End date must be in the future', 'error');
-        return;
-      }
+    if (formData.device_os_type === 'ios' && !formData.version) {
+      showToast('Version is required for iOS listings', 'error');
+      return;
     }
 
     setLoading(true);
@@ -199,55 +209,8 @@ const PostAd = () => {
       // Get auth token
       const token = localStorage.getItem('token');
       
-      // If buyer creating auction, use the new auction creation endpoint
-      if (user.userType === 'buyer' && formData.listing_type === 'auction') {
-        // Create FormData for file upload
-        const formDataToSend = new FormData();
-        
-        // Append images
-        images.forEach((image) => {
-          formDataToSend.append('images', image);
-        });
-
-        // Append other form fields
-        formDataToSend.append('category_id', formData.category_id);
-        formDataToSend.append('title', formData.title);
-        formDataToSend.append('description', formData.description || '');
-        formDataToSend.append('storage', formData.storage || '');
-        formDataToSend.append('condition', formData.condition || '');
-        formDataToSend.append('city', formData.city);
-        formDataToSend.append('start_price', formData.start_price);
-        formDataToSend.append('end_date', formData.end_date);
-        formDataToSend.append('sellType', formData.sellType || 'single');
-        formDataToSend.append('quantity', formData.sellType === 'single' ? 1 : (formData.quantity || 1));
-        formDataToSend.append('version', formData.version || '');
-        formDataToSend.append('colour', formData.colour || '');
-        formDataToSend.append('charge', formData.charge || '');
-        formDataToSend.append('box', formData.box || '');
-        if (formData.per_price) {
-          formDataToSend.append('per_price', formData.per_price);
-        }
-        if (formData.warranty) {
-          formDataToSend.append('warranty', formData.warranty);
-        }
-
-        await axios.post('/api/auctions/create', formDataToSend, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        
-        // Clean up preview URLs
-        imagePreviews.forEach(preview => URL.revokeObjectURL(preview));
-        
-        showToast('Auction created successfully!', 'success');
-        setTimeout(() => {
-          navigate('/auctions');
-        }, 1500);
-      } else {
-        // Sellers use the regular listings endpoint
-        // If user wants featured listing, process payment FIRST
+      // Sellers use the regular listings endpoint
+      // If user wants featured listing, process payment FIRST
         if (wantFeatured && user.userType === 'seller') {
           try {
             // First, upload images to get URLs (we need to do this before payment)
@@ -282,12 +245,15 @@ const PostAd = () => {
               title: formData.title,
               description: formData.description || '',
               storage: formData.storage || '',
+              brand: formData.brand || '',
               condition: formData.condition || '',
               city: formData.city,
               listing_type: formData.listing_type,
               sellType: formData.sellType || 'single',
               quantity: formData.quantity || 1,
-              version: formData.version || '',
+              device_os_type: formData.device_os_type || 'ios',
+              version: formData.device_os_type === 'ios' ? (formData.version || '') : '',
+              ram: formData.device_os_type === 'android' ? (formData.ram || '') : '',
               colour: formData.colour || '',
               charge: formData.charge || '',
               box: formData.box || '',
@@ -298,13 +264,7 @@ const PostAd = () => {
               listingData.per_price = formData.per_price;
             }
             
-            if (formData.listing_type === 'auction') {
-              listingData.price = formData.start_price;
-              listingData.start_price = formData.start_price;
-              listingData.end_date = formData.end_date;
-            } else {
-              listingData.price = formData.price;
-            }
+            listingData.price = formData.price;
             
             listingDataFormData.append('listingData', JSON.stringify(listingData));
             listingDataFormData.append('duration', featuredDuration);
@@ -352,12 +312,15 @@ const PostAd = () => {
         formDataToSend.append('title', formData.title);
         formDataToSend.append('description', formData.description || '');
         formDataToSend.append('storage', formData.storage || '');
+        formDataToSend.append('brand', formData.brand || '');
         formDataToSend.append('condition', formData.condition || '');
         formDataToSend.append('city', formData.city);
         formDataToSend.append('listing_type', formData.listing_type);
         formDataToSend.append('sellType', formData.sellType || 'single');
         formDataToSend.append('quantity', formData.quantity || 1);
-        formDataToSend.append('version', formData.version || '');
+        formDataToSend.append('device_os_type', formData.device_os_type || 'ios');
+        formDataToSend.append('version', formData.device_os_type === 'ios' ? (formData.version || '') : '');
+        formDataToSend.append('ram', formData.device_os_type === 'android' ? (formData.ram || '') : '');
         formDataToSend.append('colour', formData.colour || '');
         formDataToSend.append('charge', formData.charge || '');
         formDataToSend.append('box', formData.box || '');
@@ -365,13 +328,7 @@ const PostAd = () => {
           formDataToSend.append('per_price', formData.per_price);
         }
         
-        if (formData.listing_type === 'auction') {
-          formDataToSend.append('price', formData.start_price);
-          formDataToSend.append('start_price', formData.start_price);
-          formDataToSend.append('end_date', formData.end_date);
-        } else {
-          formDataToSend.append('price', formData.price);
-        }
+        formDataToSend.append('price', formData.price);
 
         await axios.post('/api/listings', formDataToSend, {
           headers: {
@@ -388,9 +345,8 @@ const PostAd = () => {
           navigate('/');
         }, 1500);
         }
-      }
     } catch (error) {
-      console.error('Error creating listing/auction:', error);
+      console.error('Error creating listing:', error);
       showToast('Error: ' + (error.response?.data?.error || 'Unknown error'), 'error');
     } finally {
       setLoading(false);
@@ -427,7 +383,7 @@ const PostAd = () => {
       )}
 
       <div className="post-ad-container">
-        <h1>{user?.userType === 'buyer' ? 'Create an Auction' : 'Post an Ad'}</h1>
+        <h1>Post an Ad</h1>
         <form onSubmit={handleSubmit} className="post-ad-form">
           <div className="form-group">
             <label>Category *</label>
@@ -499,6 +455,62 @@ const PostAd = () => {
             </div>
 
             <div className="form-group">
+              <label>Brand</label>
+              <input
+                type="text"
+                name="brand"
+                value={formData.brand}
+                onChange={handleChange}
+                placeholder="e.g., Apple, Samsung"
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Device OS Type *</label>
+              <select
+                name="device_os_type"
+                value={formData.device_os_type}
+                onChange={handleChange}
+                required
+              >
+                <option value="ios">iOS</option>
+                <option value="android">Android</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              {formData.device_os_type === 'android' ? (
+                <>
+                  <label>RAM *</label>
+                  <input
+                    type="text"
+                    name="ram"
+                    value={formData.ram}
+                    onChange={handleChange}
+                    placeholder="e.g., 8GB"
+                    required
+                  />
+                </>
+              ) : (
+                <>
+                  <label>Version *</label>
+                  <input
+                    type="text"
+                    name="version"
+                    value={formData.version}
+                    onChange={handleChange}
+                    placeholder="e.g., iOS 17.2"
+                    required
+                  />
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
               <label>Condition</label>
               <select
                 name="condition"
@@ -515,17 +527,6 @@ const PostAd = () => {
           </div>
 
           <div className="form-row">
-            <div className="form-group">
-              <label>Version</label>
-              <input
-                type="text"
-                name="version"
-                value={formData.version}
-                onChange={handleChange}
-                placeholder="e.g., iOS 17.2"
-              />
-            </div>
-
             <div className="form-group">
               <label>Colour</label>
               <input
@@ -610,27 +611,13 @@ const PostAd = () => {
               value={formData.listing_type}
               onChange={handleChange}
               required
-              disabled={user?.userType === 'buyer' || (user?.userType === 'seller' && user?.sellerType !== 'business')}
+              disabled
             >
-              {user?.userType === 'buyer' ? (
-                <option value="auction">Auction</option>
-              ) : (
-                <>
-                  <option value="fixed_price">Fixed Price</option>
-                  {user?.sellerType === 'business' && (
-                    <option value="auction">Auction</option>
-                  )}
-                </>
-              )}
+              <option value="fixed_price">Fixed Price</option>
             </select>
-            {user?.userType === 'buyer' && (
-              <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
-                Buyers can create auctions to sell items
-              </small>
-            )}
             {user?.userType === 'seller' && user?.sellerType !== 'business' && (
               <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
-                Auction is only available for business sellers
+                Only fixed price listings are available.
               </small>
             )}
           </div>
@@ -655,65 +642,35 @@ const PostAd = () => {
             )}
           </div>
 
-          {formData.listing_type === 'fixed_price' ? (
-            <>
-              <div className="form-group">
-                <label>Total Price (AED) *</label>
-                <input
-                  type="number"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleChange}
-                  placeholder="0.00"
-                  min="0"
-                  step="0.01"
-                  required
-                />
-              </div>
-              {formData.sellType === 'bulk' && (
-                <div className="form-group">
-                  <label>Per Unit Price (AED)</label>
-                  <input
-                    type="number"
-                    name="per_price"
-                    value={formData.per_price}
-                    onChange={handleChange}
-                    placeholder="0.00"
-                    min="0"
-                    step="0.01"
-                  />
-                  <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
-                    Optional: Price per unit for bulk listings
-                  </small>
-                </div>
-              )}
-            </>
-          ) : (
-            <>
-              <div className="form-group">
-                <label>Start Price (AED) *</label>
-                <input
-                  type="number"
-                  name="start_price"
-                  value={formData.start_price}
-                  onChange={handleChange}
-                  placeholder="0.00"
-                  min="0"
-                  step="0.01"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>End Date *</label>
-                <input
-                  type="datetime-local"
-                  name="end_date"
-                  value={formData.end_date}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </>
+          <div className="form-group">
+            <label>Total Price (AED) *</label>
+            <input
+              type="number"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              placeholder="0.00"
+              min="0"
+              step="0.01"
+              required
+            />
+          </div>
+          {formData.sellType === 'bulk' && (
+            <div className="form-group">
+              <label>Per Unit Price (AED)</label>
+              <input
+                type="number"
+                name="per_price"
+                value={formData.per_price}
+                onChange={handleChange}
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+              />
+              <small style={{ color: '#666', display: 'block', marginTop: '0.25rem' }}>
+                Optional: Price per unit for bulk listings
+              </small>
+            </div>
           )}
 
           {/* Featured Listing Option - Only for sellers */}
@@ -808,4 +765,3 @@ const PostAd = () => {
 };
 
 export default PostAd;
-

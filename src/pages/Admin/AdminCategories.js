@@ -13,7 +13,8 @@ const AdminCategories = () => {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
-    slug: ''
+    slug: '',
+    deviceOsType: 'ios'
   });
 
   useEffect(() => {
@@ -65,7 +66,7 @@ const AdminCategories = () => {
       await axios.post('/api/admin/categories', formData);
       alert('Category created successfully!');
       setShowCreateForm(false);
-      setFormData({ name: '', slug: '' });
+      setFormData({ name: '', slug: '', deviceOsType: 'ios' });
       fetchCategories();
     } catch (error) {
       alert('Error creating category: ' + (error.response?.data?.error || 'Unknown error'));
@@ -140,6 +141,18 @@ const AdminCategories = () => {
                   />
                   <small>URL-friendly identifier (auto-generated from name)</small>
                 </div>
+                <div className="form-group">
+                  <label>Device OS Type *</label>
+                  <select
+                    name="deviceOsType"
+                    value={formData.deviceOsType}
+                    onChange={handleFormChange}
+                    required
+                  >
+                    <option value="ios">iOS</option>
+                    <option value="android">Android</option>
+                  </select>
+                </div>
                 <button type="submit" className="admin-btn primary">Create Category</button>
               </form>
             </div>
@@ -161,6 +174,7 @@ const AdminCategories = () => {
                 </div>
                 <div className="category-card-body">
                   <p><strong>Slug:</strong> {category.slug}</p>
+                  <p><strong>Device OS:</strong> {category.deviceOsType || 'ios'}</p>
                   <a href={`/category/${category.slug}`} target="_blank" rel="noopener noreferrer" className="admin-link">
                     View Category <i className="fas fa-external-link-alt"></i>
                   </a>
@@ -176,4 +190,3 @@ const AdminCategories = () => {
 };
 
 export default AdminCategories;
-

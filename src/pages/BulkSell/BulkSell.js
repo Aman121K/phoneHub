@@ -11,6 +11,7 @@ const BulkSell = () => {
     maxPrice: '',
     condition: '',
     storage: '',
+    brand: '',
     city: '',
     sortBy: 'newest'
   });
@@ -19,6 +20,7 @@ const BulkSell = () => {
     maxPrice: '',
     condition: '',
     storage: '',
+    brand: '',
     city: '',
     sortBy: 'newest'
   });
@@ -189,6 +191,7 @@ const BulkSell = () => {
       if (appliedFilters.maxPrice) params.append('maxPrice', appliedFilters.maxPrice);
       if (appliedFilters.condition) params.append('condition', appliedFilters.condition);
       if (appliedFilters.storage) params.append('storage', appliedFilters.storage);
+      if (appliedFilters.brand) params.append('brand', appliedFilters.brand);
       if (appliedFilters.city) params.append('city', appliedFilters.city);
 
       const response = await axios.get(`/api/listings?${params.toString()}`);
@@ -237,6 +240,7 @@ const BulkSell = () => {
       maxPrice: '',
       condition: '',
       storage: '',
+      brand: '',
       city: '',
       sortBy: 'newest'
     };
@@ -251,7 +255,7 @@ const BulkSell = () => {
   return (
     <div className="bulk-sell-page">
       <div className="page-header">
-        <h3>List of ads for Bulk iPhone Listing</h3>
+        <h3>List of ads for Bulk Listing</h3>
       </div>
 
       <div className="category-content-wrapper">
@@ -332,6 +336,18 @@ const BulkSell = () => {
             </select>
           </div>
 
+          <div className="filter-section">
+            <h3>Brand</h3>
+            <input
+              type="text"
+              name="brand"
+              placeholder="e.g., Apple, Samsung"
+              value={filters.brand}
+              onChange={handleFilterChange}
+              className="filter-input"
+            />
+          </div>
+
           {/* City */}
           <div className="filter-section">
             <h3>Location</h3>
@@ -402,7 +418,7 @@ const BulkSell = () => {
 
           {listings.length === 0 ? (
             <div className="no-listings">
-              <p>No bulk iphone listings available at the moment.</p>
+              <p>No bulk listings available at the moment.</p>
             </div>
           ) : (
             <div className="listings-grid">
@@ -418,4 +434,3 @@ const BulkSell = () => {
 };
 
 export default BulkSell;
-
