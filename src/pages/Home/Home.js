@@ -388,7 +388,7 @@ const Home = () => {
           <div className="hero-content">
             <div className="hero-badge">
               <i className="fas fa-star"></i>
-              Dubai's #1 iPhone Marketplace
+              Dubai's #1 Mobile Phone Marketplace
             </div>
 
             <h1 className="hero-title">
@@ -397,14 +397,14 @@ const Home = () => {
             </h1>
 
             <p className="hero-subtitle">
-              Welcome to PhoneHub the only dedicated platform built exclusively for iPhone buyers and sellers.
+              Welcome to PhoneHub the only dedicated platform built exclusively for mobile phone buyers and sellers.
             </p>
           </div>
 
           {/* Mega Search Component */}
           <div className="mega-search">
             <div className="search-header">
-              <h3 className="search-title">Find Your Perfect iPhone</h3>
+              <h3 className="search-title">Find Your Perfect mobile phones</h3>
               <div className="quick-filters">
                 <div className="filter-tag" onClick={() => handleQuickFilter('iPhone 15 Pro')}>
                   iPhone 15 Pro
@@ -420,7 +420,7 @@ const Home = () => {
 
             <form className="search-grid" onSubmit={handleSearch}>
               <div className="search-group">
-                <label className="search-label">Search iPhones</label>
+                <label className="search-label">Search Models</label>
                 <input
                   type="text"
                   className="search-input"
@@ -529,7 +529,7 @@ const Home = () => {
                 fontFamily: "'Inter', sans-serif"
               }}
             >
-              Browse iphone series
+              Browse mobile phone models
             </Typography>
             {/* <p className="section-subtitle">Find what you're looking for</p> */}
           </div>
@@ -733,7 +733,7 @@ const Home = () => {
       <section className="advertise-section">
         <div className="advertise-content">
           <h3>Advertise With Us</h3>
-          <p>Reach thousands of iPhone buyers and sellers across the UAE</p>
+          <p>Reach thousands of mobile phone buyers and sellers across the UAE</p>
           <Link to="/contact" className="advertise-btn">Get Started</Link>
         </div>
       </section>
@@ -846,7 +846,7 @@ const Home = () => {
         {/* Post New Ad Section */}
         <div className="post-ad-section">
           <div className="post-ad-content">
-            <h3>Want to Sell Your iPhone?</h3>
+            <h3>Want to Sell Your mobile phone?</h3>
             <p>Post your ad now and reach thousands of buyers instantly</p>
             <Link to="/post-ad" className="post-ad-btn">Post a New Ad</Link>
           </div>

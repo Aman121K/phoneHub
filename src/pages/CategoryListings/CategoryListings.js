@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import ListingCard from '../../components/ListingCard/ListingCard';
@@ -25,48 +25,6 @@ const CategoryListings = () => {
     city: '',
     sortBy: 'newest'
   });
-
-  const mockListings = useMemo(() => [
-    {
-      _id: '1',
-      title: 'iPhone 15 Pro Max 256GB - Brand New',
-      price: 4500,
-      condition: 'Brand New',
-      storage: '256GB',
-      city: 'Dubai',
-      listingType: 'fixed_price',
-      imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop',
-      user: { name: 'Ahmed Al Maktoum', city: 'Dubai' },
-      category: { name: 'iPhone 15 Pro Max', slug: 'iphone-15-pro-max' },
-      createdAt: new Date('2025-01-15')
-    },
-    {
-      _id: '2',
-      title: 'iPhone 15 Pro Max 512GB - Excellent',
-      price: 5000,
-      condition: 'Excellent',
-      storage: '512GB',
-      city: 'Abu Dhabi',
-      listingType: 'fixed_price',
-      imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop',
-      user: { name: 'Sarah Johnson', city: 'Abu Dhabi' },
-      category: { name: 'iPhone 15 Pro Max', slug: 'iphone-15-pro-max' },
-      createdAt: new Date('2025-01-14')
-    },
-    {
-      _id: '3',
-      title: 'iPhone 15 Pro Max 1TB - Premium',
-      price: 5500,
-      condition: 'Brand New',
-      storage: '1TB',
-      city: 'Dubai',
-      listingType: 'fixed_price',
-      imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop',
-      user: { name: 'Ahmed Al Maktoum', city: 'Dubai' },
-      category: { name: 'iPhone 15 Pro Max', slug: 'iphone-15-pro-max' },
-      createdAt: new Date('2025-01-13')
-    }
-  ], []);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -95,7 +53,7 @@ const CategoryListings = () => {
       if (appliedFilters.sortBy) params.append('sortBy', appliedFilters.sortBy);
 
       const listingsRes = await axios.get(`/api/listings?${params.toString()}`).catch(() => ({ data: [] }));
-      let fetchedListings = listingsRes.data.length > 0 ? listingsRes.data : mockListings;
+      let fetchedListings = Array.isArray(listingsRes.data) ? listingsRes.data : [];
 
       // Apply sorting
       if (appliedFilters.sortBy === 'newest') {
@@ -115,11 +73,11 @@ const CategoryListings = () => {
       setCategory(foundCategory || { name: slug.replace('-', ' '), slug });
     } catch (error) {
       console.error('Error fetching listings:', error);
-      setListings(mockListings);
+      setListings([]);
     } finally {
       setLoading(false);
     }
-  }, [slug, appliedFilters, mockListings]);
+  }, [slug, appliedFilters]);
 
   useEffect(() => {
     fetchListings();
@@ -299,4 +257,3 @@ const CategoryListings = () => {
 };
 
 export default CategoryListings;
-

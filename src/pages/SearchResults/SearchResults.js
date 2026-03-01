@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import ListingCard from '../../components/ListingCard/ListingCard';
@@ -36,48 +36,6 @@ const SearchResults = () => {
     sortBy: searchParams.get('sortBy') || 'newest'
   });
 
-  const mockListings = useMemo(() => [
-    {
-      _id: '1',
-      title: 'iPhone 15 Pro Max 256GB - Brand New',
-      price: 4500,
-      condition: 'Brand New',
-      storage: '256GB',
-      city: 'Dubai',
-      listingType: 'fixed_price',
-      imageUrl: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500&h=500&fit=crop',
-      user: { name: 'Ahmed Al Maktoum', city: 'Dubai' },
-      category: { name: 'iPhone 15 Pro Max', slug: 'iphone-15-pro-max' },
-      createdAt: new Date('2025-01-15')
-    },
-    {
-      _id: '2',
-      title: 'iPhone 14 Pro 128GB - Excellent Condition',
-      price: 3200,
-      condition: 'Excellent',
-      storage: '128GB',
-      city: 'Abu Dhabi',
-      listingType: 'fixed_price',
-      imageUrl: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=500&h=500&fit=crop',
-      user: { name: 'Sarah Johnson', city: 'Abu Dhabi' },
-      category: { name: 'iPhone 14 Pro', slug: 'iphone-14-pro' },
-      createdAt: new Date('2025-01-14')
-    },
-    {
-      _id: '3',
-      title: 'iPhone 13 Pro Max 512GB - Good Condition',
-      price: 2800,
-      condition: 'Good',
-      storage: '512GB',
-      city: 'Sharjah',
-      listingType: 'fixed_price',
-      imageUrl: 'https://images.unsplash.com/photo-1632669021382-3e0d1c1b0b4c?w=500&h=500&fit=crop',
-      user: { name: 'Mohammed Hassan', city: 'Sharjah' },
-      category: { name: 'iPhone 13 Pro Max', slug: 'iphone-13-pro-max' },
-      createdAt: new Date('2025-01-13')
-    }
-  ], []);
-
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -106,7 +64,7 @@ const SearchResults = () => {
       setSearchParams(newParams);
 
       const listingsRes = await axios.get(`/api/listings?${params.toString()}`).catch(() => ({ data: [] }));
-      let fetchedListings = listingsRes.data.length > 0 ? listingsRes.data : mockListings;
+      let fetchedListings = Array.isArray(listingsRes.data) ? listingsRes.data : [];
 
       // Apply client-side filtering if needed
       if (appliedFilters.search) {
@@ -140,11 +98,11 @@ const SearchResults = () => {
       setListings(fetchedListings);
     } catch (error) {
       console.error('Error fetching listings:', error);
-      setListings(mockListings);
+      setListings([]);
     } finally {
       setLoading(false);
     }
-  }, [appliedFilters, setSearchParams, mockListings]);
+  }, [appliedFilters, setSearchParams]);
 
   useEffect(() => {
     fetchListings();
@@ -216,7 +174,7 @@ const SearchResults = () => {
             <input
               type="text"
               name="search"
-              placeholder="Search iPhones..."
+              placeholder="Search models..."
               value={filters.search}
               onChange={handleFilterChange}
               className="filter-input"
@@ -368,4 +326,3 @@ const SearchResults = () => {
 };
 
 export default SearchResults;
-

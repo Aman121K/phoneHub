@@ -64,7 +64,7 @@ const Categories = () => {
   return (
     <div className="categories-page">
       <div className="page-header">
-        <h1>Browse iphone series</h1>
+        <h1>Browse Mobile Phone models</h1>
       </div>
 
       <div className="categories-grid">
