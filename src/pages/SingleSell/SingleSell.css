@@ -250,27 +250,31 @@
 }
 
 .single-sell > * {
-  flex: 1 1 calc(25% - 1.5rem);
+  flex: 0 0 240px;
+  width: 240px;
   min-width: 240px;
-  max-width: 100%;
+  max-width: 240px;
   box-sizing: border-box;
 }
 
 @media (min-width: 1400px) {
   .single-sell > * {
-    flex-basis: calc(20% - 1.5rem);
+    flex-basis: 240px;
   }
 }
 
 @media (min-width: 1100px) and (max-width: 1399px) {
   .single-sell > * {
-    flex-basis: calc(25% - 1.5rem);
+    flex-basis: 240px;
   }
 }
 
 @media (min-width: 768px) and (max-width: 1099px) {
   .single-sell > * {
-    flex-basis: calc(33.333% - 1.25rem);
+    flex-basis: 220px;
+    width: 220px;
+    min-width: 220px;
+    max-width: 220px;
   }
 }
 
@@ -280,8 +284,10 @@
   }
 
   .single-sell > * {
-    flex-basis: calc(50% - 1rem);
-    min-width: 200px;
+    flex: 0 0 calc((100% - 1rem) / 2);
+    width: calc((100% - 1rem) / 2);
+    min-width: calc((100% - 1rem) / 2);
+    max-width: calc((100% - 1rem) / 2);
   }
 }
 
