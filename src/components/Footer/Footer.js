@@ -1,9 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
 import './Footer.css';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
+  const { user } = useAuth();
+  const [popularLocations, setPopularLocations] = useState([]);
+
+  const fallbackLocations = useMemo(() => [
+    { city: 'Dubai', listing_count: 245 },
+    { city: 'Abu Dhabi', listing_count: 189 },
+    { city: 'Sharjah', listing_count: 156 },
+    { city: 'Ajman', listing_count: 98 },
+    { city: 'Ras al Khaimah', listing_count: 67 },
+    { city: 'Fujairah', listing_count: 45 }
+  ], []);
+
+  useEffect(() => {
+    const fetchPopularLocations = async () => {
+      try {
+        const response = await axios.get('/api/categories/locations').catch(() => ({ data: [] }));
+        const locations = Array.isArray(response.data) ? response.data : [];
+        setPopularLocations(locations.length > 0 ? locations : fallbackLocations);
+      } catch (error) {
+        setPopularLocations(fallbackLocations);
+      }
+    };
+
+    fetchPopularLocations();
+  }, [fallbackLocations]);
 
   const handleSubscribe = (e) => {
     e.preventDefault();
@@ -81,14 +108,26 @@ const Footer = () => {
             <ul className="footer-links">
               <li><Link to="/profile">My Dashboard</Link></li>
               <li><Link to="/post-ad">Submit Listing</Link></li>
-              <li><Link to="/login">Sign in</Link></li>
-              <li><Link to="/register">Register</Link></li>
+              {!user && <li><Link to="/login">Sign in</Link></li>}
               <li><Link to="/blog">Blog</Link></li>
               <li><Link to="/contact">Contact Us</Link></li>
             </ul>
           </div>
-
           <div className="footer-section">
+            <h3 className="footer-title">Top Locations</h3>
+            <ul className="footer-links">
+              {popularLocations.slice(0, 6).map((location) => {
+                const city = location?.city || '';
+                const citySlug = encodeURIComponent(city.toLowerCase().replace(/\s+/g, '-'));
+                return (
+                  <li key={city}>
+                    <Link to={`/location/${citySlug}`}>{city}</Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          {/* <div className="footer-section">
             <h3 className="footer-title">Top Series</h3>
             <ul className="footer-links">
               <li><Link to="/category/iphone-16-pro-max">16 Series</Link></li>
@@ -98,21 +137,11 @@ const Footer = () => {
               <li><Link to="/category/iphone-12-pro-max">12 Series</Link></li>
               <li><Link to="/category/iphone-11-pro-max">11 Series</Link></li>
             </ul>
-          </div>
+          </div> */}
         </div>
 
         <div className="footer-bottom">
-          <div className="footer-section">
-            <h3 className="footer-title">Top Locations</h3>
-            <ul className="footer-links">
-              <li><Link to="/?city=Dubai">Dubai</Link></li>
-              <li><Link to="/?city=Abu Dhabi">Abu Dhabi</Link></li>
-              <li><Link to="/?city=Sharjah">Sharjah</Link></li>
-              <li><Link to="/?city=Ajman">Ajman</Link></li>
-              <li><Link to="/?city=Ras al Khaimah">Ras al Khaima</Link></li>
-              <li><Link to="/?city=Fujairah">Fujairah</Link></li>
-            </ul>
-          </div>
+         
 
           <div className="footer-section">
             <h3 className="footer-title">Important Links</h3>
@@ -146,11 +175,6 @@ const Footer = () => {
               <li>
                 <a href="https://www.tiktok.com/@phonehub.ae" target="_blank" rel="noopener noreferrer">
                   <i className="fab fa-tiktok"></i> Tik Tok
-                </a>
-              </li>
-              <li>
-                <a href="https://www.youtube.com/@phonehub.ae" target="_blank" rel="noopener noreferrer">
-                  <i className="fab fa-youtube"></i> YouTube
                 </a>
               </li>
             </ul>

@@ -341,62 +341,60 @@ const Profile = () => {
               {myListings.map((listing) => (
                 <Box key={listing._id || listing.id} sx={{ position: 'relative' }}>
                   <ListingCard listing={listing} />
-                  {listing.status === 'active' && (
-                    <Box
-                      className="listing-action-buttons"
-                      sx={{
-                        position: 'absolute',
-                        top: '8px',
-                        right: '8px',
-                        display: 'flex',
-                        gap: '0.5rem',
-                        zIndex: 10,
+                  <Box
+                    className="listing-action-buttons"
+                    sx={{
+                      position: 'absolute',
+                      top: '8px',
+                      right: '8px',
+                      display: 'flex',
+                      gap: '0.5rem',
+                      zIndex: 10,
+                    }}
+                  >
+                    <IconButton
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleEditListing(listing._id || listing.id);
                       }}
+                      className="edit-listing-btn"
+                      sx={{
+                        backgroundColor: '#2563eb',
+                        color: 'white',
+                        width: { xs: '36px', sm: '32px' },
+                        height: { xs: '36px', sm: '32px' },
+                        minWidth: { xs: '36px', sm: '32px' },
+                        '&:hover': {
+                          backgroundColor: '#1d4ed8',
+                        },
+                      }}
+                      aria-label="Edit listing"
                     >
-                      <IconButton
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleEditListing(listing._id || listing.id);
-                        }}
-                        className="edit-listing-btn"
-                        sx={{
-                          backgroundColor: '#2563eb',
-                          color: 'white',
-                          width: { xs: '36px', sm: '32px' },
-                          height: { xs: '36px', sm: '32px' },
-                          minWidth: { xs: '36px', sm: '32px' },
-                          '&:hover': {
-                            backgroundColor: '#1d4ed8',
-                          },
-                        }}
-                        aria-label="Edit listing"
-                      >
-                        <Edit sx={{ fontSize: { xs: '18px', sm: '1rem' } }} />
-                      </IconButton>
-                      <IconButton
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleDeleteListing(listing._id || listing.id);
-                        }}
-                        className="delete-listing-btn"
-                        sx={{
-                          backgroundColor: '#ef4444',
-                          color: 'white',
-                          width: { xs: '36px', sm: '32px' },
-                          height: { xs: '36px', sm: '32px' },
-                          minWidth: { xs: '36px', sm: '32px' },
-                          '&:hover': {
-                            backgroundColor: '#dc2626',
-                          },
-                        }}
-                        aria-label="Delete listing"
-                      >
-                        <Delete sx={{ fontSize: { xs: '18px', sm: '1rem' } }} />
-                      </IconButton>
-                    </Box>
-                  )}
+                      <Edit sx={{ fontSize: { xs: '18px', sm: '1rem' } }} />
+                    </IconButton>
+                    <IconButton
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleDeleteListing(listing._id || listing.id);
+                      }}
+                      className="delete-listing-btn"
+                      sx={{
+                        backgroundColor: '#ef4444',
+                        color: 'white',
+                        width: { xs: '36px', sm: '32px' },
+                        height: { xs: '36px', sm: '32px' },
+                        minWidth: { xs: '36px', sm: '32px' },
+                        '&:hover': {
+                          backgroundColor: '#dc2626',
+                        },
+                      }}
+                      aria-label="Delete listing"
+                    >
+                      <Delete sx={{ fontSize: { xs: '18px', sm: '1rem' } }} />
+                    </IconButton>
+                  </Box>
                 </Box>
               ))}
             </div>

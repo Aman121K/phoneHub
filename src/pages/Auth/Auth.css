@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   padding: 3rem 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #2563eb 100%);
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #2563eb 100%); */
   position: relative;
 }
 
@@ -16,7 +16,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 50%, rgba(37, 99, 235, 0.9) 100%);
+
   z-index: 0;
 }
 
@@ -196,7 +196,7 @@
 }
 
 .submit-btn:hover:not(:disabled) {
-  background: #1d4ed8;
+  background: #f97316;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 }
@@ -251,7 +251,7 @@
 }
 
 .register-header {
-  background: linear-gradient(135deg, #2563eb 0%, #dc2626 100%);
+  background:  #2563eb;
   color: #fff;
   padding: 3rem;
   text-align: center;
@@ -443,7 +443,7 @@
 }
 
 .register-form .submit-btn {
-  background: #2563eb;
+  background: #f97316;
   color: #fff;
   padding: 1rem;
   font-size: 1.1rem;

@@ -375,6 +375,22 @@ const Home = () => {
   const safeLatest = toArray(latestListings);
   const safeSingleSell = toArray(singleSellListings);
   const safeBulkSell = toArray(bulkSellListings);
+  const quickFilterModels = useMemo(() => {
+    const categoryList = toArray(categories);
+    const preferredModels = ['iphone 15', 'iphone 14'];
+    const preferredMatches = preferredModels
+      .map((modelName) => categoryList.find((cat) => (cat?.name || '').toLowerCase().includes(modelName)))
+      .filter(Boolean);
+
+    if (preferredMatches.length >= 2) {
+      return preferredMatches.slice(0, 2);
+    }
+
+    const usedNames = new Set(preferredMatches.map((cat) => cat.name));
+    const fallbackModels = categoryList.filter((cat) => !usedNames.has(cat?.name)).slice(0, 2 - preferredMatches.length);
+
+    return [...preferredMatches, ...fallbackModels].slice(0, 2);
+  }, [categories]);
 
   if (loading) {
     return <div className="loading">Loading...</div>;
@@ -406,15 +422,15 @@ const Home = () => {
             <div className="search-header">
               <h3 className="search-title">Find Your Perfect mobile phones</h3>
               <div className="quick-filters">
-                <div className="filter-tag" onClick={() => handleQuickFilter('iPhone 15 Pro')}>
-                  iPhone 15 Pro
-                </div>
-                <div className="filter-tag" onClick={() => handleQuickFilter('iPhone 14')}>
-                  iPhone 14
-                </div>
-                <div className="filter-tag" onClick={() => handleQuickFilter('Under AED 2000')}>
-                  Under AED 2000
-                </div>
+                {quickFilterModels.map((model) => (
+                  <div
+                    key={model.id || model._id || model.slug || model.name}
+                    className="filter-tag"
+                    onClick={() => handleQuickFilter(model.name)}
+                  >
+                    {model.name}
+                  </div>
+                ))}
               </div>
             </div>
 

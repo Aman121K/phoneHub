@@ -1275,6 +1275,8 @@
   border-radius: 16px;
   text-align: center;
   box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
+  margin-left: 3rem;
+  margin-right: 3.5rem;
 }
 
 .advertise-content h3 {
@@ -1316,7 +1318,7 @@
 .post-ad-section {
   margin-top: 4rem;
   padding: 3rem 2rem;
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  background: #1d4ed8;
   border-radius: 16px;
   text-align: center;
   box-shadow: 0 8px 24px rgba(249, 115, 22, 0.3);

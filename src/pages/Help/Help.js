@@ -24,8 +24,8 @@ const Help = () => {
             <div className="faq-item">
               <h3>How do I post a listing?</h3>
               <p>
-                After logging in, click on "Sell iPhone" or "Post Ad" button. Fill in all the required 
-                information including iPhone model, condition, storage, price, and upload images. 
+                After logging in, click on "Post Ad" button. Fill in all the required 
+                information including mobile phone model, condition, storage, price, and upload images. 
                 Add your listing details and publish it as a fixed price listing.
               </p>
             </div>
@@ -34,7 +34,8 @@ const Help = () => {
               <h3>How do I contact a seller?</h3>
               <p>
                 Click on "View Details" on any listing, then use the "Contact Seller" button to send a 
-                message. You can also access all your messages from the "Messages" section in your profile.
+                message and you can call the seller directly from the listing page.
+                {/* You can also access all your messages from the "Messages" section in your profile. */}
               </p>
             </div>
 
@@ -47,7 +48,7 @@ const Help = () => {
             </div>
 
             <div className="faq-item">
-              <h3>How do I search for specific iPhone models?</h3>
+              <h3>How do I search for specific Mobile Phone models?</h3>
               <p>
                 Use the search bar on the homepage, or browse by categories. You can filter by model, 
                 storage capacity, city, and price range to find exactly what you're looking for.

@@ -64,7 +64,7 @@ const Header = () => {
               {user.userType !== 'buyer' && (
                 <Link to="/post-ad" className="btn-sell">
                   <i className="fas fa-plus"></i>
-                  <span className="btn-sell-text">Sell Listing</span>
+                  <span className="btn-sell-text">List Phone</span>
                 </Link>
               )}
             </>
