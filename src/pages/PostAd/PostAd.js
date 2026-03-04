@@ -8,6 +8,7 @@ const PostAd = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [categories, setCategories] = useState([]);
+  const [categorySearch, setCategorySearch] = useState('');
   const [formData, setFormData] = useState({
     category_id: '',
     title: '',
@@ -363,6 +364,11 @@ const PostAd = () => {
     return pricing[duration] || 50;
   };
 
+  const filteredCategories = categories.filter((cat) => {
+    const categoryName = (cat.name || '').toLowerCase();
+    return categoryName.includes(categorySearch.toLowerCase().trim());
+  });
+
   if (!user) {
     return null;
   }
@@ -387,6 +393,14 @@ const PostAd = () => {
         <form onSubmit={handleSubmit} className="post-ad-form">
           <div className="form-group">
             <label>Category *</label>
+            <input
+              type="text"
+              className="category-search-input"
+              value={categorySearch}
+              onChange={(e) => setCategorySearch(e.target.value)}
+              placeholder="Search category (e.g., iPhone 14 Pro Max)"
+              disabled={categories.length === 0}
+            />
             <select
               name="category_id"
               value={formData.category_id}
@@ -395,9 +409,13 @@ const PostAd = () => {
               disabled={categories.length === 0}
             >
               <option value="">
-                {categories.length === 0 ? 'Loading categories...' : 'Select Category'}
+                {categories.length === 0
+                  ? 'Loading categories...'
+                  : filteredCategories.length === 0
+                    ? 'No matching categories found'
+                    : 'Select Category'}
               </option>
-              {categories.map((cat) => {
+              {filteredCategories.map((cat) => {
                 const categoryId = cat._id || cat.id;
                 const categoryName = cat.name || 'Unnamed Category';
                 return (
@@ -541,7 +559,7 @@ const PostAd = () => {
 
           <div className="form-row">
             <div className="form-group">
-              <label>Charge</label>
+              <label>Charger</label>
               <select
                 name="charge"
                 value={formData.charge}

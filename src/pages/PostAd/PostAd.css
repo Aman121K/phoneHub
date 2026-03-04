@@ -47,6 +47,10 @@
   transition: border-color 0.3s;
 }
 
+.category-search-input {
+  margin-bottom: 0.5rem;
+}
+
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
@@ -433,4 +437,3 @@
     max-width: none;
   }
 }
-
