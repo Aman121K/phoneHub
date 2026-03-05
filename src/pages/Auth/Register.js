@@ -66,7 +66,8 @@ const Register = () => {
     const result = await register(registerData);
     
     if (result.success) {
-      navigate('/');
+      const encodedEmail = encodeURIComponent(result.email || formData.email);
+      navigate(`/verify-email?email=${encodedEmail}&sent=1`);
     } else {
       setError(result.error);
     }
@@ -286,4 +287,3 @@ const Register = () => {
 };
 
 export default Register;
-

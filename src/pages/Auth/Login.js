@@ -12,6 +12,7 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [verificationLink, setVerificationLink] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -24,6 +25,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setVerificationLink('');
     setLoading(true);
 
     const result = await login(formData.email, formData.password);
@@ -31,7 +33,13 @@ const Login = () => {
     if (result.success) {
       navigate('/');
     } else {
-      setError(result.error);
+      if (result.code === 'EMAIL_NOT_VERIFIED') {
+        const verificationEmail = encodeURIComponent(result.email || formData.email);
+        setError('Email not verified. Please verify your email before signing in.');
+        setVerificationLink(`/verify-email?email=${verificationEmail}`);
+      } else {
+        setError(result.error);
+      }
     }
     
     setLoading(false);
@@ -74,7 +82,17 @@ const Login = () => {
         </div>
         <div className="login-right">
           <h2>Sign to Your Account</h2>
-          {error && <div className="error-message">{error}</div>}
+          {error && (
+            <div className="error-message">
+              {error}
+              {verificationLink ? (
+                <>
+                  {' '}
+                  <Link to={verificationLink}>Verify email</Link>
+                </>
+              ) : null}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="login-form">
             <div className="form-group">
               <label>Email Address</label>
@@ -133,4 +151,3 @@ const Login = () => {
 };
 
 export default Login;
-

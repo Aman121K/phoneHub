@@ -51,18 +51,24 @@ export const AuthProvider = ({ children }) => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
       return { success: true, user: userData };
     } catch (error) {
-      return { success: false, error: error.response?.data?.error || 'Login failed' };
+      return {
+        success: false,
+        error: error.response?.data?.error || 'Login failed',
+        code: error.response?.data?.code,
+        email: error.response?.data?.email
+      };
     }
   };
 
   const register = async (userData) => {
     try {
       const response = await axios.post('/api/auth/register', userData);
-      const { token: newToken, user: newUser } = response.data;
-      localStorage.setItem('token', newToken);
-      setUser(newUser);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-      return { success: true, user: newUser };
+      return {
+        success: true,
+        message: response.data?.message || 'Registration successful',
+        requiresEmailVerification: Boolean(response.data?.requiresEmailVerification),
+        email: response.data?.email || userData.email
+      };
     } catch (error) {
       return { success: false, error: error.response?.data?.error || 'Registration failed' };
     }
@@ -95,4 +101,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
